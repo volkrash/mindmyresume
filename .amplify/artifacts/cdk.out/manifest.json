@@ -1,0 +1,1666 @@
+{
+  "version": "48.0.0",
+  "artifacts": {
+    "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/unknown-region",
+      "properties": {
+        "templateFile": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669.template.json",
+        "terminationProtection": false,
+        "tags": {
+          "amplify:deployment-type": "sandbox",
+          "created-by": "amplify"
+        },
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/94730f67bb713c829504165bc1ad9f7dee20bd5e8cad1002539c15f6a16dc799.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-${AWS::Region}",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669.assets"
+      ],
+      "metadata": {
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "amplify:deployment-type",
+                "Value": "sandbox"
+              },
+              {
+                "Key": "created-by",
+                "Value": "amplify"
+              }
+            ]
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/deploymentType": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "deploymentType"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/region": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "region"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/auth/amplifyAuth/UserPool/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyAuthUserPool4BA7F805"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/auth/amplifyAuth/UserPoolAppClient/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyAuthUserPoolAppClient2626C6F8"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/auth/amplifyAuth/IdentityPool": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyAuthIdentityPool3FDE84CC"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/auth/amplifyAuth/authenticatedUserRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyAuthauthenticatedUserRoleD8DA3689"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/auth/amplifyAuth/unauthenticatedUserRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyAuthunauthenticatedUserRole2B524D9E"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/auth/amplifyAuth/IdentityPoolRoleAttachment": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyAuthIdentityPoolRoleAttachment045F17C8"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/auth/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/auth/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/auth/amplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthUserPoolB00775ECRef": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthUserPoolB00775ECRef"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/auth/amplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthUserPoolAppClient918F6EABRef": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthUserPoolAppClient918F6EABRef"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/auth/amplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthIdentityPool7D6B1394Ref": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthIdentityPool7D6B1394Ref"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/auth/amplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthauthenticatedUserRoleFB43ED7CRef": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthauthenticatedUserRoleFB43ED7CRef"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/auth/amplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthunauthenticatedUserRoleECBF0A21Ref": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthunauthenticatedUserRoleECBF0A21Ref"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/auth.NestedStack/auth.NestedStackResource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "auth179371D7"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/userPoolId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "userPoolId"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/webClientId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "webClientId"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/identityPoolId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "identityPoolId"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/authRegion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "authRegion"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/allowUnauthenticatedIdentities": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "allowUnauthenticatedIdentities"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/signupAttributes": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "signupAttributes"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/usernameAttributes": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "usernameAttributes"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/verificationMechanisms": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "verificationMechanisms"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/passwordPolicyMinLength": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "passwordPolicyMinLength"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/passwordPolicyRequirements": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "passwordPolicyRequirements"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/mfaConfiguration": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mfaConfiguration"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/mfaTypes": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mfaTypes"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/socialProviders": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "socialProviders"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/oauthCognitoDomain": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "oauthCognitoDomain"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/oauthScope": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "oauthScope"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/oauthRedirectSignIn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "oauthRedirectSignIn"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/oauthRedirectSignOut": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "oauthRedirectSignOut"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/oauthResponseType": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "oauthResponseType"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/oauthClientId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "oauthClientId"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/groups": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "groups"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/GraphQLAPI/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyDataGraphQLAPI42A6FA33"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/GraphQLAPI/TransformerSchema": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyDataGraphQLAPITransformerSchemaFF50A789"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/GraphQLAPI/NONE_DS": [
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "NONE_DS"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/GraphQLAPI/NONE_DS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyDataGraphQLAPINONEDS684BF699"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "NONE_DS"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AmplifyTableManager/AmplifyManagedTableIsCompleteRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AmplifyManagedTableIsCompleteRoleF825222C"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AmplifyTableManager/AmplifyManagedTableOnEventRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AmplifyManagedTableOnEventRoleB4E71DEA"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AmplifyTableManager/AmplifyManagedTableOnEventRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AmplifyManagedTableOnEventRoleDefaultPolicyF6DABCB6"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AmplifyTableManager/TableManagerCustomProvider/framework-onEvent/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TableManagerCustomProviderframeworkonEvent1DFC2ECC"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AmplifyTableManager/TableManagerCustomProvider/framework-isComplete/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TableManagerCustomProviderframeworkisComplete2E51021B"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AmplifyTableManager/AmplifyTableWaiterStateMachine/Role/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AmplifyTableWaiterStateMachineRole470BE899"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AmplifyTableManager/AmplifyTableWaiterStateMachine/Role/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AmplifyTableWaiterStateMachineRoleDefaultPolicy89F3836A"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AmplifyTableManager/AmplifyTableWaiterStateMachine/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AmplifyTableWaiterStateMachine060600BC"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AmplifyTableManager/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AmplifyTableManager/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AmplifyTableManager/reference-to-amplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AmplifyTableManager/amplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataAmplifyTableManagerTableManagerCustomProviderframeworkonEvent4E5C4940Arn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataAmplifyTableManagerTableManagerCustomProviderframeworkonEvent4E5C4940Arn"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AmplifyTableManager.NestedStack/AmplifyTableManager.NestedStackResource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyDataAmplifyTableManagerNestedStackAmplifyTableManagerNestedStackResource86290833"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/DynamoDBModelTableReadIOPS": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBModelTableReadIOPS"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/DynamoDBModelTableWriteIOPS": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBModelTableWriteIOPS"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/DynamoDBBillingMode": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBBillingMode"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/DynamoDBEnablePointInTimeRecovery": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBEnablePointInTimeRecovery"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/DynamoDBEnableServerSideEncryption": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBEnableServerSideEncryption"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/HasEnvironmentParameter": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "HasEnvironmentParameter"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/ShouldUsePayPerRequestBilling": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ShouldUsePayPerRequestBilling"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/ShouldUsePointInTimeRecovery": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ShouldUsePointInTimeRecovery"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/ResumeTable": [
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Resume"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/ResumeTable/Default/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ResumeTable"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Resume"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/CustomTableResumeTable": [
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Resume"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/GetAttResumeTableStreamArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetAttResumeTableStreamArn"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/GetAttResumeTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetAttResumeTableName"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/ResumeIAMRole": [
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "ResumeIAMRole"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/ResumeIAMRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ResumeIAMRole5CE9885A"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "ResumeIAMRole"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/ResumeDataSource": [
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "ResumeTable"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/ResumeDataSource/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ResumeDataSource"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "ResumeTable"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/QuerygetResumeauth0Function/QuerygetResumeauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QuerygetResumeauth0FunctionQuerygetResumeauth0FunctionAppSyncFunctionC741C4CF"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "QuerygetResumeauth0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/QuerygetResumepostAuth0Function/QuerygetResumepostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QuerygetResumepostAuth0FunctionQuerygetResumepostAuth0FunctionAppSyncFunction1890993D"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "QuerygetResumepostAuth0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/QueryGetResumeDataResolverFn/QueryGetResumeDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QueryGetResumeDataResolverFnQueryGetResumeDataResolverFnAppSyncFunctionD4792A66"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "QueryGetResumeDataResolverFn"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/queryGetResumeResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetResumeResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Query.getResume"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/QuerylistResumesauth0Function/QuerylistResumesauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QuerylistResumesauth0FunctionQuerylistResumesauth0FunctionAppSyncFunction3D430F76"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "QuerylistResumesauth0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/QuerylistResumespostAuth0Function/QuerylistResumespostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QuerylistResumespostAuth0FunctionQuerylistResumespostAuth0FunctionAppSyncFunction17330EFD"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "QuerylistResumespostAuth0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/QueryListResumesDataResolverFn/QueryListResumesDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QueryListResumesDataResolverFnQueryListResumesDataResolverFnAppSyncFunctionE7E3CB7E"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "QueryListResumesDataResolverFn"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/queryListResumesResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ListResumeResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Query.listResumes"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/MutationcreateResumeinit0Function/MutationcreateResumeinit0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationcreateResumeinit0FunctionMutationcreateResumeinit0FunctionAppSyncFunction3D11484B"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationcreateResumeinit0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/MutationcreateResumeauth0Function/MutationcreateResumeauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationcreateResumeauth0FunctionMutationcreateResumeauth0FunctionAppSyncFunction6E1B39FA"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationcreateResumeauth0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/MutationcreateResumepostAuth0Function/MutationcreateResumepostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationcreateResumepostAuth0FunctionMutationcreateResumepostAuth0FunctionAppSyncFunction6272AB36"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationcreateResumepostAuth0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/MutationCreateResumeDataResolverFn/MutationCreateResumeDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationCreateResumeDataResolverFnMutationCreateResumeDataResolverFnAppSyncFunctionC1606493"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationCreateResumeDataResolverFn"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/mutationCreateResumeResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateResumeResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Mutation.createResume"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/MutationupdateResumeinit0Function/MutationupdateResumeinit0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationupdateResumeinit0FunctionMutationupdateResumeinit0FunctionAppSyncFunctionAE327CCA"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationupdateResumeinit0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/MutationupdateResumeauth0Function/MutationupdateResumeauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationupdateResumeauth0FunctionMutationupdateResumeauth0FunctionAppSyncFunction6F5A4084"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationupdateResumeauth0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/MutationupdateResumepostAuth0Function/MutationupdateResumepostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationupdateResumepostAuth0FunctionMutationupdateResumepostAuth0FunctionAppSyncFunctionA672C075"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationupdateResumepostAuth0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/MutationUpdateResumeDataResolverFn/MutationUpdateResumeDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationUpdateResumeDataResolverFnMutationUpdateResumeDataResolverFnAppSyncFunction12A3BBD5"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationUpdateResumeDataResolverFn"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/mutationUpdateResumeResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UpdateResumeResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Mutation.updateResume"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/MutationdeleteResumeauth0Function/MutationdeleteResumeauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationdeleteResumeauth0FunctionMutationdeleteResumeauth0FunctionAppSyncFunction448ECF1D"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationdeleteResumeauth0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/MutationdeleteResumepostAuth0Function/MutationdeleteResumepostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationdeleteResumepostAuth0FunctionMutationdeleteResumepostAuth0FunctionAppSyncFunction4017A857"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationdeleteResumepostAuth0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/MutationDeleteResumeDataResolverFn/MutationDeleteResumeDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationDeleteResumeDataResolverFnMutationDeleteResumeDataResolverFnAppSyncFunction5BA91E54"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationDeleteResumeDataResolverFn"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/mutationDeleteResumeResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeleteResumeResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Mutation.deleteResume"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/SubscriptiononCreateResumeauth0Function/SubscriptiononCreateResumeauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononCreateResumeauth0FunctionSubscriptiononCreateResumeauth0FunctionAppSyncFunction1F124268"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptiononCreateResumeauth0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/SubscriptiononCreateResumepostAuth0Function/SubscriptiononCreateResumepostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononCreateResumepostAuth0FunctionSubscriptiononCreateResumepostAuth0FunctionAppSyncFunction57263B8D"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptiononCreateResumepostAuth0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/SubscriptionOnCreateResumeDataResolverFn/SubscriptionOnCreateResumeDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptionOnCreateResumeDataResolverFnSubscriptionOnCreateResumeDataResolverFnAppSyncFunctionB4C97BB0"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptionOnCreateResumeDataResolverFn"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/subscriptionOnCreateResumeResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononCreateResumeResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Subscription.onCreateResume"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/SubscriptiononUpdateResumeauth0Function/SubscriptiononUpdateResumeauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononUpdateResumeauth0FunctionSubscriptiononUpdateResumeauth0FunctionAppSyncFunction2CFF0D2B"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptiononUpdateResumeauth0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/SubscriptiononUpdateResumepostAuth0Function/SubscriptiononUpdateResumepostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononUpdateResumepostAuth0FunctionSubscriptiononUpdateResumepostAuth0FunctionAppSyncFunction3AD01365"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptiononUpdateResumepostAuth0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/SubscriptionOnUpdateResumeDataResolverFn/SubscriptionOnUpdateResumeDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptionOnUpdateResumeDataResolverFnSubscriptionOnUpdateResumeDataResolverFnAppSyncFunctionDCC695C7"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptionOnUpdateResumeDataResolverFn"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/subscriptionOnUpdateResumeResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononUpdateResumeResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Subscription.onUpdateResume"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/SubscriptiononDeleteResumeauth0Function/SubscriptiononDeleteResumeauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononDeleteResumeauth0FunctionSubscriptiononDeleteResumeauth0FunctionAppSyncFunction801C0942"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptiononDeleteResumeauth0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/SubscriptiononDeleteResumepostAuth0Function/SubscriptiononDeleteResumepostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononDeleteResumepostAuth0FunctionSubscriptiononDeleteResumepostAuth0FunctionAppSyncFunction166F4928"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptiononDeleteResumepostAuth0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/SubscriptionOnDeleteResumeDataResolverFn/SubscriptionOnDeleteResumeDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptionOnDeleteResumeDataResolverFnSubscriptionOnDeleteResumeDataResolverFnAppSyncFunctionEAC0DB80"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptionOnDeleteResumeDataResolverFn"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/subscriptionOnDeleteResumeResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononDeleteResumeResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Subscription.onDeleteResume"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/ResumeOwnerDataResolverFn/ResumeOwnerDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ResumeOwnerDataResolverFnResumeOwnerDataResolverFnAppSyncFunction5603FB01"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "ResumeOwnerDataResolverFn"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/resumeOwnerResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ResumeownerResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Resume.owner"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/reference-to-amplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataAmplifyTableManagerNestedStackAmplifyTableManagerNestedStackResourceB9CABFC4Outputs.amplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataAmplifyTableManagerTableManagerCustomProviderframeworkonEvent4E5C4940Arn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataAmplifyTableManagerNestedStackAmplifyTableManagerNestedStackResourceB9CABFC4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataAmplifyTableMana7A0872AE"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/reference-to-amplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/reference-to-amplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/reference-to-amplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputs.amplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthauthenticatedUserRoleFB43ED7CRef": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthauthenticatedUserRoleFB43ED7CRef"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/reference-to-amplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputs.amplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthunauthenticatedUserRoleECBF0A21Ref": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthunauthenticatedUserRoleECBF0A21Ref"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/reference-to-amplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputs.amplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthIdentityPool7D6B1394Ref": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthIdentityPool7D6B1394Ref"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume.NestedStack/Resume.NestedStackResource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyDataResumeNestedStackResumeNestedStackResource7789F223"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AmplifyCodegenAssets/AmplifyCodegenAssetsBucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyDataAmplifyCodegenAssetsAmplifyCodegenAssetsBucket9CCB4ACA"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AmplifyCodegenAssets/AmplifyCodegenAssetsBucket/Policy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyDataAmplifyCodegenAssetsAmplifyCodegenAssetsBucketPolicyF1C1C548"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AmplifyCodegenAssets/AmplifyCodegenAssetsBucket/AutoDeleteObjectsCustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyDataAmplifyCodegenAssetsAmplifyCodegenAssetsBucketAutoDeleteObjectsCustomResource437F26F5"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AmplifyCodegenAssets/AmplifyCodegenAssetsDeployment/AwsCliLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyDataAmplifyCodegenAssetsAmplifyCodegenAssetsDeploymentAwsCliLayerE322F905"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AmplifyCodegenAssets/AmplifyCodegenAssetsDeployment/CustomResource-1536MiB/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyDataAmplifyCodegenAssetsAmplifyCodegenAssetsDeploymentCustomResource1536MiB21775929"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/DynamoDBModelTableReadIOPS": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBModelTableReadIOPS"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/DynamoDBModelTableWriteIOPS": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBModelTableWriteIOPS"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/DynamoDBBillingMode": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBBillingMode"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/DynamoDBEnablePointInTimeRecovery": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBEnablePointInTimeRecovery"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/DynamoDBEnableServerSideEncryption": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBEnableServerSideEncryption"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/Custom::S3AutoDeleteObjectsCustomResourceProvider": [
+          {
+            "type": "aws:cdk:is-custom-resource-handler-customResourceProvider",
+            "data": true
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/Custom::S3AutoDeleteObjectsCustomResourceProvider/Role": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1536MiB": [
+          {
+            "type": "aws:cdk:is-custom-resource-handler-singleton",
+            "data": true
+          },
+          {
+            "type": "aws:cdk:is-custom-resource-handler-runtime-family",
+            "data": 2
+          },
+          {
+            "type": "aws:cdk:is-custom-resource-handler-singleton",
+            "data": true
+          },
+          {
+            "type": "aws:cdk:is-custom-resource-handler-runtime-family",
+            "data": 2
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1536MiB/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1536MiBServiceRoleA41FC8C2"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1536MiB/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1536MiBServiceRoleDefaultPolicyFF1C635B"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1536MiB/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1536MiBC5D8AB21"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/modelIntrospectionSchemaBucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "modelIntrospectionSchemaBucketF566B665"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/modelIntrospectionSchemaBucket/Policy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "modelIntrospectionSchemaBucketPolicy4DAB0D15"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/modelIntrospectionSchemaBucket/AutoDeleteObjectsCustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "modelIntrospectionSchemaBucketAutoDeleteObjectsCustomResourceFE57309F"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/modelIntrospectionSchemaBucketDeployment/AwsCliLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "modelIntrospectionSchemaBucketDeploymentAwsCliLayer13C432F7"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/modelIntrospectionSchemaBucketDeployment/CustomResource-1536MiB/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "modelIntrospectionSchemaBucketDeploymentCustomResource1536MiB104B97EC"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/AMPLIFY_DATA_GRAPHQL_ENDPOINTParameter/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AMPLIFYDATAGRAPHQLENDPOINTParameter1C2CBB16"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/AMPLIFY_DATA_MODEL_INTROSPECTION_SCHEMA_BUCKET_NAMEParameter/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AMPLIFYDATAMODELINTROSPECTIONSCHEMABUCKETNAMEParameter47BF4F44"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/AMPLIFY_DATA_MODEL_INTROSPECTION_SCHEMA_KEYParameter/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AMPLIFYDATAMODELINTROSPECTIONSCHEMAKEYParameterB6AEAE8A"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/AMPLIFY_DATA_DEFAULT_NAMEParameter/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AMPLIFYDATADEFAULTNAMEParameterE7C23CC4"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/reference-to-amplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputs.amplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthUserPoolB00775ECRef": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthUserPoolB00775ECRef"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/reference-to-amplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputs.amplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthauthenticatedUserRoleFB43ED7CRef": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthauthenticatedUserRoleFB43ED7CRef"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/reference-to-amplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputs.amplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthunauthenticatedUserRoleECBF0A21Ref": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthunauthenticatedUserRoleECBF0A21Ref"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/reference-to-amplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputs.amplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthIdentityPool7D6B1394Ref": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthIdentityPool7D6B1394Ref"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CGraphQLUrl": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CGraphQLUrl"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataAmplifyCodegenAssetsAmplifyCodegenAssetsDeploymentCustomResource1536MiBB4729469DestinationBucketArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataAmplifyCodegenAssetsAmplifyCodegenAssetsDeploymentCustomResource1536MiBB4729469DestinationBucketArn"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data.NestedStack/data.NestedStackResource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "data7552DF31"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/awsAppsyncApiId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "awsAppsyncApiId"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/awsAppsyncApiEndpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "awsAppsyncApiEndpoint"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/awsAppsyncAuthenticationType": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "awsAppsyncAuthenticationType"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/awsAppsyncRegion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "awsAppsyncRegion"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/amplifyApiModelSchemaS3Uri": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyApiModelSchemaS3Uri"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/awsAppsyncAdditionalAuthenticationTypes": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "awsAppsyncAdditionalAuthenticationTypes"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/function/rewriteResume-lambda/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "rewriteResumelambdaServiceRole9312C79D"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/function/rewriteResume-lambda/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "rewriteResumelambda86909127"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/function/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/function/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/function/amplifymindmyresumeangelmaldonadosandbox3e0615e669functionrewriteResumelambda8C3EBA55Ref": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifymindmyresumeangelmaldonadosandbox3e0615e669functionrewriteResumelambda8C3EBA55Ref"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/function.NestedStack/function.NestedStackResource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "function1351588B"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/definedFunctions": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "definedFunctions"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    },
+    "aws-cdk-lib/feature-flag-report": {
+      "type": "cdk:feature-flag-report",
+      "properties": {
+        "module": "aws-cdk-lib",
+        "flags": {
+          "@aws-cdk/aws-signer:signingProfileNamePassedToCfn": {
+            "recommendedValue": true,
+            "explanation": "Pass signingProfileName to CfnSigningProfile"
+          },
+          "@aws-cdk/core:newStyleStackSynthesis": {
+            "recommendedValue": true,
+            "explanation": "Switch to new stack synthesis method which enables CI/CD",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/core:stackRelativeExports": {
+            "recommendedValue": true,
+            "explanation": "Name exports based on the construct paths relative to the stack, rather than the global construct path",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-ecs-patterns:secGroupsDisablesImplicitOpenListener": {
+            "recommendedValue": true,
+            "explanation": "Disable implicit openListener when custom security groups are provided"
+          },
+          "@aws-cdk/aws-rds:lowercaseDbIdentifier": {
+            "recommendedValue": true,
+            "explanation": "Force lowercasing of RDS Cluster names in CDK",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-apigateway:usagePlanKeyOrderInsensitiveId": {
+            "recommendedValue": true,
+            "explanation": "Allow adding/removing multiple UsagePlanKeys independently",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-lambda:recognizeVersionProps": {
+            "recommendedValue": true,
+            "explanation": "Enable this feature flag to opt in to the updated logical id calculation for Lambda Version created using the  `fn.currentVersion`.",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-lambda:recognizeLayerVersion": {
+            "recommendedValue": true,
+            "explanation": "Enable this feature flag to opt in to the updated logical id calculation for Lambda Version created using the `fn.currentVersion`."
+          },
+          "@aws-cdk/aws-cloudfront:defaultSecurityPolicyTLSv1.2_2021": {
+            "recommendedValue": true,
+            "explanation": "Enable this feature flag to have cloudfront distributions use the security policy TLSv1.2_2021 by default.",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/core:checkSecretUsage": {
+            "recommendedValue": true,
+            "explanation": "Enable this flag to make it impossible to accidentally use SecretValues in unsafe locations"
+          },
+          "@aws-cdk/core:target-partitions": {
+            "recommendedValue": [
+              "aws",
+              "aws-cn"
+            ],
+            "explanation": "What regions to include in lookup tables of environment agnostic stacks"
+          },
+          "@aws-cdk-containers/ecs-service-extensions:enableDefaultLogDriver": {
+            "recommendedValue": true,
+            "explanation": "ECS extensions will automatically add an `awslogs` driver if no logging is specified"
+          },
+          "@aws-cdk/aws-ec2:uniqueImdsv2TemplateName": {
+            "recommendedValue": true,
+            "explanation": "Enable this feature flag to have Launch Templates generated by the `InstanceRequireImdsv2Aspect` use unique names."
+          },
+          "@aws-cdk/aws-ecs:arnFormatIncludesClusterName": {
+            "recommendedValue": true,
+            "explanation": "ARN format used by ECS. In the new ARN format, the cluster name is part of the resource ID."
+          },
+          "@aws-cdk/aws-iam:minimizePolicies": {
+            "recommendedValue": true,
+            "explanation": "Minimize IAM policies by combining Statements"
+          },
+          "@aws-cdk/core:validateSnapshotRemovalPolicy": {
+            "recommendedValue": true,
+            "explanation": "Error on snapshot removal policies on resources that do not support it."
+          },
+          "@aws-cdk/aws-codepipeline:crossAccountKeyAliasStackSafeResourceName": {
+            "recommendedValue": true,
+            "explanation": "Generate key aliases that include the stack name"
+          },
+          "@aws-cdk/aws-s3:createDefaultLoggingPolicy": {
+            "recommendedValue": true,
+            "explanation": "Enable this feature flag to create an S3 bucket policy by default in cases where an AWS service would automatically create the Policy if one does not exist."
+          },
+          "@aws-cdk/aws-sns-subscriptions:restrictSqsDescryption": {
+            "recommendedValue": true,
+            "explanation": "Restrict KMS key policy for encrypted Queues a bit more"
+          },
+          "@aws-cdk/aws-apigateway:disableCloudWatchRole": {
+            "recommendedValue": true,
+            "explanation": "Make default CloudWatch Role behavior safe for multiple API Gateways in one environment"
+          },
+          "@aws-cdk/core:enablePartitionLiterals": {
+            "recommendedValue": true,
+            "explanation": "Make ARNs concrete if AWS partition is known"
+          },
+          "@aws-cdk/aws-events:eventsTargetQueueSameAccount": {
+            "recommendedValue": true,
+            "explanation": "Event Rules may only push to encrypted SQS queues in the same account"
+          },
+          "@aws-cdk/aws-ecs:disableExplicitDeploymentControllerForCircuitBreaker": {
+            "recommendedValue": true,
+            "explanation": "Avoid setting the \"ECS\" deployment controller when adding a circuit breaker"
+          },
+          "@aws-cdk/aws-iam:importedRoleStackSafeDefaultPolicyName": {
+            "recommendedValue": true,
+            "explanation": "Enable this feature to create default policy names for imported roles that depend on the stack the role is in."
+          },
+          "@aws-cdk/aws-s3:serverAccessLogsUseBucketPolicy": {
+            "recommendedValue": true,
+            "explanation": "Use S3 Bucket Policy instead of ACLs for Server Access Logging"
+          },
+          "@aws-cdk/aws-route53-patters:useCertificate": {
+            "recommendedValue": true,
+            "explanation": "Use the official `Certificate` resource instead of `DnsValidatedCertificate`"
+          },
+          "@aws-cdk/customresources:installLatestAwsSdkDefault": {
+            "recommendedValue": false,
+            "explanation": "Whether to install the latest SDK by default in AwsCustomResource"
+          },
+          "@aws-cdk/aws-rds:databaseProxyUniqueResourceName": {
+            "recommendedValue": true,
+            "explanation": "Use unique resource name for Database Proxy"
+          },
+          "@aws-cdk/aws-codedeploy:removeAlarmsFromDeploymentGroup": {
+            "recommendedValue": true,
+            "explanation": "Remove CloudWatch alarms from deployment group"
+          },
+          "@aws-cdk/aws-apigateway:authorizerChangeDeploymentLogicalId": {
+            "recommendedValue": true,
+            "explanation": "Include authorizer configuration in the calculation of the API deployment logical ID."
+          },
+          "@aws-cdk/aws-ec2:launchTemplateDefaultUserData": {
+            "recommendedValue": true,
+            "explanation": "Define user data for a launch template by default when a machine image is provided."
+          },
+          "@aws-cdk/aws-secretsmanager:useAttachedSecretResourcePolicyForSecretTargetAttachments": {
+            "recommendedValue": true,
+            "explanation": "SecretTargetAttachments uses the ResourcePolicy of the attached Secret."
+          },
+          "@aws-cdk/aws-redshift:columnId": {
+            "recommendedValue": true,
+            "explanation": "Whether to use an ID to track Redshift column changes"
+          },
+          "@aws-cdk/aws-stepfunctions-tasks:enableEmrServicePolicyV2": {
+            "recommendedValue": true,
+            "explanation": "Enable AmazonEMRServicePolicy_v2 managed policies"
+          },
+          "@aws-cdk/aws-ec2:restrictDefaultSecurityGroup": {
+            "recommendedValue": true,
+            "explanation": "Restrict access to the VPC default security group"
+          },
+          "@aws-cdk/aws-apigateway:requestValidatorUniqueId": {
+            "recommendedValue": true,
+            "explanation": "Generate a unique id for each RequestValidator added to a method"
+          },
+          "@aws-cdk/aws-kms:aliasNameRef": {
+            "recommendedValue": true,
+            "explanation": "KMS Alias name and keyArn will have implicit reference to KMS Key"
+          },
+          "@aws-cdk/aws-kms:applyImportedAliasPermissionsToPrincipal": {
+            "recommendedValue": true,
+            "explanation": "Enable grant methods on Aliases imported by name to use kms:ResourceAliases condition"
+          },
+          "@aws-cdk/aws-autoscaling:generateLaunchTemplateInsteadOfLaunchConfig": {
+            "recommendedValue": true,
+            "explanation": "Generate a launch template when creating an AutoScalingGroup"
+          },
+          "@aws-cdk/core:includePrefixInUniqueNameGeneration": {
+            "recommendedValue": true,
+            "explanation": "Include the stack prefix in the stack name generation process"
+          },
+          "@aws-cdk/aws-efs:denyAnonymousAccess": {
+            "recommendedValue": true,
+            "explanation": "EFS denies anonymous clients accesses"
+          },
+          "@aws-cdk/aws-opensearchservice:enableOpensearchMultiAzWithStandby": {
+            "recommendedValue": true,
+            "explanation": "Enables support for Multi-AZ with Standby deployment for opensearch domains"
+          },
+          "@aws-cdk/aws-lambda-nodejs:useLatestRuntimeVersion": {
+            "recommendedValue": true,
+            "explanation": "Enables aws-lambda-nodejs.Function to use the latest available NodeJs runtime as the default"
+          },
+          "@aws-cdk/aws-efs:mountTargetOrderInsensitiveLogicalId": {
+            "recommendedValue": true,
+            "explanation": "When enabled, mount targets will have a stable logicalId that is linked to the associated subnet."
+          },
+          "@aws-cdk/aws-rds:auroraClusterChangeScopeOfInstanceParameterGroupWithEachParameters": {
+            "recommendedValue": true,
+            "explanation": "When enabled, a scope of InstanceParameterGroup for AuroraClusterInstance with each parameters will change."
+          },
+          "@aws-cdk/aws-appsync:useArnForSourceApiAssociationIdentifier": {
+            "recommendedValue": true,
+            "explanation": "When enabled, will always use the arn for identifiers for CfnSourceApiAssociation in the GraphqlApi construct rather than id."
+          },
+          "@aws-cdk/aws-rds:preventRenderingDeprecatedCredentials": {
+            "recommendedValue": true,
+            "explanation": "When enabled, creating an RDS database cluster from a snapshot will only render credentials for snapshot credentials."
+          },
+          "@aws-cdk/aws-codepipeline-actions:useNewDefaultBranchForCodeCommitSource": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the CodeCommit source action is using the default branch name 'main'."
+          },
+          "@aws-cdk/aws-cloudwatch-actions:changeLambdaPermissionLogicalIdForLambdaAction": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the logical ID of a Lambda permission for a Lambda action includes an alarm ID."
+          },
+          "@aws-cdk/aws-codepipeline:crossAccountKeysDefaultValueToFalse": {
+            "recommendedValue": true,
+            "explanation": "Enables Pipeline to set the default value for crossAccountKeys to false."
+          },
+          "@aws-cdk/aws-codepipeline:defaultPipelineTypeToV2": {
+            "recommendedValue": true,
+            "explanation": "Enables Pipeline to set the default pipeline type to V2."
+          },
+          "@aws-cdk/aws-kms:reduceCrossAccountRegionPolicyScope": {
+            "recommendedValue": true,
+            "explanation": "When enabled, IAM Policy created from KMS key grant will reduce the resource scope to this key only."
+          },
+          "@aws-cdk/pipelines:reduceAssetRoleTrustScope": {
+            "recommendedValue": true,
+            "explanation": "Remove the root account principal from PipelineAssetsFileRole trust policy",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-eks:nodegroupNameAttribute": {
+            "recommendedValue": true,
+            "explanation": "When enabled, nodegroupName attribute of the provisioned EKS NodeGroup will not have the cluster name prefix."
+          },
+          "@aws-cdk/aws-ec2:ebsDefaultGp3Volume": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the default volume type of the EBS volume will be GP3"
+          },
+          "@aws-cdk/aws-ecs:removeDefaultDeploymentAlarm": {
+            "recommendedValue": true,
+            "explanation": "When enabled, remove default deployment alarm settings"
+          },
+          "@aws-cdk/custom-resources:logApiResponseDataPropertyTrueDefault": {
+            "recommendedValue": false,
+            "explanation": "When enabled, the custom resource used for `AwsCustomResource` will configure the `logApiResponseData` property as true by default"
+          },
+          "@aws-cdk/aws-s3:keepNotificationInImportedBucket": {
+            "recommendedValue": false,
+            "explanation": "When enabled, Adding notifications to a bucket in the current stack will not remove notification from imported stack."
+          },
+          "@aws-cdk/aws-stepfunctions-tasks:useNewS3UriParametersForBedrockInvokeModelTask": {
+            "recommendedValue": true,
+            "explanation": "When enabled, use new props for S3 URI field in task definition of state machine for bedrock invoke model.",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/core:explicitStackTags": {
+            "recommendedValue": true,
+            "explanation": "When enabled, stack tags need to be assigned explicitly on a Stack."
+          },
+          "@aws-cdk/aws-ecs:enableImdsBlockingDeprecatedFeature": {
+            "recommendedValue": false,
+            "explanation": "When set to true along with canContainersAccessInstanceRole=false in ECS cluster, new updated commands will be added to UserData to block container accessing IMDS. **Applicable to Linux only. IMPORTANT: See [details.](#aws-cdkaws-ecsenableImdsBlockingDeprecatedFeature)**"
+          },
+          "@aws-cdk/aws-ecs:disableEcsImdsBlocking": {
+            "recommendedValue": true,
+            "explanation": "When set to true, CDK synth will throw exception if canContainersAccessInstanceRole is false. **IMPORTANT: See [details.](#aws-cdkaws-ecsdisableEcsImdsBlocking)**"
+          },
+          "@aws-cdk/aws-ecs:reduceEc2FargateCloudWatchPermissions": {
+            "recommendedValue": true,
+            "explanation": "When enabled, we will only grant the necessary permissions when users specify cloudwatch log group through logConfiguration"
+          },
+          "@aws-cdk/aws-dynamodb:resourcePolicyPerReplica": {
+            "recommendedValue": true,
+            "explanation": "When enabled will allow you to specify a resource policy per replica, and not copy the source table policy to all replicas"
+          },
+          "@aws-cdk/aws-ec2:ec2SumTImeoutEnabled": {
+            "recommendedValue": true,
+            "explanation": "When enabled, initOptions.timeout and resourceSignalTimeout values will be summed together."
+          },
+          "@aws-cdk/aws-appsync:appSyncGraphQLAPIScopeLambdaPermission": {
+            "recommendedValue": true,
+            "explanation": "When enabled, a Lambda authorizer Permission created when using GraphqlApi will be properly scoped with a SourceArn."
+          },
+          "@aws-cdk/aws-rds:setCorrectValueForDatabaseInstanceReadReplicaInstanceResourceId": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the value of property `instanceResourceId` in construct `DatabaseInstanceReadReplica` will be set to the correct value which is `DbiResourceId` instead of currently `DbInstanceArn`"
+          },
+          "@aws-cdk/core:cfnIncludeRejectComplexResourceUpdateCreatePolicyIntrinsics": {
+            "recommendedValue": true,
+            "explanation": "When enabled, CFN templates added with `cfn-include` will error if the template contains Resource Update or Create policies with CFN Intrinsics that include non-primitive values."
+          },
+          "@aws-cdk/aws-lambda-nodejs:sdkV3ExcludeSmithyPackages": {
+            "recommendedValue": true,
+            "explanation": "When enabled, both `@aws-sdk` and `@smithy` packages will be excluded from the Lambda Node.js 18.x runtime to prevent version mismatches in bundled applications."
+          },
+          "@aws-cdk/aws-stepfunctions-tasks:fixRunEcsTaskPolicy": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the resource of IAM Run Ecs policy generated by SFN EcsRunTask will reference the definition, instead of constructing ARN."
+          },
+          "@aws-cdk/aws-ec2:bastionHostUseAmazonLinux2023ByDefault": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the BastionHost construct will use the latest Amazon Linux 2023 AMI, instead of Amazon Linux 2."
+          },
+          "@aws-cdk/core:aspectStabilization": {
+            "recommendedValue": true,
+            "explanation": "When enabled, a stabilization loop will be run when invoking Aspects during synthesis.",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-route53-targets:userPoolDomainNameMethodWithoutCustomResource": {
+            "recommendedValue": true,
+            "explanation": "When enabled, use a new method for DNS Name of user pool domain target without creating a custom resource."
+          },
+          "@aws-cdk/aws-elasticloadbalancingV2:albDualstackWithoutPublicIpv4SecurityGroupRulesDefault": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the default security group ingress rules will allow IPv6 ingress from anywhere"
+          },
+          "@aws-cdk/aws-iam:oidcRejectUnauthorizedConnections": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the default behaviour of OIDC provider will reject unauthorized connections"
+          },
+          "@aws-cdk/core:enableAdditionalMetadataCollection": {
+            "recommendedValue": true,
+            "explanation": "When enabled, CDK will expand the scope of usage data collected to better inform CDK development and improve communication for security concerns and emerging issues."
+          },
+          "@aws-cdk/aws-lambda:createNewPoliciesWithAddToRolePolicy": {
+            "recommendedValue": false,
+            "explanation": "[Deprecated] When enabled, Lambda will create new inline policies with AddToRolePolicy instead of adding to the Default Policy Statement"
+          },
+          "@aws-cdk/aws-s3:setUniqueReplicationRoleName": {
+            "recommendedValue": true,
+            "explanation": "When enabled, CDK will automatically generate a unique role name that is used for s3 object replication."
+          },
+          "@aws-cdk/pipelines:reduceStageRoleTrustScope": {
+            "recommendedValue": true,
+            "explanation": "Remove the root account principal from Stage addActions trust policy",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-events:requireEventBusPolicySid": {
+            "recommendedValue": true,
+            "explanation": "When enabled, grantPutEventsTo() will use resource policies with Statement IDs for service principals."
+          },
+          "@aws-cdk/core:aspectPrioritiesMutating": {
+            "recommendedValue": true,
+            "explanation": "When set to true, Aspects added by the construct library on your behalf will be given a priority of MUTATING."
+          },
+          "@aws-cdk/aws-dynamodb:retainTableReplica": {
+            "recommendedValue": true,
+            "explanation": "When enabled, table replica will be default to the removal policy of source table unless specified otherwise."
+          },
+          "@aws-cdk/cognito:logUserPoolClientSecretValue": {
+            "recommendedValue": false,
+            "explanation": "When disabled, the value of the user pool client secret will not be logged in the custom resource lambda function logs."
+          },
+          "@aws-cdk/pipelines:reduceCrossAccountActionRoleTrustScope": {
+            "recommendedValue": true,
+            "explanation": "When enabled, scopes down the trust policy for the cross-account action role",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-stepfunctions:useDistributedMapResultWriterV2": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the resultWriterV2 property of DistributedMap will be used insted of resultWriter"
+          },
+          "@aws-cdk/s3-notifications:addS3TrustKeyPolicyForSnsSubscriptions": {
+            "recommendedValue": true,
+            "explanation": "Add an S3 trust policy to a KMS key resource policy for SNS subscriptions."
+          },
+          "@aws-cdk/aws-ec2:requirePrivateSubnetsForEgressOnlyInternetGateway": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the EgressOnlyGateway resource is only created if private subnets are defined in the dual-stack VPC."
+          },
+          "@aws-cdk/aws-ec2-alpha:useResourceIdForVpcV2Migration": {
+            "recommendedValue": false,
+            "explanation": "When enabled, use resource IDs for VPC V2 migration"
+          },
+          "@aws-cdk/aws-s3:publicAccessBlockedByDefault": {
+            "recommendedValue": true,
+            "explanation": "When enabled, setting any combination of options for BlockPublicAccess will automatically set true for any options not defined."
+          },
+          "@aws-cdk/aws-lambda:useCdkManagedLogGroup": {
+            "recommendedValue": true,
+            "explanation": "When enabled, CDK creates and manages loggroup for the lambda function"
+          },
+          "@aws-cdk/aws-elasticloadbalancingv2:networkLoadBalancerWithSecurityGroupByDefault": {
+            "recommendedValue": true,
+            "explanation": "When enabled, Network Load Balancer will be created with a security group by default."
+          },
+          "@aws-cdk/aws-stepfunctions-tasks:httpInvokeDynamicJsonPathEndpoint": {
+            "recommendedValue": true,
+            "explanation": "When enabled, allows using a dynamic apiEndpoint with JSONPath format in HttpInvoke tasks.",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-ecs-patterns:uniqueTargetGroupId": {
+            "recommendedValue": true,
+            "explanation": "When enabled, ECS patterns will generate unique target group IDs to prevent conflicts during load balancer replacement"
+          }
+        }
+      }
+    }
+  },
+  "minimumCliVersion": "2.1033.0"
+}

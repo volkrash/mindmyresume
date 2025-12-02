@@ -1,0 +1,7 @@
+node_modules
+.vscode
+.DS_Store
+.env
+.env.local
+amplify/.config/local-env-info.json
+amplify/.config/local-aws-info.json

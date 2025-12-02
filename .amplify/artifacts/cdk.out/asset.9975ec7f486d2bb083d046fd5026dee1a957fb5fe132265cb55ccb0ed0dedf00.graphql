@@ -1,0 +1,255 @@
+type Resume @aws_iam @aws_cognito_user_pools {
+  ownerId: String
+  title: String
+  language: String
+  aiJson: AWSJSON
+  createdAt: AWSDateTime
+  expiresAt: AWSDateTime
+  id: ID!
+  updatedAt: AWSDateTime!
+  owner: String
+}
+
+input AmplifyAIConversationTurnErrorInput {
+  errorType: String!
+  message: String!
+}
+
+input ModelStringInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  contains: String
+  notContains: String
+  between: [String]
+  beginsWith: String
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  size: ModelSizeInput
+}
+
+input ModelIntInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelFloatInput {
+  ne: Float
+  eq: Float
+  le: Float
+  lt: Float
+  ge: Float
+  gt: Float
+  between: [Float]
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelBooleanInput {
+  ne: Boolean
+  eq: Boolean
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelIDInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  contains: ID
+  notContains: ID
+  between: [ID]
+  beginsWith: ID
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  size: ModelSizeInput
+}
+
+input ModelSubscriptionStringInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  contains: String
+  notContains: String
+  between: [String]
+  beginsWith: String
+  in: [String]
+  notIn: [String]
+}
+
+input ModelSubscriptionIntInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+  in: [Int]
+  notIn: [Int]
+}
+
+input ModelSubscriptionFloatInput {
+  ne: Float
+  eq: Float
+  le: Float
+  lt: Float
+  ge: Float
+  gt: Float
+  between: [Float]
+  in: [Float]
+  notIn: [Float]
+}
+
+input ModelSubscriptionBooleanInput {
+  ne: Boolean
+  eq: Boolean
+}
+
+input ModelSubscriptionIDInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  contains: ID
+  notContains: ID
+  between: [ID]
+  beginsWith: ID
+  in: [ID]
+  notIn: [ID]
+}
+
+enum ModelAttributeTypes {
+  binary
+  binarySet
+  bool
+  list
+  map
+  number
+  numberSet
+  string
+  stringSet
+  _null
+}
+
+input ModelSizeInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+}
+
+enum ModelSortDirection {
+  ASC
+  DESC
+}
+
+type ModelResumeConnection @aws_iam @aws_cognito_user_pools {
+  items: [Resume]!
+  nextToken: String
+}
+
+input ModelResumeFilterInput {
+  ownerId: ModelStringInput
+  title: ModelStringInput
+  language: ModelStringInput
+  aiJson: ModelStringInput
+  createdAt: ModelStringInput
+  expiresAt: ModelStringInput
+  id: ModelIDInput
+  updatedAt: ModelStringInput
+  and: [ModelResumeFilterInput]
+  or: [ModelResumeFilterInput]
+  not: ModelResumeFilterInput
+  owner: ModelStringInput
+}
+
+type Query {
+  getResume(id: ID!): Resume @aws_iam @aws_cognito_user_pools
+  listResumes(filter: ModelResumeFilterInput, limit: Int, nextToken: String): ModelResumeConnection @aws_iam @aws_cognito_user_pools
+}
+
+input ModelResumeConditionInput {
+  ownerId: ModelStringInput
+  title: ModelStringInput
+  language: ModelStringInput
+  aiJson: ModelStringInput
+  createdAt: ModelStringInput
+  expiresAt: ModelStringInput
+  and: [ModelResumeConditionInput]
+  or: [ModelResumeConditionInput]
+  not: ModelResumeConditionInput
+  updatedAt: ModelStringInput
+  owner: ModelStringInput
+}
+
+input CreateResumeInput {
+  ownerId: String
+  title: String
+  language: String
+  aiJson: AWSJSON
+  createdAt: AWSDateTime
+  expiresAt: AWSDateTime
+  id: ID
+}
+
+input UpdateResumeInput {
+  ownerId: String
+  title: String
+  language: String
+  aiJson: AWSJSON
+  createdAt: AWSDateTime
+  expiresAt: AWSDateTime
+  id: ID!
+}
+
+input DeleteResumeInput {
+  id: ID!
+}
+
+type Mutation {
+  createResume(input: CreateResumeInput!, condition: ModelResumeConditionInput): Resume @aws_iam @aws_cognito_user_pools
+  updateResume(input: UpdateResumeInput!, condition: ModelResumeConditionInput): Resume @aws_iam @aws_cognito_user_pools
+  deleteResume(input: DeleteResumeInput!, condition: ModelResumeConditionInput): Resume @aws_iam @aws_cognito_user_pools
+}
+
+input ModelSubscriptionResumeFilterInput {
+  ownerId: ModelSubscriptionStringInput
+  title: ModelSubscriptionStringInput
+  language: ModelSubscriptionStringInput
+  aiJson: ModelSubscriptionStringInput
+  createdAt: ModelSubscriptionStringInput
+  expiresAt: ModelSubscriptionStringInput
+  id: ModelSubscriptionIDInput
+  updatedAt: ModelSubscriptionStringInput
+  and: [ModelSubscriptionResumeFilterInput]
+  or: [ModelSubscriptionResumeFilterInput]
+  owner: ModelStringInput
+}
+
+type Subscription {
+  onCreateResume(filter: ModelSubscriptionResumeFilterInput, owner: String): Resume @aws_subscribe(mutations: ["createResume"]) @aws_iam @aws_cognito_user_pools
+  onUpdateResume(filter: ModelSubscriptionResumeFilterInput, owner: String): Resume @aws_subscribe(mutations: ["updateResume"]) @aws_iam @aws_cognito_user_pools
+  onDeleteResume(filter: ModelSubscriptionResumeFilterInput, owner: String): Resume @aws_subscribe(mutations: ["deleteResume"]) @aws_iam @aws_cognito_user_pools
+}

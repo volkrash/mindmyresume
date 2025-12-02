@@ -1,0 +1,9 @@
+type Resume @model @auth(rules: [{allow: owner, ownerField: "owner"}])
+{
+  ownerId: String @auth(rules: [{allow: owner, ownerField: "owner"}])
+  title: String
+  language: String
+  aiJson: AWSJSON
+  createdAt: AWSDateTime
+  expiresAt: AWSDateTime
+}

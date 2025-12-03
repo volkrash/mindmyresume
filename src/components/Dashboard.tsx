@@ -5,22 +5,35 @@ import jsPDF from "jspdf";
 import { ModernCleanTemplate } from "../templates/ModernCleanTemplate";
 
 // Config via Vite env vars
-const STRIPE_PAYMENT_URL = import.meta.env.VITE_STRIPE_PAYMENT_URL || null;
+const STRIPE_UNLIMITED_URL = import.meta.env.VITE_STRIPE_UNLIMITED_URL || null;
+const STRIPE_CREDITS_URL = import.meta.env.VITE_STRIPE_CREDITS_URL || null;
 const REWRITE_URL = import.meta.env.VITE_REWRITE_URL || null;
 
-const PAID_FLAG_KEY = "mmr_hasPaid";
-const REWRITE_CREDITS_KEY = "mmr_rewrite_credits";
+// LocalStorage keys
+const UNLIMITED_FLAG_KEY = "mmr_unlimited_active";
+const UNLIMITED_EXPIRES_KEY = "mmr_unlimited_expires_at";
+const CREDITS_KEY = "mmr_rewrite_credits";
 
-// how many AI rewrites per payment
-const REWRITES_PER_PURCHASE = 10;
+// Plan settings
+const ACCESS_DAYS = 90; // 90-day unlimited plan
+const UNLIMITED_PRICE = 24.99; // $24.99
+const CREDITS_PRICE = 5.99; // $5.99
+const CREDITS_PER_PACK = 5; // 5 rewrites per credits pack
 
-function ClassicTemplate({ content, jobDescription }) {
+// Optional classic template (kept if you want to use later)
+function ClassicTemplate({
+                             content,
+                             jobDescription,
+                         }: {
+    content: string;
+    jobDescription?: string;
+}) {
     return (
         <div
             style={{
                 width: "100%",
                 maxWidth: "800px",
-                minHeight: "1050px", // close to A4 at 72dpi
+                minHeight: "1050px",
                 margin: "0 auto",
                 padding: "40px 50px",
                 backgroundColor: "#ffffff",
@@ -31,17 +44,20 @@ function ClassicTemplate({ content, jobDescription }) {
                 boxSizing: "border-box",
             }}
         >
-            {/* Header placeholder – later you can split name/contact from content */}
-            <div style={{ marginBottom: "16px", borderBottom: "2px solid #e5e7eb", paddingBottom: "8px" }}>
+            <div
+                style={{
+                    marginBottom: "16px",
+                    borderBottom: "2px solid #e5e7eb",
+                    paddingBottom: "8px",
+                }}
+            >
                 <h1
                     style={{
                         margin: 0,
                         fontSize: "20pt",
                         letterSpacing: "0.03em",
                     }}
-                >
-                    {/* In MVP we don’t parse name – this will just be blank or you can instruct user to start resume with name */}
-                </h1>
+                />
                 {jobDescription && (
                     <p
                         style={{
@@ -54,8 +70,6 @@ function ClassicTemplate({ content, jobDescription }) {
                     </p>
                 )}
             </div>
-
-            {/* Body – for now just the resume text, you can later detect headings and style them */}
             <div
                 style={{
                     whiteSpace: "pre-wrap",
@@ -66,74 +80,6 @@ function ClassicTemplate({ content, jobDescription }) {
             </div>
         </div>
     );
-}
-// Simple parser: first line = name, second = title,
-// then sections split by headings like EXPERIENCE / EDUCATION / SKILLS
-function parseSectionsFromEditorContent(text: string, isSpanish: boolean) {
-    const lines = text
-        .split(/\r?\n/)
-        .map((l) => l.trimEnd());
-
-    let idx = 0;
-
-    // Skip leading empty lines
-    while (idx < lines.length && !lines[idx].trim()) idx++;
-
-    const name = lines[idx] || (isSpanish ? "Nombre Apellido" : "Your Name");
-    idx++;
-
-    while (idx < lines.length && !lines[idx].trim()) idx++;
-    const title =
-        lines[idx] ||
-        (isSpanish ? "Título profesional" : "Professional Title");
-    idx++;
-
-    const sections = {
-        summary: [] as string[],
-        experience: [] as string[],
-        education: [] as string[],
-        skills: [] as string[],
-    };
-
-    let current: keyof typeof sections = "summary";
-
-    for (; idx < lines.length; idx++) {
-        const raw = lines[idx];
-        const line = raw.trim();
-
-        if (!line) {
-            sections[current].push("");
-            continue;
-        }
-
-        const upper = line.toUpperCase();
-
-        // EXPERIENCE / EXPERIENCIA
-        if (upper.startsWith("EXPERIENCE") || upper.startsWith("EXPERIENCIA")) {
-            current = "experience";
-            continue;
-        }
-
-        // EDUCATION / EDUCACIÓN
-        if (
-            upper.startsWith("EDUCATION") ||
-            upper.startsWith("EDUCACIÓN") ||
-            upper.startsWith("EDUCACION")
-        ) {
-            current = "education";
-            continue;
-        }
-
-        // SKILLS / HABILIDADES
-        if (upper.startsWith("SKILLS") || upper.startsWith("HABILIDADES")) {
-            current = "skills";
-            continue;
-        }
-
-        sections[current].push(raw);
-    }
-
-    return { name, title, sections };
 }
 
 export default function Dashboard({
@@ -150,18 +96,26 @@ export default function Dashboard({
     const [creating, setCreating] = useState(false);
     const [title, setTitle] = useState("");
 
-    const [hasPaid, setHasPaid] = useState(false);
+    const [hasUnlimited, setHasUnlimited] = useState(false);
+    const [unlimitedExpiresAt, setUnlimitedExpiresAt] = useState<string | null>(
+        null
+    );
     const [rewriteCredits, setRewriteCredits] = useState(0);
+
     const [activeResume, setActiveResume] = useState<any | null>(null);
     const [editorContent, setEditorContent] = useState("");
     const [jobDescription, setJobDescription] = useState("");
     const [aiLoading, setAiLoading] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [selectedTemplate, setSelectedTemplate] = useState("classic");
-    const previewRef = useRef<HTMLDivElement | null>(null); //
 
+    const previewRef = useRef<HTMLDivElement | null>(null);
 
     const isSpanish = lang === "es";
+    const hasAnyPlan = hasUnlimited || rewriteCredits > 0;
+    const canUseAI = hasUnlimited || rewriteCredits > 0;
+    const loginEmail = (user?.signInDetails?.loginId || "").toLowerCase();
+    const isDevUser = loginEmail === "almaldonado@gmail.com";
 
     const t = {
         welcome: isSpanish ? "Bienvenido" : "Welcome",
@@ -175,19 +129,13 @@ export default function Dashboard({
         delete: isSpanish ? "Eliminar" : "Delete",
         edit: isSpanish ? "Editar" : "Edit",
         logout: isSpanish ? "Cerrar sesión" : "Sign out",
-        payTitle: isSpanish ? "Desbloquea el editor con IA" : "Unlock the AI editor",
-        payText: isSpanish
-            ? `Realiza un pago único de $15 para crear currículums y obtener ${REWRITES_PER_PURCHASE} reescrituras con IA.`
-            : `Make a one-time $15 payment to create resumes and get ${REWRITES_PER_PURCHASE} AI rewrites.`,
-        payButton: isSpanish ? "Pagar $15" : "Pay $15",
+        payTitle: isSpanish ? "Elige tu plan" : "Choose your plan",
         editorTitle: isSpanish ? "Editor de currículum" : "Resume editor",
         saveChanges: isSpanish ? "Guardar cambios" : "Save changes",
         rewritesLeft: isSpanish
             ? "Reescrituras con IA restantes"
             : "AI rewrites left",
-        uploadLabel: isSpanish
-            ? "Subir archivo (.txt)"
-            : "Upload resume file (.txt)",
+        uploadLabel: isSpanish ? "Subir archivo (.txt)" : "Upload resume file (.txt)",
         uploadHint: isSpanish
             ? "Por ahora solo .txt. Exporta tu currículum de Word/Google Docs/Pages a .txt y súbelo."
             : "For now only .txt. Export your Word/Google Docs/Pages resume as .txt and upload it.",
@@ -211,79 +159,126 @@ export default function Dashboard({
         fetchResumes();
     }, []);
 
-    // Detect payment & load credits
+    // Detect payment & load plan / credits
     useEffect(() => {
         try {
-            const params = new URLSearchParams(window.location.search);
-            const checkoutStatus = params.get("checkout");
+            // 1) Load stored unlimited plan
+            const storedUnlimited = localStorage.getItem(UNLIMITED_FLAG_KEY);
+            const storedExpires = localStorage.getItem(UNLIMITED_EXPIRES_KEY);
 
-            if (checkoutStatus === "success") {
-                setHasPaid(true);
-                localStorage.setItem(PAID_FLAG_KEY, "true");
-
-                setRewriteCredits(REWRITES_PER_PURCHASE);
-                localStorage.setItem(
-                    REWRITE_CREDITS_KEY,
-                    String(REWRITES_PER_PURCHASE),
-                );
-
-                const cleanUrl = window.location.origin + window.location.pathname;
-                window.history.replaceState({}, "", cleanUrl);
-                return;
-            }
-
-            const storedPaid = localStorage.getItem(PAID_FLAG_KEY);
-            const storedCredits = localStorage.getItem(REWRITE_CREDITS_KEY);
-
-            if (storedPaid === "true") {
-                setHasPaid(true);
-                if (storedCredits && !Number.isNaN(parseInt(storedCredits, 10))) {
-                    setRewriteCredits(parseInt(storedCredits, 10));
+            if (storedUnlimited === "true" && storedExpires) {
+                const expTime = new Date(storedExpires).getTime();
+                if (!Number.isNaN(expTime) && expTime > Date.now()) {
+                    setHasUnlimited(true);
+                    setUnlimitedExpiresAt(storedExpires);
+                } else {
+                    // expired → clear
+                    localStorage.removeItem(UNLIMITED_FLAG_KEY);
+                    localStorage.removeItem(UNLIMITED_EXPIRES_KEY);
                 }
             }
+
+            // 2) Load stored credits
+            const storedCredits = localStorage.getItem(CREDITS_KEY);
+            let currentCredits = 0;
+            if (storedCredits && !Number.isNaN(parseInt(storedCredits, 10))) {
+                currentCredits = parseInt(storedCredits, 10);
+                setRewriteCredits(currentCredits);
+            }
+
+            // 3) Process Stripe callback (?plan=unlimited|credits or ?checkout=...)
+            const params = new URLSearchParams(window.location.search);
+            const which = params.get("plan") || params.get("checkout");
+
+            if (which === "unlimited") {
+                const expires = new Date();
+                expires.setDate(expires.getDate() + ACCESS_DAYS);
+                const iso = expires.toISOString();
+
+                setHasUnlimited(true);
+                setUnlimitedExpiresAt(iso);
+                localStorage.setItem(UNLIMITED_FLAG_KEY, "true");
+                localStorage.setItem(UNLIMITED_EXPIRES_KEY, iso);
+            } else if (which === "credits") {
+                const newCredits = currentCredits + CREDITS_PER_PACK;
+                setRewriteCredits(newCredits);
+                localStorage.setItem(CREDITS_KEY, String(newCredits));
+            }
+
+            // 4) Clean URL
+            if (which) {
+                const cleanUrl = window.location.origin + window.location.pathname;
+                window.history.replaceState({}, "", cleanUrl);
+            }
         } catch (err) {
-            console.error("Error checking payment status", err);
+            console.error("Error loading plan status", err);
         }
     }, []);
 
-    const handleStripePayment = () => {
-        if (!STRIPE_PAYMENT_URL) {
+    const handlePurchaseUnlimited = () => {
+        if (!STRIPE_UNLIMITED_URL) {
             alert(
                 isSpanish
-                    ? "Falta configurar VITE_STRIPE_PAYMENT_URL en .env.local."
-                    : "VITE_STRIPE_PAYMENT_URL is not configured in .env.local.",
+                    ? "Falta configurar VITE_STRIPE_UNLIMITED_URL en .env.local."
+                    : "VITE_STRIPE_UNLIMITED_URL is not configured in .env.local."
             );
             return;
         }
-        window.location.href = STRIPE_PAYMENT_URL;
+        window.location.href = STRIPE_UNLIMITED_URL;
     };
 
-    // DEV helper to simulate payment
-    const handleFakePayment = () => {
+    const handlePurchaseCredits = () => {
+        if (!STRIPE_CREDITS_URL) {
+            alert(
+                isSpanish
+                    ? "Falta configurar VITE_STRIPE_CREDITS_URL en .env.local."
+                    : "VITE_STRIPE_CREDITS_URL is not configured in .env.local."
+            );
+            return;
+        }
+        window.location.href = STRIPE_CREDITS_URL;
+    };
+
+    // DEV-ONLY helpers
+    const handleDevUnlimited = () => {
         if (
             window.confirm(
                 isSpanish
-                    ? "Simular pago único de $15 y desbloquear todas las funciones?"
-                    : "Simulate a one-time $15 payment and unlock all features?",
+                    ? "Simular compra del plan ilimitado de 90 días?"
+                    : "Simulate purchase of the 90-day unlimited plan?"
             )
         ) {
-            setHasPaid(true);
-            localStorage.setItem(PAID_FLAG_KEY, "true");
-            setRewriteCredits(REWRITES_PER_PURCHASE);
-            localStorage.setItem(
-                REWRITE_CREDITS_KEY,
-                String(REWRITES_PER_PURCHASE),
-            );
+            const expires = new Date();
+            expires.setDate(expires.getDate() + ACCESS_DAYS);
+            const iso = expires.toISOString();
+            setHasUnlimited(true);
+            setUnlimitedExpiresAt(iso);
+            localStorage.setItem(UNLIMITED_FLAG_KEY, "true");
+            localStorage.setItem(UNLIMITED_EXPIRES_KEY, iso);
+        }
+    };
+
+    const handleDevCredits = () => {
+        if (
+            window.confirm(
+                isSpanish
+                    ? "Simular compra de 5 reescrituras?"
+                    : "Simulate purchase of 5 rewrites?"
+            )
+        ) {
+            const newCredits = rewriteCredits + CREDITS_PER_PACK;
+            setRewriteCredits(newCredits);
+            localStorage.setItem(CREDITS_KEY, String(newCredits));
         }
     };
 
     const handleCreate = async () => {
         if (!title.trim()) return;
-        if (!hasPaid) {
+        if (!hasAnyPlan) {
             alert(
                 isSpanish
-                    ? "Debes completar el pago de $15 antes de crear currículums."
-                    : "You must complete the $15 payment before creating resumes.",
+                    ? "Activa el plan ilimitado de 90 días o compra un paquete de 5 reescrituras antes de crear currículums."
+                    : "Activate the 90-day unlimited plan or buy a 5-rewrite pack before creating resumes."
             );
             return;
         }
@@ -313,7 +308,7 @@ export default function Dashboard({
                 alert(
                     isSpanish
                         ? "Ocurrió un error al crear el currículum."
-                        : "An error occurred while creating the resume.",
+                        : "An error occurred while creating the resume."
                 );
                 return;
             }
@@ -339,7 +334,7 @@ export default function Dashboard({
             alert(
                 isSpanish
                     ? "Ocurrió un error al crear el currículum."
-                    : "An error occurred while creating the resume.",
+                    : "An error occurred while creating the resume."
             );
         } finally {
             setCreating(false);
@@ -349,7 +344,7 @@ export default function Dashboard({
     const handleDelete = async (id: string) => {
         if (
             !window.confirm(
-                isSpanish ? "¿Eliminar este currículum?" : "Delete this resume?",
+                isSpanish ? "¿Eliminar este currículum?" : "Delete this resume?"
             )
         )
             return;
@@ -402,7 +397,7 @@ export default function Dashboard({
             alert(
                 isSpanish
                     ? "Error al guardar los cambios."
-                    : "Error saving changes.",
+                    : "Error saving changes."
             );
         }
     };
@@ -419,7 +414,7 @@ export default function Dashboard({
                 alert(
                     isSpanish
                         ? "Por ahora solo se admiten archivos de texto (.txt). Exporta tu currículum a .txt y súbelo."
-                        : "For now only plain text (.txt) files are supported. Export your resume to .txt and upload it.",
+                        : "For now only plain text (.txt) files are supported. Export your resume to .txt and upload it."
                 );
                 return;
             }
@@ -431,7 +426,7 @@ export default function Dashboard({
             alert(
                 isSpanish
                     ? "Hubo un problema leyendo el archivo."
-                    : "There was a problem reading the file.",
+                    : "There was a problem reading the file."
             );
         } finally {
             setUploading(false);
@@ -449,13 +444,14 @@ export default function Dashboard({
             return;
         }
 
-        // Parse content like the template:
+        // Simple parse for header + body
         const lines = editorContent
             .split(/\r?\n/)
             .map((l) => l.trimEnd())
             .filter((l) => l.trim().length > 0);
 
-        const nameLine = lines[0] || (isSpanish ? "Nombre Apellido" : "Your Name");
+        const nameLine =
+            lines[0] || (isSpanish ? "Nombre Apellido" : "Your Name");
         const titleLine =
             lines[1] || (isSpanish ? "Título profesional" : "Professional Title");
         const bodyLines = lines.slice(2);
@@ -482,37 +478,37 @@ export default function Dashboard({
         // Header: Name
         doc.setFont("Helvetica", "bold");
         doc.setFontSize(20);
-        doc.setTextColor(15, 23, 42); // slate-900
+        doc.setTextColor(15, 23, 42);
         doc.text(nameLine, marginX, y);
         y += 26;
 
         // Subtitle: Title
         doc.setFont("Helvetica", "normal");
         doc.setFontSize(11);
-        doc.setTextColor(100, 116, 139); // slate-500
+        doc.setTextColor(100, 116, 139);
         doc.text(titleLine, marginX, y);
         y += 24;
 
-        // Optional: Target role from jobDescription
+        // Optional small job description box
         if (jobDescription && jobDescription.trim()) {
             doc.setFontSize(9);
-            doc.setTextColor(107, 114, 128); // slate-500
+            doc.setTextColor(107, 114, 128);
 
             const label = isSpanish ? "Puesto objetivo" : "Target role";
             doc.text(label.toUpperCase(), pageWidth - marginX - 200, marginTop);
 
             const jdText = doc.splitTextToSize(jobDescription, 190);
-            doc.setDrawColor(209, 213, 219); // gray-300
+            doc.setDrawColor(209, 213, 219);
             doc.setLineWidth(0.5);
             doc.rect(pageWidth - marginX - 200, marginTop + 10, 200, 60);
             doc.text(jdText, pageWidth - marginX - 194, marginTop + 24);
 
-            y += 8; // small separation
+            y += 8;
         }
 
-        // Divider line
+        // Divider
         y += 4;
-        doc.setDrawColor(229, 231, 235); // gray-200
+        doc.setDrawColor(229, 231, 235);
         doc.setLineWidth(0.8);
         doc.line(marginX, y, pageWidth - marginX, y);
         y += 20;
@@ -521,14 +517,14 @@ export default function Dashboard({
         const sectionTitle = isSpanish ? "Perfil profesional" : "Professional Profile";
         doc.setFont("Helvetica", "bold");
         doc.setFontSize(10);
-        doc.setTextColor(75, 85, 99); // gray-600
+        doc.setTextColor(75, 85, 99);
         doc.text(sectionTitle.toUpperCase(), marginX, y);
         y += 16;
 
         // Body text
         doc.setFont("Helvetica", "normal");
         doc.setFontSize(11);
-        doc.setTextColor(17, 24, 39); // gray-900
+        doc.setTextColor(17, 24, 39);
 
         const maxWidth = pageWidth - marginX * 2;
         const bodyLinesWrapped = doc.splitTextToSize(bodyText, maxWidth);
@@ -555,7 +551,7 @@ export default function Dashboard({
             alert(
                 isSpanish
                     ? "El servicio de IA no está configurado."
-                    : "The AI service is not configured.",
+                    : "The AI service is not configured."
             );
             return;
         }
@@ -564,7 +560,7 @@ export default function Dashboard({
             alert(
                 isSpanish
                     ? "Selecciona un currículum de la lista primero."
-                    : "Select a resume from the list first.",
+                    : "Select a resume from the list first."
             );
             return;
         }
@@ -573,25 +569,26 @@ export default function Dashboard({
             alert(
                 isSpanish
                     ? "Primero escribe o pega tu currículum."
-                    : "Please paste or type your resume first.",
+                    : "Please paste or type your resume first."
             );
             return;
         }
 
-        if (!hasPaid) {
+        if (!canUseAI) {
             alert(
                 isSpanish
-                    ? "Debes completar el pago de $15 antes de usar la IA."
-                    : "You must complete the $15 payment before using AI.",
+                    ? "Activa el plan ilimitado de 90 días o compra un paquete de 5 reescrituras antes de usar la IA."
+                    : "Activate the 90-day unlimited plan or buy a 5-rewrite pack before using AI."
             );
             return;
         }
 
-        if (rewriteCredits <= 0) {
+        // For credits plan, ensure there is at least 1 credit
+        if (!hasUnlimited && rewriteCredits <= 0) {
             alert(
                 isSpanish
                     ? "Has agotado tus reescrituras con IA."
-                    : "You have used all your AI rewrites.",
+                    : "You have used all your AI rewrites."
             );
             return;
         }
@@ -633,19 +630,22 @@ export default function Dashboard({
             setActiveResume(updated);
             setResumes((prev) => prev.map((r) => (r.id === updated.id ? updated : r)));
 
-            const remaining = rewriteCredits - 1;
-            setRewriteCredits(remaining);
-            localStorage.setItem(REWRITE_CREDITS_KEY, String(remaining));
+            // Decrement credit only if NOT unlimited
+            if (!hasUnlimited) {
+                const remaining = rewriteCredits - 1;
+                setRewriteCredits(remaining);
+                localStorage.setItem(CREDITS_KEY, String(remaining));
+            }
 
             alert(
                 isSpanish
                     ? "Tu currículum ha sido reescrito con IA."
-                    : "Your resume has been rewritten with AI.",
+                    : "Your resume has been rewritten with AI."
             );
         } catch (err) {
             console.error("AI call failed", err);
             alert(
-                isSpanish ? "Error al llamar al servicio de IA." : "Error calling AI.",
+                isSpanish ? "Error al llamar al servicio de IA." : "Error calling AI."
             );
         } finally {
             setAiLoading(false);
@@ -711,8 +711,28 @@ export default function Dashboard({
                         <div style={{ opacity: 0.7 }}>
                             {t.welcome}, {user?.signInDetails?.loginId}
                         </div>
-                        <div style={{ marginTop: "4px", fontSize: "11px", opacity: 0.8 }}>
-                            {t.rewritesLeft}: {hasPaid ? rewriteCredits : 0}
+                        <div
+                            style={{
+                                marginTop: "2px",
+                                fontSize: "11px",
+                                opacity: 0.8,
+                            }}
+                        >
+                            {hasUnlimited ? (
+                                <>
+                                    {isSpanish ? "IA: ilimitada" : "AI: unlimited"}{" "}
+                                    {unlimitedExpiresAt && (
+                                        <>
+                                            {isSpanish ? "hasta" : "until"}{" "}
+                                            {new Date(unlimitedExpiresAt).toLocaleDateString()}
+                                        </>
+                                    )}
+                                </>
+                            ) : (
+                                <>
+                                    {t.rewritesLeft}: {rewriteCredits}
+                                </>
+                            )}
                         </div>
                         <button
                             onClick={onSignOut}
@@ -733,7 +753,7 @@ export default function Dashboard({
                 </header>
 
                 {/* PAYMENT GATE */}
-                {!hasPaid && (
+                {!hasAnyPlan && (
                     <section
                         style={{
                             backgroundColor: "#0f172a",
@@ -746,49 +766,208 @@ export default function Dashboard({
                         <h2 style={{ margin: "0 0 8px 0", fontSize: "18px" }}>
                             {t.payTitle}
                         </h2>
-                        <p style={{ margin: "0 0 12px 0", fontSize: "14px", opacity: 0.9 }}>
-                            {t.payText}
+                        <p
+                            style={{
+                                margin: "0 0 12px 0",
+                                fontSize: "14px",
+                                opacity: 0.9,
+                            }}
+                        >
+                            {isSpanish
+                                ? "Puedes activar acceso ilimitado de 90 días o comprar un paquete pequeño de reescrituras con IA."
+                                : "Activate a 90-day unlimited plan or grab a small pack of AI rewrites."}
                         </p>
 
-                        <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-                            <button
-                                onClick={handleStripePayment}
+                        <div
+                            style={{
+                                display: "grid",
+                                gridTemplateColumns: "minmax(0, 1.1fr) minmax(0, 1fr)",
+                                gap: "12px",
+                            }}
+                        >
+                            {/* Unlimited plan card */}
+                            <div
                                 style={{
+                                    borderRadius: "14px",
+                                    padding: "12px",
                                     background:
-                                        "linear-gradient(135deg, #22c55e 0%, #2dd4bf 50%, #60a5fa 100%)",
-                                    border: "none",
-                                    padding: "8px 16px",
-                                    borderRadius: "999px",
-                                    color: "#020617",
-                                    cursor: "pointer",
-                                    fontWeight: 600,
-                                    fontSize: "14px",
+                                        "radial-gradient(circle at top, #1f2937 0, #020617 55%, #020617 100%)",
+                                    border: "1px solid rgba(148,163,184,0.4)",
                                 }}
                             >
-                                {t.payButton}
-                            </button>
-                            <button
-                                onClick={handleFakePayment}
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        marginBottom: 6,
+                                    }}
+                                >
+                                    <div style={{ fontSize: 12, opacity: 0.9 }}>
+                                        {isSpanish
+                                            ? "Plan ilimitado 90 días"
+                                            : "90-day unlimited plan"}
+                                    </div>
+                                    <div
+                                        style={{
+                                            fontSize: 11,
+                                            padding: "2px 8px",
+                                            borderRadius: "999px",
+                                            border: "1px solid rgba(34,197,94,0.6)",
+                                            color: "#bbf7d0",
+                                        }}
+                                    >
+                                        ${UNLIMITED_PRICE.toFixed(2)}
+                                    </div>
+                                </div>
+                                <p
+                                    style={{
+                                        margin: 0,
+                                        fontSize: 12,
+                                        opacity: 0.85,
+                                    }}
+                                >
+                                    {isSpanish
+                                        ? "Reescrituras ilimitadas con IA y creación de currículums durante 90 días."
+                                        : "Unlimited AI rewrites and resume creation for 90 days."}
+                                </p>
+                                <button
+                                    type="button"
+                                    onClick={handlePurchaseUnlimited}
+                                    style={{
+                                        marginTop: 8,
+                                        padding: "6px 12px",
+                                        borderRadius: "999px",
+                                        border: "none",
+                                        cursor: "pointer",
+                                        fontSize: 12,
+                                        fontWeight: 600,
+                                        background:
+                                            "linear-gradient(135deg, #22c55e 0%, #2dd4bf 50%, #60a5fa 100%)",
+                                        color: "#020617",
+                                    }}
+                                >
+                                    {isSpanish
+                                        ? "Activar plan de 90 días"
+                                        : "Activate 90-day plan"}
+                                </button>
+                            </div>
+
+                            {/* Credits plan card */}
+                            <div
                                 style={{
-                                    backgroundColor: "#f59e0b",
-                                    border: "none",
-                                    padding: "8px 16px",
-                                    borderRadius: "999px",
-                                    color: "#020617",
-                                    cursor: "pointer",
-                                    fontWeight: 600,
-                                    fontSize: "14px",
+                                    borderRadius: "14px",
+                                    padding: "12px",
+                                    backgroundColor: "#020617",
+                                    border: "1px solid #1f2937",
                                 }}
                             >
-                                {isSpanish ? "Simular pago (DEV)" : "Simulate payment (DEV)"}
-                            </button>
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        marginBottom: 6,
+                                    }}
+                                >
+                                    <div style={{ fontSize: 12, opacity: 0.9 }}>
+                                        {isSpanish
+                                            ? "Paquete de 5 reescrituras"
+                                            : "5-rewrite pack"}
+                                    </div>
+                                    <div
+                                        style={{
+                                            fontSize: 11,
+                                            padding: "2px 8px",
+                                            borderRadius: "999px",
+                                            border: "1px solid rgba(148,163,184,0.7)",
+                                            color: "#e5e7eb",
+                                        }}
+                                    >
+                                        ${CREDITS_PRICE.toFixed(2)}
+                                    </div>
+                                </div>
+                                <p
+                                    style={{
+                                        margin: 0,
+                                        fontSize: 12,
+                                        opacity: 0.85,
+                                    }}
+                                >
+                                    {isSpanish
+                                        ? "Obtén 5 reescrituras con IA que no expiran hasta que las uses."
+                                        : "Get 5 AI rewrites that never expire until you use them."}
+                                </p>
+                                <button
+                                    type="button"
+                                    onClick={handlePurchaseCredits}
+                                    style={{
+                                        marginTop: 8,
+                                        padding: "6px 12px",
+                                        borderRadius: "999px",
+                                        border: "none",
+                                        cursor: "pointer",
+                                        fontSize: 12,
+                                        fontWeight: 600,
+                                        backgroundColor: "#111827",
+                                        color: "white",
+                                    }}
+                                >
+                                    {isSpanish
+                                        ? "Comprar 5 reescrituras"
+                                        : "Buy 5 rewrites"}
+                                </button>
+                            </div>
                         </div>
 
-                        <p style={{ marginTop: "8px", fontSize: "11px", opacity: 0.7 }}>
-                            {isSpanish
-                                ? "En producción, elimina el botón de simulación."
-                                : "In production, remove the simulate button."}
-                        </p>
+                        {isDevUser && (
+                            <>
+                                {/* DEV ONLY (visible only to almaldonado@gmail.com) */}
+                                <p
+                                    style={{
+                                        marginTop: 10,
+                                        fontSize: 10,
+                                        opacity: 0.6,
+                                    }}
+                                >
+                                    {isSpanish
+                                        ? "DEV: usa estos botones para simular compras."
+                                        : "DEV: use these buttons to simulate purchases."}
+                                </p>
+                                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                                    <button
+                                        type="button"
+                                        onClick={handleDevUnlimited}
+                                        style={{
+                                            padding: "4px 10px",
+                                            borderRadius: "999px",
+                                            border: "none",
+                                            fontSize: 10,
+                                            cursor: "pointer",
+                                            backgroundColor: "#f97316",
+                                            color: "#020617",
+                                        }}
+                                    >
+                                        DEV: 90-day unlimited
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={handleDevCredits}
+                                        style={{
+                                            padding: "4px 10px",
+                                            borderRadius: "999px",
+                                            border: "none",
+                                            fontSize: 10,
+                                            cursor: "pointer",
+                                            backgroundColor: "#fb7185",
+                                            color: "#020617",
+                                        }}
+                                    >
+                                        DEV: +5 rewrites
+                                    </button>
+                                </div>
+                            </>
+                        )}
                     </section>
                 )}
 
@@ -819,7 +998,9 @@ export default function Dashboard({
                             }}
                         >
                             <h2 style={{ marginTop: 0, fontSize: "16px" }}>
-                                {isSpanish ? "Crear un nuevo currículum" : "Create a new resume"}
+                                {isSpanish
+                                    ? "Crear un nuevo currículum"
+                                    : "Create a new resume"}
                             </h2>
                             <div style={{ display: "flex", gap: "8px" }}>
                                 <input
@@ -850,7 +1031,7 @@ export default function Dashboard({
                                         fontWeight: 600,
                                         fontSize: "13px",
                                         cursor: creating ? "wait" : "pointer",
-                                        opacity: hasPaid ? 1 : 0.6,
+                                        opacity: hasAnyPlan ? 1 : 0.6,
                                     }}
                                 >
                                     {creating
@@ -860,13 +1041,13 @@ export default function Dashboard({
                                         : t.createButton}
                                 </button>
                             </div>
-                            {!hasPaid && (
+                            {!hasAnyPlan && (
                                 <p
                                     style={{ marginTop: "8px", fontSize: "11px", color: "#f97316" }}
                                 >
                                     {isSpanish
-                                        ? "Completa el pago para habilitar la creación."
-                                        : "Complete payment to enable creation."}
+                                        ? "Activa un plan para habilitar la creación."
+                                        : "Activate a plan to enable resume creation."}
                                 </p>
                             )}
                         </section>
@@ -918,7 +1099,7 @@ export default function Dashboard({
                                             expiresMs <= now
                                                 ? 0
                                                 : Math.floor(
-                                                    (expiresMs - now) / (1000 * 60 * 60 * 24),
+                                                    (expiresMs - now) / (1000 * 60 * 60 * 24)
                                                 );
                                         const isActive =
                                             activeResume && activeResume.id === r.id;
@@ -1027,14 +1208,13 @@ export default function Dashboard({
                                         fontSize: "12px",
                                     }}
                                 >
-                                    <option value="classic">{isSpanish ? "Clásica" : "Classic"}</option>
-                                    {/* you can add more later:
-      <option value="modern">Modern</option>
-      */}
+                                    <option value="classic">
+                                        {isSpanish ? "Clásica" : "Classic"}
+                                    </option>
+                                    {/* Add more templates later */}
                                 </select>
                             </div>
                         </div>
-
 
                         {activeResume ? (
                             <>
@@ -1113,7 +1293,8 @@ export default function Dashboard({
                                         marginBottom: "10px",
                                     }}
                                 />
-                                {/* Live preview for PDF export */}
+
+                                {/* Live preview */}
                                 <div
                                     ref={previewRef}
                                     style={{
@@ -1134,7 +1315,7 @@ export default function Dashboard({
                                     />
                                 </div>
 
-                                {/* Bottom controls: upload/PDF + AI/Save */}
+                                {/* Bottom controls */}
                                 <div
                                     style={{
                                         display: "flex",
@@ -1146,8 +1327,20 @@ export default function Dashboard({
                                     }}
                                 >
                                     {/* Left: upload + PDF */}
-                                    <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                                        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            gap: 4,
+                                        }}
+                                    >
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                gap: "8px",
+                                                flexWrap: "wrap",
+                                            }}
+                                        >
                                             <label
                                                 style={{
                                                     padding: "6px 12px",
@@ -1211,13 +1404,17 @@ export default function Dashboard({
                                     >
                                         <button
                                             onClick={handleRewriteWithAI}
-                                            disabled={aiLoading || !hasPaid}
+                                            disabled={aiLoading || !canUseAI}
                                             style={{
                                                 padding: "8px 16px",
                                                 borderRadius: "999px",
                                                 border: "none",
-                                                cursor: aiLoading ? "wait" : "pointer",
-                                                backgroundColor: hasPaid ? "#6366f1" : "#4b5563",
+                                                cursor: aiLoading
+                                                    ? "wait"
+                                                    : canUseAI
+                                                        ? "pointer"
+                                                        : "not-allowed",
+                                                backgroundColor: canUseAI ? "#6366f1" : "#4b5563",
                                                 color: "white",
                                                 fontSize: "13px",
                                                 fontWeight: 600,

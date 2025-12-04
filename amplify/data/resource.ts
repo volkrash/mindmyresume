@@ -29,6 +29,16 @@ const schema = a.schema({
             // only authenticated users can see/redeem codes
             allow.authenticated(),
         ]),
+    // NEW: Suggestion / feedback
+    Suggestion: a.model ({
+        message: a.string().required(),
+        page: a.string(),
+        userEmail: a.string(),
+        createdAt: a.datetime(),
+    })
+        .authorization((allow) => [
+            allow.authenticated(),
+        ]),
 
     accessByCode: a
         .query()

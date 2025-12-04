@@ -1,0 +1,2080 @@
+{
+ "Parameters": {
+  "DynamoDBModelTableReadIOPS": {
+   "Type": "Number",
+   "Default": 5,
+   "Description": "The number of read IOPS the table should support."
+  },
+  "DynamoDBModelTableWriteIOPS": {
+   "Type": "Number",
+   "Default": 5,
+   "Description": "The number of write IOPS the table should support."
+  },
+  "DynamoDBBillingMode": {
+   "Type": "String",
+   "Default": "PAY_PER_REQUEST",
+   "AllowedValues": [
+    "PAY_PER_REQUEST",
+    "PROVISIONED"
+   ],
+   "Description": "Configure @model types to create DynamoDB tables with PAY_PER_REQUEST or PROVISIONED billing modes."
+  },
+  "DynamoDBEnablePointInTimeRecovery": {
+   "Type": "String",
+   "Default": "false",
+   "AllowedValues": [
+    "true",
+    "false"
+   ],
+   "Description": "Whether to enable Point in Time Recovery on the table."
+  },
+  "DynamoDBEnableServerSideEncryption": {
+   "Type": "String",
+   "Default": "true",
+   "AllowedValues": [
+    "true",
+    "false"
+   ],
+   "Description": "Enable server side encryption powered by KMS."
+  },
+  "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataAmplifyTableManagerNestedStackAmplifyTableManagerNestedStackResourceB9CABFC4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataAmplifyTableMana7A0872AE": {
+   "Type": "String"
+  },
+  "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId": {
+   "Type": "String"
+  },
+  "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name": {
+   "Type": "String"
+  },
+  "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthauthenticatedUserRoleFB43ED7CRef": {
+   "Type": "String"
+  },
+  "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthunauthenticatedUserRoleECBF0A21Ref": {
+   "Type": "String"
+  },
+  "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthIdentityPool7D6B1394Ref": {
+   "Type": "String"
+  }
+ },
+ "Conditions": {
+  "HasEnvironmentParameter": {
+   "Fn::Not": [
+    {
+     "Fn::Equals": [
+      "NONE",
+      "NONE"
+     ]
+    }
+   ]
+  },
+  "ShouldUsePayPerRequestBilling": {
+   "Fn::Equals": [
+    {
+     "Ref": "DynamoDBBillingMode"
+    },
+    "PAY_PER_REQUEST"
+   ]
+  },
+  "ShouldUsePointInTimeRecovery": {
+   "Fn::Equals": [
+    {
+     "Ref": "DynamoDBEnablePointInTimeRecovery"
+    },
+    "true"
+   ]
+  },
+  "CDKMetadataAvailable": {
+   "Fn::Or": [
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "af-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-3"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-south-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-3"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-4"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ca-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ca-west-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "cn-north-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "cn-northwest-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-central-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-north-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-south-2"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-3"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "il-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "me-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "me-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "sa-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-east-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-west-1"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Equals": [
+      {
+       "Ref": "AWS::Region"
+      },
+      "us-west-2"
+     ]
+    }
+   ]
+  }
+ },
+ "Resources": {
+  "SuggestionTable": {
+   "Type": "Custom::AmplifyDynamoDBTable",
+   "Properties": {
+    "ServiceToken": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataAmplifyTableManagerNestedStackAmplifyTableManagerNestedStackResourceB9CABFC4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataAmplifyTableMana7A0872AE"
+    },
+    "tableName": {
+     "Fn::Join": [
+      "",
+      [
+       "Suggestion-",
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+       },
+       "-NONE"
+      ]
+     ]
+    },
+    "attributeDefinitions": [
+     {
+      "attributeName": "id",
+      "attributeType": "S"
+     }
+    ],
+    "keySchema": [
+     {
+      "attributeName": "id",
+      "keyType": "HASH"
+     }
+    ],
+    "provisionedThroughput": {
+     "Fn::If": [
+      "ShouldUsePayPerRequestBilling",
+      {
+       "Ref": "AWS::NoValue"
+      },
+      {
+       "ReadCapacityUnits": {
+        "Ref": "DynamoDBModelTableReadIOPS"
+       },
+       "WriteCapacityUnits": {
+        "Ref": "DynamoDBModelTableWriteIOPS"
+       }
+      }
+     ]
+    },
+    "sseSpecification": {
+     "sseEnabled": false
+    },
+    "streamSpecification": {
+     "streamViewType": "NEW_AND_OLD_IMAGES"
+    },
+    "deletionProtectionEnabled": false,
+    "allowDestructiveGraphqlSchemaUpdates": true,
+    "replaceTableUponGsiUpdate": true,
+    "pointInTimeRecoverySpecification": {
+     "Fn::If": [
+      "ShouldUsePointInTimeRecovery",
+      {
+       "PointInTimeRecoveryEnabled": true
+      },
+      {
+       "Ref": "AWS::NoValue"
+      }
+     ]
+    },
+    "billingMode": {
+     "Fn::If": [
+      "ShouldUsePayPerRequestBilling",
+      "PAY_PER_REQUEST",
+      {
+       "Ref": "AWS::NoValue"
+      }
+     ]
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/SuggestionTable/Default/Default"
+   }
+  },
+  "SuggestionIAMRole7575FC3B": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "appsync.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Policies": [
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "dynamodb:BatchGetItem",
+          "dynamodb:BatchWriteItem",
+          "dynamodb:PutItem",
+          "dynamodb:DeleteItem",
+          "dynamodb:GetItem",
+          "dynamodb:Scan",
+          "dynamodb:Query",
+          "dynamodb:UpdateItem",
+          "dynamodb:ConditionCheckItem",
+          "dynamodb:DescribeTable",
+          "dynamodb:GetRecords",
+          "dynamodb:GetShardIterator"
+         ],
+         "Effect": "Allow",
+         "Resource": [
+          {
+           "Fn::Sub": [
+            "arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${tablename}",
+            {
+             "tablename": {
+              "Fn::Join": [
+               "",
+               [
+                "Suggestion-",
+                {
+                 "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+                },
+                "-NONE"
+               ]
+              ]
+             }
+            }
+           ]
+          },
+          {
+           "Fn::Sub": [
+            "arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${tablename}/*",
+            {
+             "tablename": {
+              "Fn::Join": [
+               "",
+               [
+                "Suggestion-",
+                {
+                 "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+                },
+                "-NONE"
+               ]
+              ]
+             }
+            }
+           ]
+          }
+         ]
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "DynamoDBAccess"
+     }
+    ],
+    "RoleName": {
+     "Fn::Join": [
+      "",
+      [
+       "SuggestionIAMRolea5b470-",
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+       },
+       "-NONE"
+      ]
+     ]
+    },
+    "Tags": [
+     {
+      "Key": "amplify:deployment-type",
+      "Value": "sandbox"
+     },
+     {
+      "Key": "amplify:friendly-name",
+      "Value": "amplifyData"
+     },
+     {
+      "Key": "created-by",
+      "Value": "amplify"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/SuggestionIAMRole/Resource"
+   }
+  },
+  "SuggestionDataSource": {
+   "Type": "AWS::AppSync::DataSource",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "DynamoDBConfig": {
+     "AwsRegion": {
+      "Ref": "AWS::Region"
+     },
+     "TableName": {
+      "Fn::Select": [
+       1,
+       {
+        "Fn::Split": [
+         "/",
+         {
+          "Fn::Select": [
+           5,
+           {
+            "Fn::Split": [
+             ":",
+             {
+              "Fn::GetAtt": [
+               "SuggestionTable",
+               "TableArn"
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "Name": "SuggestionTable",
+    "ServiceRoleArn": {
+     "Fn::GetAtt": [
+      "SuggestionIAMRole7575FC3B",
+      "Arn"
+     ]
+    },
+    "Type": "AMAZON_DYNAMODB"
+   },
+   "DependsOn": [
+    "SuggestionIAMRole7575FC3B"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/SuggestionDataSource/Resource"
+   }
+  },
+  "QuerygetSuggestionauth0FunctionQuerygetSuggestionauth0FunctionAppSyncFunction2F444DEE": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "QuerygetSuggestionauth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/88d5b7081b0dc9c39fd0bffedf56f011b2a7cf1ce5cc227f47a1e94efee8067c.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/QuerygetSuggestionauth0Function/QuerygetSuggestionauth0Function.AppSyncFunction"
+   }
+  },
+  "QuerygetSuggestionpostAuth0FunctionQuerygetSuggestionpostAuth0FunctionAppSyncFunction92E33BAA": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "QuerygetSuggestionpostAuth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/QuerygetSuggestionpostAuth0Function/QuerygetSuggestionpostAuth0Function.AppSyncFunction"
+   }
+  },
+  "QueryGetSuggestionDataResolverFnQueryGetSuggestionDataResolverFnAppSyncFunctionF82389F7": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "DataSourceName": {
+     "Fn::GetAtt": [
+      "SuggestionDataSource",
+      "Name"
+     ]
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "QueryGetSuggestionDataResolverFn",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/08f4d557693d96c1a4efba0f9dc91330e4b19772fd5477c156468843e3d9cb5e.vtl"
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/4c6a2d29f01c6091bd1d9afe16e5849d456c96f17c3b215938c8067399532719.vtl"
+    }
+   },
+   "DependsOn": [
+    "SuggestionDataSource"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/QueryGetSuggestionDataResolverFn/QueryGetSuggestionDataResolverFn.AppSyncFunction"
+   }
+  },
+  "GetSuggestionResolver": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "FieldName": "getSuggestion",
+    "Kind": "PIPELINE",
+    "PipelineConfig": {
+     "Functions": [
+      {
+       "Fn::GetAtt": [
+        "QuerygetSuggestionauth0FunctionQuerygetSuggestionauth0FunctionAppSyncFunction2F444DEE",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "QuerygetSuggestionpostAuth0FunctionQuerygetSuggestionpostAuth0FunctionAppSyncFunction92E33BAA",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "QueryGetSuggestionDataResolverFnQueryGetSuggestionDataResolverFnAppSyncFunctionF82389F7",
+        "FunctionId"
+       ]
+      }
+     ]
+    },
+    "RequestMappingTemplate": {
+     "Fn::Join": [
+      "",
+      [
+       "$util.qr($ctx.stash.put(\"typeName\", \"Query\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"getSuggestion\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"connectionAttributes\", {}))\n$util.qr($ctx.stash.put(\"tableName\", \"",
+       {
+        "Fn::Select": [
+         1,
+         {
+          "Fn::Split": [
+           "/",
+           {
+            "Fn::Select": [
+             5,
+             {
+              "Fn::Split": [
+               ":",
+               {
+                "Fn::GetAtt": [
+                 "SuggestionTable",
+                 "TableArn"
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"authRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthauthenticatedUserRoleFB43ED7CRef"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"unauthRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthunauthenticatedUserRoleECBF0A21Ref"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"identityPoolId\", \"",
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthIdentityPool7D6B1394Ref"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
+      ]
+     ]
+    },
+    "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)",
+    "TypeName": "Query"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/queryGetSuggestionResolver"
+   }
+  },
+  "QuerylistSuggestionsauth0FunctionQuerylistSuggestionsauth0FunctionAppSyncFunction6D20CC92": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "QuerylistSuggestionsauth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/88d5b7081b0dc9c39fd0bffedf56f011b2a7cf1ce5cc227f47a1e94efee8067c.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/QuerylistSuggestionsauth0Function/QuerylistSuggestionsauth0Function.AppSyncFunction"
+   }
+  },
+  "QuerylistSuggestionspostAuth0FunctionQuerylistSuggestionspostAuth0FunctionAppSyncFunction36EF0FE5": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "QuerylistSuggestionspostAuth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/QuerylistSuggestionspostAuth0Function/QuerylistSuggestionspostAuth0Function.AppSyncFunction"
+   }
+  },
+  "QueryListSuggestionsDataResolverFnQueryListSuggestionsDataResolverFnAppSyncFunction385F5452": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "DataSourceName": {
+     "Fn::GetAtt": [
+      "SuggestionDataSource",
+      "Name"
+     ]
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "QueryListSuggestionsDataResolverFn",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/9fcbe070ecd3023c5bf5b966fa9584757db9762eef123bad0820bd87591b2174.vtl"
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/cc01911d0269d4080ea57505dc445dfc315ef7ad85d3d9d4ea1357858bff451d.vtl"
+    }
+   },
+   "DependsOn": [
+    "SuggestionDataSource"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/QueryListSuggestionsDataResolverFn/QueryListSuggestionsDataResolverFn.AppSyncFunction"
+   }
+  },
+  "ListSuggestionResolver": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "FieldName": "listSuggestions",
+    "Kind": "PIPELINE",
+    "PipelineConfig": {
+     "Functions": [
+      {
+       "Fn::GetAtt": [
+        "QuerylistSuggestionsauth0FunctionQuerylistSuggestionsauth0FunctionAppSyncFunction6D20CC92",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "QuerylistSuggestionspostAuth0FunctionQuerylistSuggestionspostAuth0FunctionAppSyncFunction36EF0FE5",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "QueryListSuggestionsDataResolverFnQueryListSuggestionsDataResolverFnAppSyncFunction385F5452",
+        "FunctionId"
+       ]
+      }
+     ]
+    },
+    "RequestMappingTemplate": {
+     "Fn::Join": [
+      "",
+      [
+       "$util.qr($ctx.stash.put(\"typeName\", \"Query\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"listSuggestions\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"connectionAttributes\", {}))\n$util.qr($ctx.stash.put(\"tableName\", \"",
+       {
+        "Fn::Select": [
+         1,
+         {
+          "Fn::Split": [
+           "/",
+           {
+            "Fn::Select": [
+             5,
+             {
+              "Fn::Split": [
+               ":",
+               {
+                "Fn::GetAtt": [
+                 "SuggestionTable",
+                 "TableArn"
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"authRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthauthenticatedUserRoleFB43ED7CRef"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"unauthRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthunauthenticatedUserRoleECBF0A21Ref"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"identityPoolId\", \"",
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthIdentityPool7D6B1394Ref"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
+      ]
+     ]
+    },
+    "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)",
+    "TypeName": "Query"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/queryListSuggestionsResolver"
+   }
+  },
+  "MutationcreateSuggestioninit0FunctionMutationcreateSuggestioninit0FunctionAppSyncFunction589B535C": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationcreateSuggestioninit0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/a183ddccbd956316c38ef97177b8f088ef0826f62023323f5ae6053d348ccffc.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/MutationcreateSuggestioninit0Function/MutationcreateSuggestioninit0Function.AppSyncFunction"
+   }
+  },
+  "MutationcreateSuggestionauth0FunctionMutationcreateSuggestionauth0FunctionAppSyncFunction903D502D": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationcreateSuggestionauth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/b371d68ddfbdd11b176756ce33b2c4e79d26fcc2fd4b7c0c9e75d06efacee90e.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/MutationcreateSuggestionauth0Function/MutationcreateSuggestionauth0Function.AppSyncFunction"
+   }
+  },
+  "MutationcreateSuggestionpostAuth0FunctionMutationcreateSuggestionpostAuth0FunctionAppSyncFunction83A8D706": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationcreateSuggestionpostAuth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/MutationcreateSuggestionpostAuth0Function/MutationcreateSuggestionpostAuth0Function.AppSyncFunction"
+   }
+  },
+  "MutationCreateSuggestionDataResolverFnMutationCreateSuggestionDataResolverFnAppSyncFunction233B17EB": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "DataSourceName": {
+     "Fn::GetAtt": [
+      "SuggestionDataSource",
+      "Name"
+     ]
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationCreateSuggestionDataResolverFn",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/a7ac209a9d14316c17e0185694785852579df7b3a34347f17254821136278938.vtl"
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/f4a52b72209a9dfa197b5e7367a5c378c5bb86de6e29ddd9e48b49a3fe54b249.vtl"
+    }
+   },
+   "DependsOn": [
+    "SuggestionDataSource"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/MutationCreateSuggestionDataResolverFn/MutationCreateSuggestionDataResolverFn.AppSyncFunction"
+   }
+  },
+  "CreateSuggestionResolver": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "FieldName": "createSuggestion",
+    "Kind": "PIPELINE",
+    "PipelineConfig": {
+     "Functions": [
+      {
+       "Fn::GetAtt": [
+        "MutationcreateSuggestioninit0FunctionMutationcreateSuggestioninit0FunctionAppSyncFunction589B535C",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "MutationcreateSuggestionauth0FunctionMutationcreateSuggestionauth0FunctionAppSyncFunction903D502D",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "MutationcreateSuggestionpostAuth0FunctionMutationcreateSuggestionpostAuth0FunctionAppSyncFunction83A8D706",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "MutationCreateSuggestionDataResolverFnMutationCreateSuggestionDataResolverFnAppSyncFunction233B17EB",
+        "FunctionId"
+       ]
+      }
+     ]
+    },
+    "RequestMappingTemplate": {
+     "Fn::Join": [
+      "",
+      [
+       "$util.qr($ctx.stash.put(\"typeName\", \"Mutation\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"createSuggestion\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"connectionAttributes\", {}))\n$util.qr($ctx.stash.put(\"tableName\", \"",
+       {
+        "Fn::Select": [
+         1,
+         {
+          "Fn::Split": [
+           "/",
+           {
+            "Fn::Select": [
+             5,
+             {
+              "Fn::Split": [
+               ":",
+               {
+                "Fn::GetAtt": [
+                 "SuggestionTable",
+                 "TableArn"
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"authRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthauthenticatedUserRoleFB43ED7CRef"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"unauthRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthunauthenticatedUserRoleECBF0A21Ref"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"identityPoolId\", \"",
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthIdentityPool7D6B1394Ref"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
+      ]
+     ]
+    },
+    "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)",
+    "TypeName": "Mutation"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/mutationCreateSuggestionResolver"
+   }
+  },
+  "MutationupdateSuggestioninit0FunctionMutationupdateSuggestioninit0FunctionAppSyncFunction06F06046": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationupdateSuggestioninit0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/06db846fd14e6fc371f22b12b5545ba8e2dbfeda85d8c8d586c71c282166657b.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/MutationupdateSuggestioninit0Function/MutationupdateSuggestioninit0Function.AppSyncFunction"
+   }
+  },
+  "MutationupdateSuggestionauth0FunctionMutationupdateSuggestionauth0FunctionAppSyncFunction56DD0147": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "DataSourceName": {
+     "Fn::GetAtt": [
+      "SuggestionDataSource",
+      "Name"
+     ]
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationupdateSuggestionauth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/1f5fed297da9c32ae3af922bf3a38ccf23b956078887d16891ec06c20c64722c.vtl"
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/245ed8ac5185462a6923b7e45a318fec4c9ba0c45d1d720abd5b20317aa3dc6a.vtl"
+    }
+   },
+   "DependsOn": [
+    "SuggestionDataSource"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/MutationupdateSuggestionauth0Function/MutationupdateSuggestionauth0Function.AppSyncFunction"
+   }
+  },
+  "MutationupdateSuggestionpostAuth0FunctionMutationupdateSuggestionpostAuth0FunctionAppSyncFunctionC9924E37": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationupdateSuggestionpostAuth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/MutationupdateSuggestionpostAuth0Function/MutationupdateSuggestionpostAuth0Function.AppSyncFunction"
+   }
+  },
+  "MutationUpdateSuggestionDataResolverFnMutationUpdateSuggestionDataResolverFnAppSyncFunctionD73CD494": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "DataSourceName": {
+     "Fn::GetAtt": [
+      "SuggestionDataSource",
+      "Name"
+     ]
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationUpdateSuggestionDataResolverFn",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/474bf0776ec2164a13191d1a0a9e057154931e4918fea5086f49850d02a5371b.vtl"
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/f4a52b72209a9dfa197b5e7367a5c378c5bb86de6e29ddd9e48b49a3fe54b249.vtl"
+    }
+   },
+   "DependsOn": [
+    "SuggestionDataSource"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/MutationUpdateSuggestionDataResolverFn/MutationUpdateSuggestionDataResolverFn.AppSyncFunction"
+   }
+  },
+  "UpdateSuggestionResolver": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "FieldName": "updateSuggestion",
+    "Kind": "PIPELINE",
+    "PipelineConfig": {
+     "Functions": [
+      {
+       "Fn::GetAtt": [
+        "MutationupdateSuggestioninit0FunctionMutationupdateSuggestioninit0FunctionAppSyncFunction06F06046",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "MutationupdateSuggestionauth0FunctionMutationupdateSuggestionauth0FunctionAppSyncFunction56DD0147",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "MutationupdateSuggestionpostAuth0FunctionMutationupdateSuggestionpostAuth0FunctionAppSyncFunctionC9924E37",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "MutationUpdateSuggestionDataResolverFnMutationUpdateSuggestionDataResolverFnAppSyncFunctionD73CD494",
+        "FunctionId"
+       ]
+      }
+     ]
+    },
+    "RequestMappingTemplate": {
+     "Fn::Join": [
+      "",
+      [
+       "$util.qr($ctx.stash.put(\"typeName\", \"Mutation\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"updateSuggestion\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"connectionAttributes\", {}))\n$util.qr($ctx.stash.put(\"tableName\", \"",
+       {
+        "Fn::Select": [
+         1,
+         {
+          "Fn::Split": [
+           "/",
+           {
+            "Fn::Select": [
+             5,
+             {
+              "Fn::Split": [
+               ":",
+               {
+                "Fn::GetAtt": [
+                 "SuggestionTable",
+                 "TableArn"
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"authRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthauthenticatedUserRoleFB43ED7CRef"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"unauthRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthunauthenticatedUserRoleECBF0A21Ref"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"identityPoolId\", \"",
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthIdentityPool7D6B1394Ref"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
+      ]
+     ]
+    },
+    "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)",
+    "TypeName": "Mutation"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/mutationUpdateSuggestionResolver"
+   }
+  },
+  "MutationdeleteSuggestionauth0FunctionMutationdeleteSuggestionauth0FunctionAppSyncFunction448739C6": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "DataSourceName": {
+     "Fn::GetAtt": [
+      "SuggestionDataSource",
+      "Name"
+     ]
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationdeleteSuggestionauth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/1f5fed297da9c32ae3af922bf3a38ccf23b956078887d16891ec06c20c64722c.vtl"
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/29e4bdb03133f87f2b1acb547959ffd4cfd22804026994c5b61db33084127353.vtl"
+    }
+   },
+   "DependsOn": [
+    "SuggestionDataSource"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/MutationdeleteSuggestionauth0Function/MutationdeleteSuggestionauth0Function.AppSyncFunction"
+   }
+  },
+  "MutationdeleteSuggestionpostAuth0FunctionMutationdeleteSuggestionpostAuth0FunctionAppSyncFunction3369BD72": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationdeleteSuggestionpostAuth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/MutationdeleteSuggestionpostAuth0Function/MutationdeleteSuggestionpostAuth0Function.AppSyncFunction"
+   }
+  },
+  "MutationDeleteSuggestionDataResolverFnMutationDeleteSuggestionDataResolverFnAppSyncFunction435FD410": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "DataSourceName": {
+     "Fn::GetAtt": [
+      "SuggestionDataSource",
+      "Name"
+     ]
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationDeleteSuggestionDataResolverFn",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/4f7907d1209a2c9953a0c053df402c634e359546d70c7cc5c2e8e21ea734880f.vtl"
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/f4a52b72209a9dfa197b5e7367a5c378c5bb86de6e29ddd9e48b49a3fe54b249.vtl"
+    }
+   },
+   "DependsOn": [
+    "SuggestionDataSource"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/MutationDeleteSuggestionDataResolverFn/MutationDeleteSuggestionDataResolverFn.AppSyncFunction"
+   }
+  },
+  "DeleteSuggestionResolver": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "FieldName": "deleteSuggestion",
+    "Kind": "PIPELINE",
+    "PipelineConfig": {
+     "Functions": [
+      {
+       "Fn::GetAtt": [
+        "MutationdeleteSuggestionauth0FunctionMutationdeleteSuggestionauth0FunctionAppSyncFunction448739C6",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "MutationdeleteSuggestionpostAuth0FunctionMutationdeleteSuggestionpostAuth0FunctionAppSyncFunction3369BD72",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "MutationDeleteSuggestionDataResolverFnMutationDeleteSuggestionDataResolverFnAppSyncFunction435FD410",
+        "FunctionId"
+       ]
+      }
+     ]
+    },
+    "RequestMappingTemplate": {
+     "Fn::Join": [
+      "",
+      [
+       "$util.qr($ctx.stash.put(\"typeName\", \"Mutation\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"deleteSuggestion\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"connectionAttributes\", {}))\n$util.qr($ctx.stash.put(\"tableName\", \"",
+       {
+        "Fn::Select": [
+         1,
+         {
+          "Fn::Split": [
+           "/",
+           {
+            "Fn::Select": [
+             5,
+             {
+              "Fn::Split": [
+               ":",
+               {
+                "Fn::GetAtt": [
+                 "SuggestionTable",
+                 "TableArn"
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"authRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthauthenticatedUserRoleFB43ED7CRef"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"unauthRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthunauthenticatedUserRoleECBF0A21Ref"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"identityPoolId\", \"",
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthIdentityPool7D6B1394Ref"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
+      ]
+     ]
+    },
+    "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)",
+    "TypeName": "Mutation"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/mutationDeleteSuggestionResolver"
+   }
+  },
+  "SubscriptiononCreateSuggestionauth0FunctionSubscriptiononCreateSuggestionauth0FunctionAppSyncFunction2B9A82E1": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "SubscriptiononCreateSuggestionauth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/6f3a2a9d562ae3058cc1aed6741edbf5edcaef7b3df7b03f52478816a1c95ffb.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/SubscriptiononCreateSuggestionauth0Function/SubscriptiononCreateSuggestionauth0Function.AppSyncFunction"
+   }
+  },
+  "SubscriptiononCreateSuggestionpostAuth0FunctionSubscriptiononCreateSuggestionpostAuth0FunctionAppSyncFunctionF07386A7": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "SubscriptiononCreateSuggestionpostAuth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/SubscriptiononCreateSuggestionpostAuth0Function/SubscriptiononCreateSuggestionpostAuth0Function.AppSyncFunction"
+   }
+  },
+  "SubscriptionOnCreateSuggestionDataResolverFnSubscriptionOnCreateSuggestionDataResolverFnAppSyncFunctionAE964D30": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "SubscriptionOnCreateSuggestionDataResolverFn",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/fe3c43ada4b9d681a5e2312663ef7a73386424d73b73e51f8e2e9d4b50f7c502.vtl"
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/e0cff47fb007f0bbf2a4e43ca256d6aa7ec109821769fd79fa7c5e83f0e7f9fc.vtl"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/SubscriptionOnCreateSuggestionDataResolverFn/SubscriptionOnCreateSuggestionDataResolverFn.AppSyncFunction"
+   }
+  },
+  "SubscriptiononCreateSuggestionResolver": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "FieldName": "onCreateSuggestion",
+    "Kind": "PIPELINE",
+    "PipelineConfig": {
+     "Functions": [
+      {
+       "Fn::GetAtt": [
+        "SubscriptiononCreateSuggestionauth0FunctionSubscriptiononCreateSuggestionauth0FunctionAppSyncFunction2B9A82E1",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "SubscriptiononCreateSuggestionpostAuth0FunctionSubscriptiononCreateSuggestionpostAuth0FunctionAppSyncFunctionF07386A7",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "SubscriptionOnCreateSuggestionDataResolverFnSubscriptionOnCreateSuggestionDataResolverFnAppSyncFunctionAE964D30",
+        "FunctionId"
+       ]
+      }
+     ]
+    },
+    "RequestMappingTemplate": {
+     "Fn::Join": [
+      "",
+      [
+       "$util.qr($ctx.stash.put(\"typeName\", \"Subscription\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"onCreateSuggestion\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"NONE\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"connectionAttributes\", {}))\n\n$util.qr($ctx.stash.put(\"authRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthauthenticatedUserRoleFB43ED7CRef"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"unauthRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthunauthenticatedUserRoleECBF0A21Ref"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"identityPoolId\", \"",
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthIdentityPool7D6B1394Ref"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
+      ]
+     ]
+    },
+    "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)",
+    "TypeName": "Subscription"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/subscriptionOnCreateSuggestionResolver"
+   }
+  },
+  "SubscriptiononUpdateSuggestionauth0FunctionSubscriptiononUpdateSuggestionauth0FunctionAppSyncFunction8DF40F3A": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "SubscriptiononUpdateSuggestionauth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/6f3a2a9d562ae3058cc1aed6741edbf5edcaef7b3df7b03f52478816a1c95ffb.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/SubscriptiononUpdateSuggestionauth0Function/SubscriptiononUpdateSuggestionauth0Function.AppSyncFunction"
+   }
+  },
+  "SubscriptiononUpdateSuggestionpostAuth0FunctionSubscriptiononUpdateSuggestionpostAuth0FunctionAppSyncFunction4006C349": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "SubscriptiononUpdateSuggestionpostAuth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/SubscriptiononUpdateSuggestionpostAuth0Function/SubscriptiononUpdateSuggestionpostAuth0Function.AppSyncFunction"
+   }
+  },
+  "SubscriptionOnUpdateSuggestionDataResolverFnSubscriptionOnUpdateSuggestionDataResolverFnAppSyncFunctionEC9767BE": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "SubscriptionOnUpdateSuggestionDataResolverFn",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/fe3c43ada4b9d681a5e2312663ef7a73386424d73b73e51f8e2e9d4b50f7c502.vtl"
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/e0cff47fb007f0bbf2a4e43ca256d6aa7ec109821769fd79fa7c5e83f0e7f9fc.vtl"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/SubscriptionOnUpdateSuggestionDataResolverFn/SubscriptionOnUpdateSuggestionDataResolverFn.AppSyncFunction"
+   }
+  },
+  "SubscriptiononUpdateSuggestionResolver": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "FieldName": "onUpdateSuggestion",
+    "Kind": "PIPELINE",
+    "PipelineConfig": {
+     "Functions": [
+      {
+       "Fn::GetAtt": [
+        "SubscriptiononUpdateSuggestionauth0FunctionSubscriptiononUpdateSuggestionauth0FunctionAppSyncFunction8DF40F3A",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "SubscriptiononUpdateSuggestionpostAuth0FunctionSubscriptiononUpdateSuggestionpostAuth0FunctionAppSyncFunction4006C349",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "SubscriptionOnUpdateSuggestionDataResolverFnSubscriptionOnUpdateSuggestionDataResolverFnAppSyncFunctionEC9767BE",
+        "FunctionId"
+       ]
+      }
+     ]
+    },
+    "RequestMappingTemplate": {
+     "Fn::Join": [
+      "",
+      [
+       "$util.qr($ctx.stash.put(\"typeName\", \"Subscription\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"onUpdateSuggestion\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"NONE\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"connectionAttributes\", {}))\n\n$util.qr($ctx.stash.put(\"authRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthauthenticatedUserRoleFB43ED7CRef"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"unauthRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthunauthenticatedUserRoleECBF0A21Ref"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"identityPoolId\", \"",
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthIdentityPool7D6B1394Ref"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
+      ]
+     ]
+    },
+    "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)",
+    "TypeName": "Subscription"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/subscriptionOnUpdateSuggestionResolver"
+   }
+  },
+  "SubscriptiononDeleteSuggestionauth0FunctionSubscriptiononDeleteSuggestionauth0FunctionAppSyncFunction802E123C": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "SubscriptiononDeleteSuggestionauth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/6f3a2a9d562ae3058cc1aed6741edbf5edcaef7b3df7b03f52478816a1c95ffb.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/SubscriptiononDeleteSuggestionauth0Function/SubscriptiononDeleteSuggestionauth0Function.AppSyncFunction"
+   }
+  },
+  "SubscriptiononDeleteSuggestionpostAuth0FunctionSubscriptiononDeleteSuggestionpostAuth0FunctionAppSyncFunctionD3964B97": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "SubscriptiononDeleteSuggestionpostAuth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/SubscriptiononDeleteSuggestionpostAuth0Function/SubscriptiononDeleteSuggestionpostAuth0Function.AppSyncFunction"
+   }
+  },
+  "SubscriptionOnDeleteSuggestionDataResolverFnSubscriptionOnDeleteSuggestionDataResolverFnAppSyncFunction11194D2F": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "SubscriptionOnDeleteSuggestionDataResolverFn",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/fe3c43ada4b9d681a5e2312663ef7a73386424d73b73e51f8e2e9d4b50f7c502.vtl"
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/e0cff47fb007f0bbf2a4e43ca256d6aa7ec109821769fd79fa7c5e83f0e7f9fc.vtl"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/SubscriptionOnDeleteSuggestionDataResolverFn/SubscriptionOnDeleteSuggestionDataResolverFn.AppSyncFunction"
+   }
+  },
+  "SubscriptiononDeleteSuggestionResolver": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "FieldName": "onDeleteSuggestion",
+    "Kind": "PIPELINE",
+    "PipelineConfig": {
+     "Functions": [
+      {
+       "Fn::GetAtt": [
+        "SubscriptiononDeleteSuggestionauth0FunctionSubscriptiononDeleteSuggestionauth0FunctionAppSyncFunction802E123C",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "SubscriptiononDeleteSuggestionpostAuth0FunctionSubscriptiononDeleteSuggestionpostAuth0FunctionAppSyncFunctionD3964B97",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "SubscriptionOnDeleteSuggestionDataResolverFnSubscriptionOnDeleteSuggestionDataResolverFnAppSyncFunction11194D2F",
+        "FunctionId"
+       ]
+      }
+     ]
+    },
+    "RequestMappingTemplate": {
+     "Fn::Join": [
+      "",
+      [
+       "$util.qr($ctx.stash.put(\"typeName\", \"Subscription\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"onDeleteSuggestion\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"NONE\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"connectionAttributes\", {}))\n\n$util.qr($ctx.stash.put(\"authRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthauthenticatedUserRoleFB43ED7CRef"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"unauthRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthunauthenticatedUserRoleECBF0A21Ref"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"identityPoolId\", \"",
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthIdentityPool7D6B1394Ref"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
+      ]
+     ]
+    },
+    "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)",
+    "TypeName": "Subscription"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/subscriptionOnDeleteSuggestionResolver"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/1WOwWrDMAyGn6V3R+tSxthxTehxG8nuRbGV4iaRgyW3lJB3H0lHx06/PvQh/Tnk+StsN3iVzLou630D0weJkqsVbWeKlr8w4kBKcYEisPPqA5uKJKRoyRRJNAx/2PJjxqscJ3djHIJr4BubnvYoZDwOMFWhv9uhp9ngOMqNLUzlqpdNiYr14+R/OiS2S4kicOtPKeLa6Pdzf6E4G9kdUYRU4H0JIzvYJ9uRLgXmxf1MOiY167pWPHk+zYaDIzjL0yXfwvMbvGzO4n0WE6sfCKp7/gDouRV5NgEAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion/CDKMetadata/Default"
+   },
+   "Condition": "CDKMetadataAvailable"
+  }
+ },
+ "Outputs": {
+  "GetAttSuggestionTableStreamArn": {
+   "Description": "Your DynamoDB table StreamArn.",
+   "Value": {
+    "Fn::GetAtt": [
+     "SuggestionTable",
+     "TableStreamArn"
+    ]
+   },
+   "Export": {
+    "Name": {
+     "Fn::Join": [
+      ":",
+      [
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+       },
+       "GetAtt:SuggestionTable:StreamArn"
+      ]
+     ]
+    }
+   }
+  },
+  "GetAttSuggestionTableName": {
+   "Description": "Your DynamoDB table name.",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "Suggestion-",
+      {
+       "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+      },
+      "-NONE"
+     ]
+    ]
+   },
+   "Export": {
+    "Name": {
+     "Fn::Join": [
+      ":",
+      [
+       {
+        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+       },
+       "GetAtt:SuggestionTable:Name"
+      ]
+     ]
+    }
+   }
+  }
+ }
+}

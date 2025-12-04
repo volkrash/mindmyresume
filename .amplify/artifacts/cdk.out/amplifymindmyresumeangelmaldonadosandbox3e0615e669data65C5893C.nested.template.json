@@ -51,7 +51,7 @@
      ]
     },
     "DefinitionS3Location": {
-     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/ab43d44d19114405e94668d0983f2c70eaf6673c7c29b972bc6a82777211dcc1.graphql"
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/7325bc11d23c6cd3f5dca1f7418447ebffced7f6291b157eba0a10439df78896.graphql"
     }
    },
    "UpdateReplacePolicy": "Delete",
@@ -318,6 +318,99 @@
     "aws:asset:property": "TemplateURL"
    }
   },
+  "amplifyDataSuggestionNestedStackSuggestionNestedStackResource755CEE98": {
+   "Type": "AWS::CloudFormation::Stack",
+   "Properties": {
+    "Parameters": {
+     "DynamoDBModelTableReadIOPS": {
+      "Ref": "DynamoDBModelTableReadIOPS"
+     },
+     "DynamoDBModelTableWriteIOPS": {
+      "Ref": "DynamoDBModelTableWriteIOPS"
+     },
+     "DynamoDBBillingMode": {
+      "Ref": "DynamoDBBillingMode"
+     },
+     "DynamoDBEnablePointInTimeRecovery": {
+      "Ref": "DynamoDBEnablePointInTimeRecovery"
+     },
+     "DynamoDBEnableServerSideEncryption": {
+      "Ref": "DynamoDBEnableServerSideEncryption"
+     },
+     "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataAmplifyTableManagerNestedStackAmplifyTableManagerNestedStackResourceB9CABFC4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataAmplifyTableMana7A0872AE": {
+      "Fn::GetAtt": [
+       "amplifyDataAmplifyTableManagerNestedStackAmplifyTableManagerNestedStackResource86290833",
+       "Outputs.amplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataAmplifyTableManagerTableManagerCustomProviderframeworkonEvent4E5C4940Arn"
+      ]
+     },
+     "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId": {
+      "Fn::GetAtt": [
+       "amplifyDataGraphQLAPI42A6FA33",
+       "ApiId"
+      ]
+     },
+     "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name": {
+      "Fn::GetAtt": [
+       "amplifyDataGraphQLAPINONEDS684BF699",
+       "Name"
+      ]
+     },
+     "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthauthenticatedUserRoleFB43ED7CRef": {
+      "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthauthenticatedUserRoleFB43ED7CRef"
+     },
+     "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthunauthenticatedUserRoleECBF0A21Ref": {
+      "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthunauthenticatedUserRoleECBF0A21Ref"
+     },
+     "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthIdentityPool7D6B1394Ref": {
+      "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthIdentityPool7D6B1394Ref"
+     }
+    },
+    "Tags": [
+     {
+      "Key": "amplify:deployment-type",
+      "Value": "sandbox"
+     },
+     {
+      "Key": "amplify:friendly-name",
+      "Value": "amplifyData"
+     },
+     {
+      "Key": "created-by",
+      "Value": "amplify"
+     }
+    ],
+    "TemplateURL": {
+     "Fn::Join": [
+      "",
+      [
+       "https://s3.",
+       {
+        "Ref": "AWS::Region"
+       },
+       ".",
+       {
+        "Ref": "AWS::URLSuffix"
+       },
+       "/",
+       {
+        "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+       },
+       "/cfda19e8826398c6c310d299075a85329fd79900d0964db0524b6034a6686c48.json"
+      ]
+     ]
+    }
+   },
+   "DependsOn": [
+    "amplifyDataGraphQLAPITransformerSchemaFF50A789"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Suggestion.NestedStack/Suggestion.NestedStackResource",
+    "aws:asset:path": "amplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataSuggestion5555A215.nested.template.json",
+    "aws:asset:property": "TemplateURL"
+   }
+  },
   "amplifyDataFunctionDirectiveStackNestedStackFunctionDirectiveStackNestedStackResource1246A302": {
    "Type": "AWS::CloudFormation::Stack",
    "Properties": {
@@ -563,7 +656,7 @@
      }
     ],
     "SourceObjectKeys": [
-     "0661dfdd89568b6036fb3c834a65cda8d20d064b9fe0aafa68633e9110b19e09.zip"
+     "f0b43f3623ca875d8e8c2be05f35feb9b8a55cf6d528235700bee06334f94b7b.zip"
     ],
     "SourceMarkers": [
      {}
@@ -1068,7 +1161,7 @@
      }
     ],
     "SourceObjectKeys": [
-     "c46b47305ac930a0634d9512f181b3c8387ebf907439fdc20831c59f3543d615.zip"
+     "66a67e3f7e4ff07b810dd18bc4ffeced74c0aeced3c439dcdedd034c06652f8d.zip"
     ],
     "SourceMarkers": [
      {}

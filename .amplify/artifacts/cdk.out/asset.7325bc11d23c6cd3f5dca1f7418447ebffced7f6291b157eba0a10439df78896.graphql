@@ -1,0 +1,420 @@
+type Resume @aws_iam @aws_cognito_user_pools {
+  ownerId: String
+  title: String
+  language: String
+  aiJson: AWSJSON
+  createdAt: AWSDateTime
+  expiresAt: AWSDateTime
+  id: ID!
+  updatedAt: AWSDateTime!
+}
+
+type AccessCode @aws_iam @aws_cognito_user_pools {
+  code: String!
+  days: Int!
+  credits: Int!
+  maxUses: Int!
+  usedCount: Int
+  expiresAt: AWSDateTime
+  id: ID!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type Suggestion @aws_iam @aws_cognito_user_pools {
+  message: String!
+  page: String
+  userEmail: String
+  createdAt: AWSDateTime
+  id: ID!
+  updatedAt: AWSDateTime!
+}
+
+type Query @aws_iam {
+  getResume(id: ID!): Resume @aws_iam @aws_cognito_user_pools
+  listResumes(filter: ModelResumeFilterInput, limit: Int, nextToken: String): ModelResumeConnection @aws_iam @aws_cognito_user_pools
+  getAccessCode(id: ID!): AccessCode @aws_iam @aws_cognito_user_pools
+  listAccessCodes(filter: ModelAccessCodeFilterInput, limit: Int, nextToken: String): ModelAccessCodeConnection @aws_iam @aws_cognito_user_pools
+  getSuggestion(id: ID!): Suggestion @aws_iam @aws_cognito_user_pools
+  listSuggestions(filter: ModelSuggestionFilterInput, limit: Int, nextToken: String): ModelSuggestionConnection @aws_iam @aws_cognito_user_pools
+  accessByCode(code: String!): AccessCode @aws_iam @aws_cognito_user_pools
+}
+
+input AmplifyAIConversationTurnErrorInput {
+  errorType: String!
+  message: String!
+}
+
+input ModelStringInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  contains: String
+  notContains: String
+  between: [String]
+  beginsWith: String
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  size: ModelSizeInput
+}
+
+input ModelIntInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelFloatInput {
+  ne: Float
+  eq: Float
+  le: Float
+  lt: Float
+  ge: Float
+  gt: Float
+  between: [Float]
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelBooleanInput {
+  ne: Boolean
+  eq: Boolean
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelIDInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  contains: ID
+  notContains: ID
+  between: [ID]
+  beginsWith: ID
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  size: ModelSizeInput
+}
+
+input ModelSubscriptionStringInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  contains: String
+  notContains: String
+  between: [String]
+  beginsWith: String
+  in: [String]
+  notIn: [String]
+}
+
+input ModelSubscriptionIntInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+  in: [Int]
+  notIn: [Int]
+}
+
+input ModelSubscriptionFloatInput {
+  ne: Float
+  eq: Float
+  le: Float
+  lt: Float
+  ge: Float
+  gt: Float
+  between: [Float]
+  in: [Float]
+  notIn: [Float]
+}
+
+input ModelSubscriptionBooleanInput {
+  ne: Boolean
+  eq: Boolean
+}
+
+input ModelSubscriptionIDInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  contains: ID
+  notContains: ID
+  between: [ID]
+  beginsWith: ID
+  in: [ID]
+  notIn: [ID]
+}
+
+enum ModelAttributeTypes {
+  binary
+  binarySet
+  bool
+  list
+  map
+  number
+  numberSet
+  string
+  stringSet
+  _null
+}
+
+input ModelSizeInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+}
+
+enum ModelSortDirection {
+  ASC
+  DESC
+}
+
+type ModelResumeConnection @aws_iam @aws_cognito_user_pools {
+  items: [Resume]!
+  nextToken: String
+}
+
+input ModelResumeFilterInput {
+  ownerId: ModelStringInput
+  title: ModelStringInput
+  language: ModelStringInput
+  aiJson: ModelStringInput
+  createdAt: ModelStringInput
+  expiresAt: ModelStringInput
+  id: ModelIDInput
+  updatedAt: ModelStringInput
+  and: [ModelResumeFilterInput]
+  or: [ModelResumeFilterInput]
+  not: ModelResumeFilterInput
+}
+
+input ModelResumeConditionInput {
+  ownerId: ModelStringInput
+  title: ModelStringInput
+  language: ModelStringInput
+  aiJson: ModelStringInput
+  createdAt: ModelStringInput
+  expiresAt: ModelStringInput
+  and: [ModelResumeConditionInput]
+  or: [ModelResumeConditionInput]
+  not: ModelResumeConditionInput
+  updatedAt: ModelStringInput
+}
+
+input CreateResumeInput {
+  ownerId: String
+  title: String
+  language: String
+  aiJson: AWSJSON
+  createdAt: AWSDateTime
+  expiresAt: AWSDateTime
+  id: ID
+}
+
+input UpdateResumeInput {
+  ownerId: String
+  title: String
+  language: String
+  aiJson: AWSJSON
+  createdAt: AWSDateTime
+  expiresAt: AWSDateTime
+  id: ID!
+}
+
+input DeleteResumeInput {
+  id: ID!
+}
+
+type Mutation {
+  createResume(input: CreateResumeInput!, condition: ModelResumeConditionInput): Resume @aws_iam @aws_cognito_user_pools
+  updateResume(input: UpdateResumeInput!, condition: ModelResumeConditionInput): Resume @aws_iam @aws_cognito_user_pools
+  deleteResume(input: DeleteResumeInput!, condition: ModelResumeConditionInput): Resume @aws_iam @aws_cognito_user_pools
+  createAccessCode(input: CreateAccessCodeInput!, condition: ModelAccessCodeConditionInput): AccessCode @aws_iam @aws_cognito_user_pools
+  updateAccessCode(input: UpdateAccessCodeInput!, condition: ModelAccessCodeConditionInput): AccessCode @aws_iam @aws_cognito_user_pools
+  deleteAccessCode(input: DeleteAccessCodeInput!, condition: ModelAccessCodeConditionInput): AccessCode @aws_iam @aws_cognito_user_pools
+  createSuggestion(input: CreateSuggestionInput!, condition: ModelSuggestionConditionInput): Suggestion @aws_iam @aws_cognito_user_pools
+  updateSuggestion(input: UpdateSuggestionInput!, condition: ModelSuggestionConditionInput): Suggestion @aws_iam @aws_cognito_user_pools
+  deleteSuggestion(input: DeleteSuggestionInput!, condition: ModelSuggestionConditionInput): Suggestion @aws_iam @aws_cognito_user_pools
+}
+
+input ModelSubscriptionResumeFilterInput {
+  ownerId: ModelSubscriptionStringInput
+  title: ModelSubscriptionStringInput
+  language: ModelSubscriptionStringInput
+  aiJson: ModelSubscriptionStringInput
+  createdAt: ModelSubscriptionStringInput
+  expiresAt: ModelSubscriptionStringInput
+  id: ModelSubscriptionIDInput
+  updatedAt: ModelSubscriptionStringInput
+  and: [ModelSubscriptionResumeFilterInput]
+  or: [ModelSubscriptionResumeFilterInput]
+}
+
+type Subscription {
+  onCreateResume(filter: ModelSubscriptionResumeFilterInput): Resume @aws_subscribe(mutations: ["createResume"]) @aws_iam @aws_cognito_user_pools
+  onUpdateResume(filter: ModelSubscriptionResumeFilterInput): Resume @aws_subscribe(mutations: ["updateResume"]) @aws_iam @aws_cognito_user_pools
+  onDeleteResume(filter: ModelSubscriptionResumeFilterInput): Resume @aws_subscribe(mutations: ["deleteResume"]) @aws_iam @aws_cognito_user_pools
+  onCreateAccessCode(filter: ModelSubscriptionAccessCodeFilterInput): AccessCode @aws_subscribe(mutations: ["createAccessCode"]) @aws_iam @aws_cognito_user_pools
+  onUpdateAccessCode(filter: ModelSubscriptionAccessCodeFilterInput): AccessCode @aws_subscribe(mutations: ["updateAccessCode"]) @aws_iam @aws_cognito_user_pools
+  onDeleteAccessCode(filter: ModelSubscriptionAccessCodeFilterInput): AccessCode @aws_subscribe(mutations: ["deleteAccessCode"]) @aws_iam @aws_cognito_user_pools
+  onCreateSuggestion(filter: ModelSubscriptionSuggestionFilterInput): Suggestion @aws_subscribe(mutations: ["createSuggestion"]) @aws_iam @aws_cognito_user_pools
+  onUpdateSuggestion(filter: ModelSubscriptionSuggestionFilterInput): Suggestion @aws_subscribe(mutations: ["updateSuggestion"]) @aws_iam @aws_cognito_user_pools
+  onDeleteSuggestion(filter: ModelSubscriptionSuggestionFilterInput): Suggestion @aws_subscribe(mutations: ["deleteSuggestion"]) @aws_iam @aws_cognito_user_pools
+}
+
+type ModelAccessCodeConnection @aws_iam @aws_cognito_user_pools {
+  items: [AccessCode]!
+  nextToken: String
+}
+
+input ModelAccessCodeFilterInput {
+  code: ModelStringInput
+  days: ModelIntInput
+  credits: ModelIntInput
+  maxUses: ModelIntInput
+  usedCount: ModelIntInput
+  expiresAt: ModelStringInput
+  id: ModelIDInput
+  createdAt: ModelStringInput
+  updatedAt: ModelStringInput
+  and: [ModelAccessCodeFilterInput]
+  or: [ModelAccessCodeFilterInput]
+  not: ModelAccessCodeFilterInput
+}
+
+input ModelAccessCodeConditionInput {
+  code: ModelStringInput
+  days: ModelIntInput
+  credits: ModelIntInput
+  maxUses: ModelIntInput
+  usedCount: ModelIntInput
+  expiresAt: ModelStringInput
+  and: [ModelAccessCodeConditionInput]
+  or: [ModelAccessCodeConditionInput]
+  not: ModelAccessCodeConditionInput
+  createdAt: ModelStringInput
+  updatedAt: ModelStringInput
+}
+
+input CreateAccessCodeInput {
+  code: String!
+  days: Int!
+  credits: Int!
+  maxUses: Int!
+  usedCount: Int
+  expiresAt: AWSDateTime
+  id: ID
+}
+
+input UpdateAccessCodeInput {
+  code: String
+  days: Int
+  credits: Int
+  maxUses: Int
+  usedCount: Int
+  expiresAt: AWSDateTime
+  id: ID!
+}
+
+input DeleteAccessCodeInput {
+  id: ID!
+}
+
+input ModelSubscriptionAccessCodeFilterInput {
+  code: ModelSubscriptionStringInput
+  days: ModelSubscriptionIntInput
+  credits: ModelSubscriptionIntInput
+  maxUses: ModelSubscriptionIntInput
+  usedCount: ModelSubscriptionIntInput
+  expiresAt: ModelSubscriptionStringInput
+  id: ModelSubscriptionIDInput
+  createdAt: ModelSubscriptionStringInput
+  updatedAt: ModelSubscriptionStringInput
+  and: [ModelSubscriptionAccessCodeFilterInput]
+  or: [ModelSubscriptionAccessCodeFilterInput]
+}
+
+type ModelSuggestionConnection @aws_iam @aws_cognito_user_pools {
+  items: [Suggestion]!
+  nextToken: String
+}
+
+input ModelSuggestionFilterInput {
+  message: ModelStringInput
+  page: ModelStringInput
+  userEmail: ModelStringInput
+  createdAt: ModelStringInput
+  id: ModelIDInput
+  updatedAt: ModelStringInput
+  and: [ModelSuggestionFilterInput]
+  or: [ModelSuggestionFilterInput]
+  not: ModelSuggestionFilterInput
+}
+
+input ModelSuggestionConditionInput {
+  message: ModelStringInput
+  page: ModelStringInput
+  userEmail: ModelStringInput
+  createdAt: ModelStringInput
+  and: [ModelSuggestionConditionInput]
+  or: [ModelSuggestionConditionInput]
+  not: ModelSuggestionConditionInput
+  updatedAt: ModelStringInput
+}
+
+input CreateSuggestionInput {
+  message: String!
+  page: String
+  userEmail: String
+  createdAt: AWSDateTime
+  id: ID
+}
+
+input UpdateSuggestionInput {
+  message: String
+  page: String
+  userEmail: String
+  createdAt: AWSDateTime
+  id: ID!
+}
+
+input DeleteSuggestionInput {
+  id: ID!
+}
+
+input ModelSubscriptionSuggestionFilterInput {
+  message: ModelSubscriptionStringInput
+  page: ModelSubscriptionStringInput
+  userEmail: ModelSubscriptionStringInput
+  createdAt: ModelSubscriptionStringInput
+  id: ModelSubscriptionIDInput
+  updatedAt: ModelSubscriptionStringInput
+  and: [ModelSubscriptionSuggestionFilterInput]
+  or: [ModelSubscriptionSuggestionFilterInput]
+}

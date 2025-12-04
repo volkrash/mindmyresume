@@ -22,7 +22,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/94730f67bb713c829504165bc1ad9f7dee20bd5e8cad1002539c15f6a16dc799.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/279b3e322793a58c90ff7e1352c6c4df146392479815de51a8e90824e291f51b.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -829,26 +829,6 @@
             "data": "Subscription.onDeleteResume"
           }
         ],
-        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/ResumeOwnerDataResolverFn/ResumeOwnerDataResolverFn.AppSyncFunction": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "ResumeOwnerDataResolverFnResumeOwnerDataResolverFnAppSyncFunction5603FB01"
-          },
-          {
-            "type": "graphqltransformer:resourceName",
-            "data": "ResumeOwnerDataResolverFn"
-          }
-        ],
-        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/resumeOwnerResolver": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "ResumeownerResolver"
-          },
-          {
-            "type": "graphqltransformer:resourceName",
-            "data": "Resume.owner"
-          }
-        ],
         "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/CDKMetadata/Default": [
           {
             "type": "aws:cdk:logicalId",
@@ -901,6 +881,636 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "amplifyDataResumeNestedStackResumeNestedStackResource7789F223"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/DynamoDBModelTableReadIOPS": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBModelTableReadIOPS"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/DynamoDBModelTableWriteIOPS": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBModelTableWriteIOPS"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/DynamoDBBillingMode": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBBillingMode"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/DynamoDBEnablePointInTimeRecovery": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBEnablePointInTimeRecovery"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/DynamoDBEnableServerSideEncryption": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBEnableServerSideEncryption"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/HasEnvironmentParameter": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "HasEnvironmentParameter"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/ShouldUsePayPerRequestBilling": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ShouldUsePayPerRequestBilling"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/ShouldUsePointInTimeRecovery": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ShouldUsePointInTimeRecovery"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/AccessCodeTable": [
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "AccessCode"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/AccessCodeTable/Default/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AccessCodeTable"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "AccessCode"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/CustomTableAccessCodeTable": [
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "AccessCode"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/GetAttAccessCodeTableStreamArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetAttAccessCodeTableStreamArn"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/GetAttAccessCodeTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetAttAccessCodeTableName"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/AccessCodeIAMRole": [
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "AccessCodeIAMRole"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/AccessCodeIAMRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AccessCodeIAMRole743E81A5"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "AccessCodeIAMRole"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/AccessCodeDataSource": [
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "AccessCodeTable"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/AccessCodeDataSource/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AccessCodeDataSource"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "AccessCodeTable"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/QuerygetAccessCodeauth0Function/QuerygetAccessCodeauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QuerygetAccessCodeauth0FunctionQuerygetAccessCodeauth0FunctionAppSyncFunction99ACF20C"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "QuerygetAccessCodeauth0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/QuerygetAccessCodepostAuth0Function/QuerygetAccessCodepostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QuerygetAccessCodepostAuth0FunctionQuerygetAccessCodepostAuth0FunctionAppSyncFunction69CFA54C"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "QuerygetAccessCodepostAuth0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/QueryGetAccessCodeDataResolverFn/QueryGetAccessCodeDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QueryGetAccessCodeDataResolverFnQueryGetAccessCodeDataResolverFnAppSyncFunctionCD6DB58C"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "QueryGetAccessCodeDataResolverFn"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/queryGetAccessCodeResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetAccessCodeResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Query.getAccessCode"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/QuerylistAccessCodesauth0Function/QuerylistAccessCodesauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QuerylistAccessCodesauth0FunctionQuerylistAccessCodesauth0FunctionAppSyncFunction7F277B67"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "QuerylistAccessCodesauth0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/QuerylistAccessCodespostAuth0Function/QuerylistAccessCodespostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QuerylistAccessCodespostAuth0FunctionQuerylistAccessCodespostAuth0FunctionAppSyncFunction09508337"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "QuerylistAccessCodespostAuth0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/QueryListAccessCodesDataResolverFn/QueryListAccessCodesDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QueryListAccessCodesDataResolverFnQueryListAccessCodesDataResolverFnAppSyncFunction2A86D32B"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "QueryListAccessCodesDataResolverFn"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/queryListAccessCodesResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ListAccessCodeResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Query.listAccessCodes"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/MutationcreateAccessCodeinit0Function/MutationcreateAccessCodeinit0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationcreateAccessCodeinit0FunctionMutationcreateAccessCodeinit0FunctionAppSyncFunctionDD781D8A"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationcreateAccessCodeinit0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/MutationcreateAccessCodeinit1Function/MutationcreateAccessCodeinit1Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationcreateAccessCodeinit1FunctionMutationcreateAccessCodeinit1FunctionAppSyncFunction13D96DCF"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationcreateAccessCodeinit1Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/MutationcreateAccessCodeauth0Function/MutationcreateAccessCodeauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationcreateAccessCodeauth0FunctionMutationcreateAccessCodeauth0FunctionAppSyncFunctionAF7B86A1"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationcreateAccessCodeauth0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/MutationcreateAccessCodepostAuth0Function/MutationcreateAccessCodepostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationcreateAccessCodepostAuth0FunctionMutationcreateAccessCodepostAuth0FunctionAppSyncFunction429D4602"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationcreateAccessCodepostAuth0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/MutationCreateAccessCodeDataResolverFn/MutationCreateAccessCodeDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationCreateAccessCodeDataResolverFnMutationCreateAccessCodeDataResolverFnAppSyncFunction51821FF1"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationCreateAccessCodeDataResolverFn"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/mutationCreateAccessCodeResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateAccessCodeResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Mutation.createAccessCode"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/MutationupdateAccessCodeinit0Function/MutationupdateAccessCodeinit0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationupdateAccessCodeinit0FunctionMutationupdateAccessCodeinit0FunctionAppSyncFunction27C5D790"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationupdateAccessCodeinit0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/MutationupdateAccessCodeauth0Function/MutationupdateAccessCodeauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationupdateAccessCodeauth0FunctionMutationupdateAccessCodeauth0FunctionAppSyncFunctionBFE3C1D6"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationupdateAccessCodeauth0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/MutationupdateAccessCodepostAuth0Function/MutationupdateAccessCodepostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationupdateAccessCodepostAuth0FunctionMutationupdateAccessCodepostAuth0FunctionAppSyncFunction145354CF"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationupdateAccessCodepostAuth0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/MutationUpdateAccessCodeDataResolverFn/MutationUpdateAccessCodeDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationUpdateAccessCodeDataResolverFnMutationUpdateAccessCodeDataResolverFnAppSyncFunction57548314"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationUpdateAccessCodeDataResolverFn"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/mutationUpdateAccessCodeResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UpdateAccessCodeResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Mutation.updateAccessCode"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/MutationdeleteAccessCodeauth0Function/MutationdeleteAccessCodeauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationdeleteAccessCodeauth0FunctionMutationdeleteAccessCodeauth0FunctionAppSyncFunction9AA4D6BC"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationdeleteAccessCodeauth0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/MutationdeleteAccessCodepostAuth0Function/MutationdeleteAccessCodepostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationdeleteAccessCodepostAuth0FunctionMutationdeleteAccessCodepostAuth0FunctionAppSyncFunction6BE599B2"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationdeleteAccessCodepostAuth0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/MutationDeleteAccessCodeDataResolverFn/MutationDeleteAccessCodeDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationDeleteAccessCodeDataResolverFnMutationDeleteAccessCodeDataResolverFnAppSyncFunction670A64E1"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationDeleteAccessCodeDataResolverFn"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/mutationDeleteAccessCodeResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeleteAccessCodeResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Mutation.deleteAccessCode"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/SubscriptiononCreateAccessCodeauth0Function/SubscriptiononCreateAccessCodeauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononCreateAccessCodeauth0FunctionSubscriptiononCreateAccessCodeauth0FunctionAppSyncFunctionDC8CFE65"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptiononCreateAccessCodeauth0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/SubscriptiononCreateAccessCodepostAuth0Function/SubscriptiononCreateAccessCodepostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononCreateAccessCodepostAuth0FunctionSubscriptiononCreateAccessCodepostAuth0FunctionAppSyncFunction475329FD"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptiononCreateAccessCodepostAuth0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/SubscriptionOnCreateAccessCodeDataResolverFn/SubscriptionOnCreateAccessCodeDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptionOnCreateAccessCodeDataResolverFnSubscriptionOnCreateAccessCodeDataResolverFnAppSyncFunction9CF3F59F"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptionOnCreateAccessCodeDataResolverFn"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/subscriptionOnCreateAccessCodeResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononCreateAccessCodeResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Subscription.onCreateAccessCode"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/SubscriptiononUpdateAccessCodeauth0Function/SubscriptiononUpdateAccessCodeauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononUpdateAccessCodeauth0FunctionSubscriptiononUpdateAccessCodeauth0FunctionAppSyncFunction4F3DB8BA"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptiononUpdateAccessCodeauth0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/SubscriptiononUpdateAccessCodepostAuth0Function/SubscriptiononUpdateAccessCodepostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononUpdateAccessCodepostAuth0FunctionSubscriptiononUpdateAccessCodepostAuth0FunctionAppSyncFunctionBACC7EFC"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptiononUpdateAccessCodepostAuth0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/SubscriptionOnUpdateAccessCodeDataResolverFn/SubscriptionOnUpdateAccessCodeDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptionOnUpdateAccessCodeDataResolverFnSubscriptionOnUpdateAccessCodeDataResolverFnAppSyncFunctionEE5DE55C"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptionOnUpdateAccessCodeDataResolverFn"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/subscriptionOnUpdateAccessCodeResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononUpdateAccessCodeResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Subscription.onUpdateAccessCode"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/SubscriptiononDeleteAccessCodeauth0Function/SubscriptiononDeleteAccessCodeauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononDeleteAccessCodeauth0FunctionSubscriptiononDeleteAccessCodeauth0FunctionAppSyncFunction8DC6E746"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptiononDeleteAccessCodeauth0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/SubscriptiononDeleteAccessCodepostAuth0Function/SubscriptiononDeleteAccessCodepostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononDeleteAccessCodepostAuth0FunctionSubscriptiononDeleteAccessCodepostAuth0FunctionAppSyncFunction8862ED09"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptiononDeleteAccessCodepostAuth0Function"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/SubscriptionOnDeleteAccessCodeDataResolverFn/SubscriptionOnDeleteAccessCodeDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptionOnDeleteAccessCodeDataResolverFnSubscriptionOnDeleteAccessCodeDataResolverFnAppSyncFunctionFB277ACC"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptionOnDeleteAccessCodeDataResolverFn"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/subscriptionOnDeleteAccessCodeResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononDeleteAccessCodeResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Subscription.onDeleteAccessCode"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/reference-to-amplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataAmplifyTableManagerNestedStackAmplifyTableManagerNestedStackResourceB9CABFC4Outputs.amplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataAmplifyTableManagerTableManagerCustomProviderframeworkonEvent4E5C4940Arn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataAmplifyTableManagerNestedStackAmplifyTableManagerNestedStackResourceB9CABFC4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataAmplifyTableMana7A0872AE"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/reference-to-amplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/reference-to-amplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/reference-to-amplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputs.amplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthauthenticatedUserRoleFB43ED7CRef": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthauthenticatedUserRoleFB43ED7CRef"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/reference-to-amplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputs.amplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthunauthenticatedUserRoleECBF0A21Ref": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthunauthenticatedUserRoleECBF0A21Ref"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/reference-to-amplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputs.amplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthIdentityPool7D6B1394Ref": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthIdentityPool7D6B1394Ref"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode.NestedStack/AccessCode.NestedStackResource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyDataAccessCodeNestedStackAccessCodeNestedStackResource10FE73CD"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/FunctionDirectiveStack/HasEnvironmentParameter": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "HasEnvironmentParameter"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/FunctionDirectiveStack/AccessByCodeLambdaDataSource": [
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "AccessByCodeLambdaDataSource"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/FunctionDirectiveStack/AccessByCodeLambdaDataSource/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AccessByCodeLambdaDataSourceServiceRole21297EF9"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/FunctionDirectiveStack/AccessByCodeLambdaDataSource/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AccessByCodeLambdaDataSourceServiceRoleDefaultPolicyB4B9E309"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/FunctionDirectiveStack/AccessByCodeLambdaDataSource/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AccessByCodeLambdaDataSource"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "AccessByCodeLambdaDataSource"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/FunctionDirectiveStack/InvokeAccessByCodeLambdaDataSource/InvokeAccessByCodeLambdaDataSource.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "InvokeAccessByCodeLambdaDataSourceInvokeAccessByCodeLambdaDataSourceAppSyncFunction80E30034"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "InvokeAccessByCodeLambdaDataSource"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/FunctionDirectiveStack/queryAccessByCodeResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QueryaccessByCodeResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Query.accessByCode"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/FunctionDirectiveStack/QueryAccessByCodeAuthFN/QueryAccessByCodeAuthFN.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QueryAccessByCodeAuthFNQueryAccessByCodeAuthFNAppSyncFunction939F418B"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "QueryAccessByCodeAuthFN"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/FunctionDirectiveStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/FunctionDirectiveStack/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/FunctionDirectiveStack/reference-to-amplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/FunctionDirectiveStack/reference-to-amplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputs.amplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthauthenticatedUserRoleFB43ED7CRef": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthauthenticatedUserRoleFB43ED7CRef"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/FunctionDirectiveStack/reference-to-amplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputs.amplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthunauthenticatedUserRoleECBF0A21Ref": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthunauthenticatedUserRoleECBF0A21Ref"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/FunctionDirectiveStack/reference-to-amplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputs.amplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthIdentityPool7D6B1394Ref": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669authNestedStackauthNestedStackResource5555DEA4Outputsamplifymindmyresumeangelmaldonadosandbox3e0615e669authamplifyAuthIdentityPool7D6B1394Ref"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/FunctionDirectiveStack/reference-to-amplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
+          }
+        ],
+        "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/FunctionDirectiveStack.NestedStack/FunctionDirectiveStack.NestedStackResource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyDataFunctionDirectiveStackNestedStackFunctionDirectiveStackNestedStackResource1246A302"
           }
         ],
         "/amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AmplifyCodegenAssets/AmplifyCodegenAssetsBucket/Resource": [

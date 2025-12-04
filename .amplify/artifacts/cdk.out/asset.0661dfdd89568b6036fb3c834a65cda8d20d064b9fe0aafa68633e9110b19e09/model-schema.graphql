@@ -1,0 +1,23 @@
+type Resume @model @auth(rules: [{allow: private}])
+{
+  ownerId: String
+  title: String
+  language: String
+  aiJson: AWSJSON
+  createdAt: AWSDateTime
+  expiresAt: AWSDateTime
+}
+
+type AccessCode @model @auth(rules: [{allow: private}])
+{
+  code: String!
+  days: Int!
+  credits: Int!
+  maxUses: Int!
+  usedCount: Int @default(value: "0")
+  expiresAt: AWSDateTime
+}
+
+type Query {
+  accessByCode(code: String!): AccessCode @function(name: "accessByCode") @auth(rules: [{allow: private}])
+}

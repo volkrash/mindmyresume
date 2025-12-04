@@ -349,7 +349,7 @@
   }
  },
  "Resources": {
-  "ResumeTable": {
+  "AccessCodeTable": {
    "Type": "Custom::AmplifyDynamoDBTable",
    "Properties": {
     "ServiceToken": {
@@ -359,7 +359,7 @@
      "Fn::Join": [
       "",
       [
-       "Resume-",
+       "AccessCode-",
        {
         "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
        },
@@ -428,10 +428,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/ResumeTable/Default/Default"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/AccessCodeTable/Default/Default"
    }
   },
-  "ResumeIAMRole5CE9885A": {
+  "AccessCodeIAMRole743E81A5": {
    "Type": "AWS::IAM::Role",
    "Properties": {
     "AssumeRolePolicyDocument": {
@@ -475,7 +475,7 @@
               "Fn::Join": [
                "",
                [
-                "Resume-",
+                "AccessCode-",
                 {
                  "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
                 },
@@ -494,7 +494,7 @@
               "Fn::Join": [
                "",
                [
-                "Resume-",
+                "AccessCode-",
                 {
                  "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
                 },
@@ -517,7 +517,7 @@
      "Fn::Join": [
       "",
       [
-       "ResumeIAMRole8db7a9-",
+       "AccessCodeIAMRole1c75ef-",
        {
         "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
        },
@@ -543,10 +543,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/ResumeIAMRole/Resource"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/AccessCodeIAMRole/Resource"
    }
   },
-  "ResumeDataSource": {
+  "AccessCodeDataSource": {
    "Type": "AWS::AppSync::DataSource",
    "Properties": {
     "ApiId": {
@@ -570,7 +570,7 @@
              ":",
              {
               "Fn::GetAtt": [
-               "ResumeTable",
+               "AccessCodeTable",
                "TableArn"
               ]
              }
@@ -583,25 +583,25 @@
       ]
      }
     },
-    "Name": "ResumeTable",
+    "Name": "AccessCodeTable",
     "ServiceRoleArn": {
      "Fn::GetAtt": [
-      "ResumeIAMRole5CE9885A",
+      "AccessCodeIAMRole743E81A5",
       "Arn"
      ]
     },
     "Type": "AMAZON_DYNAMODB"
    },
    "DependsOn": [
-    "ResumeIAMRole5CE9885A"
+    "AccessCodeIAMRole743E81A5"
    ],
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/ResumeDataSource/Resource"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/AccessCodeDataSource/Resource"
    }
   },
-  "QuerygetResumeauth0FunctionQuerygetResumeauth0FunctionAppSyncFunctionC741C4CF": {
+  "QuerygetAccessCodeauth0FunctionQuerygetAccessCodeauth0FunctionAppSyncFunction99ACF20C": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -611,7 +611,7 @@
      "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "QuerygetResumeauth0Function",
+    "Name": "QuerygetAccessCodeauth0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/88d5b7081b0dc9c39fd0bffedf56f011b2a7cf1ce5cc227f47a1e94efee8067c.vtl"
     },
@@ -620,10 +620,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/QuerygetResumeauth0Function/QuerygetResumeauth0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/QuerygetAccessCodeauth0Function/QuerygetAccessCodeauth0Function.AppSyncFunction"
    }
   },
-  "QuerygetResumepostAuth0FunctionQuerygetResumepostAuth0FunctionAppSyncFunction1890993D": {
+  "QuerygetAccessCodepostAuth0FunctionQuerygetAccessCodepostAuth0FunctionAppSyncFunction69CFA54C": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -633,7 +633,7 @@
      "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "QuerygetResumepostAuth0Function",
+    "Name": "QuerygetAccessCodepostAuth0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
     },
@@ -642,10 +642,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/QuerygetResumepostAuth0Function/QuerygetResumepostAuth0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/QuerygetAccessCodepostAuth0Function/QuerygetAccessCodepostAuth0Function.AppSyncFunction"
    }
   },
-  "QueryGetResumeDataResolverFnQueryGetResumeDataResolverFnAppSyncFunctionD4792A66": {
+  "QueryGetAccessCodeDataResolverFnQueryGetAccessCodeDataResolverFnAppSyncFunctionCD6DB58C": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -653,12 +653,12 @@
     },
     "DataSourceName": {
      "Fn::GetAtt": [
-      "ResumeDataSource",
+      "AccessCodeDataSource",
       "Name"
      ]
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "QueryGetResumeDataResolverFn",
+    "Name": "QueryGetAccessCodeDataResolverFn",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/08f4d557693d96c1a4efba0f9dc91330e4b19772fd5477c156468843e3d9cb5e.vtl"
     },
@@ -667,39 +667,39 @@
     }
    },
    "DependsOn": [
-    "ResumeDataSource"
+    "AccessCodeDataSource"
    ],
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/QueryGetResumeDataResolverFn/QueryGetResumeDataResolverFn.AppSyncFunction"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/QueryGetAccessCodeDataResolverFn/QueryGetAccessCodeDataResolverFn.AppSyncFunction"
    }
   },
-  "GetResumeResolver": {
+  "GetAccessCodeResolver": {
    "Type": "AWS::AppSync::Resolver",
    "Properties": {
     "ApiId": {
      "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
     },
-    "FieldName": "getResume",
+    "FieldName": "getAccessCode",
     "Kind": "PIPELINE",
     "PipelineConfig": {
      "Functions": [
       {
        "Fn::GetAtt": [
-        "QuerygetResumeauth0FunctionQuerygetResumeauth0FunctionAppSyncFunctionC741C4CF",
+        "QuerygetAccessCodeauth0FunctionQuerygetAccessCodeauth0FunctionAppSyncFunction99ACF20C",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "QuerygetResumepostAuth0FunctionQuerygetResumepostAuth0FunctionAppSyncFunction1890993D",
+        "QuerygetAccessCodepostAuth0FunctionQuerygetAccessCodepostAuth0FunctionAppSyncFunction69CFA54C",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "QueryGetResumeDataResolverFnQueryGetResumeDataResolverFnAppSyncFunctionD4792A66",
+        "QueryGetAccessCodeDataResolverFnQueryGetAccessCodeDataResolverFnAppSyncFunctionCD6DB58C",
         "FunctionId"
        ]
       }
@@ -709,7 +709,7 @@
      "Fn::Join": [
       "",
       [
-       "$util.qr($ctx.stash.put(\"typeName\", \"Query\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"getResume\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       "$util.qr($ctx.stash.put(\"typeName\", \"Query\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"getAccessCode\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
        {
         "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
        },
@@ -728,7 +728,7 @@
                ":",
                {
                 "Fn::GetAtt": [
-                 "ResumeTable",
+                 "AccessCodeTable",
                  "TableArn"
                 ]
                }
@@ -778,10 +778,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/queryGetResumeResolver"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/queryGetAccessCodeResolver"
    }
   },
-  "QuerylistResumesauth0FunctionQuerylistResumesauth0FunctionAppSyncFunction3D430F76": {
+  "QuerylistAccessCodesauth0FunctionQuerylistAccessCodesauth0FunctionAppSyncFunction7F277B67": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -791,7 +791,7 @@
      "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "QuerylistResumesauth0Function",
+    "Name": "QuerylistAccessCodesauth0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/88d5b7081b0dc9c39fd0bffedf56f011b2a7cf1ce5cc227f47a1e94efee8067c.vtl"
     },
@@ -800,10 +800,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/QuerylistResumesauth0Function/QuerylistResumesauth0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/QuerylistAccessCodesauth0Function/QuerylistAccessCodesauth0Function.AppSyncFunction"
    }
   },
-  "QuerylistResumespostAuth0FunctionQuerylistResumespostAuth0FunctionAppSyncFunction17330EFD": {
+  "QuerylistAccessCodespostAuth0FunctionQuerylistAccessCodespostAuth0FunctionAppSyncFunction09508337": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -813,7 +813,7 @@
      "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "QuerylistResumespostAuth0Function",
+    "Name": "QuerylistAccessCodespostAuth0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
     },
@@ -822,10 +822,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/QuerylistResumespostAuth0Function/QuerylistResumespostAuth0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/QuerylistAccessCodespostAuth0Function/QuerylistAccessCodespostAuth0Function.AppSyncFunction"
    }
   },
-  "QueryListResumesDataResolverFnQueryListResumesDataResolverFnAppSyncFunctionE7E3CB7E": {
+  "QueryListAccessCodesDataResolverFnQueryListAccessCodesDataResolverFnAppSyncFunction2A86D32B": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -833,12 +833,12 @@
     },
     "DataSourceName": {
      "Fn::GetAtt": [
-      "ResumeDataSource",
+      "AccessCodeDataSource",
       "Name"
      ]
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "QueryListResumesDataResolverFn",
+    "Name": "QueryListAccessCodesDataResolverFn",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/9fcbe070ecd3023c5bf5b966fa9584757db9762eef123bad0820bd87591b2174.vtl"
     },
@@ -847,39 +847,39 @@
     }
    },
    "DependsOn": [
-    "ResumeDataSource"
+    "AccessCodeDataSource"
    ],
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/QueryListResumesDataResolverFn/QueryListResumesDataResolverFn.AppSyncFunction"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/QueryListAccessCodesDataResolverFn/QueryListAccessCodesDataResolverFn.AppSyncFunction"
    }
   },
-  "ListResumeResolver": {
+  "ListAccessCodeResolver": {
    "Type": "AWS::AppSync::Resolver",
    "Properties": {
     "ApiId": {
      "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
     },
-    "FieldName": "listResumes",
+    "FieldName": "listAccessCodes",
     "Kind": "PIPELINE",
     "PipelineConfig": {
      "Functions": [
       {
        "Fn::GetAtt": [
-        "QuerylistResumesauth0FunctionQuerylistResumesauth0FunctionAppSyncFunction3D430F76",
+        "QuerylistAccessCodesauth0FunctionQuerylistAccessCodesauth0FunctionAppSyncFunction7F277B67",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "QuerylistResumespostAuth0FunctionQuerylistResumespostAuth0FunctionAppSyncFunction17330EFD",
+        "QuerylistAccessCodespostAuth0FunctionQuerylistAccessCodespostAuth0FunctionAppSyncFunction09508337",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "QueryListResumesDataResolverFnQueryListResumesDataResolverFnAppSyncFunctionE7E3CB7E",
+        "QueryListAccessCodesDataResolverFnQueryListAccessCodesDataResolverFnAppSyncFunction2A86D32B",
         "FunctionId"
        ]
       }
@@ -889,7 +889,7 @@
      "Fn::Join": [
       "",
       [
-       "$util.qr($ctx.stash.put(\"typeName\", \"Query\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"listResumes\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       "$util.qr($ctx.stash.put(\"typeName\", \"Query\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"listAccessCodes\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
        {
         "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
        },
@@ -908,7 +908,7 @@
                ":",
                {
                 "Fn::GetAtt": [
-                 "ResumeTable",
+                 "AccessCodeTable",
                  "TableArn"
                 ]
                }
@@ -958,10 +958,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/queryListResumesResolver"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/queryListAccessCodesResolver"
    }
   },
-  "MutationcreateResumeinit0FunctionMutationcreateResumeinit0FunctionAppSyncFunction3D11484B": {
+  "MutationcreateAccessCodeinit0FunctionMutationcreateAccessCodeinit0FunctionAppSyncFunctionDD781D8A": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -971,7 +971,7 @@
      "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "MutationcreateResumeinit0Function",
+    "Name": "MutationcreateAccessCodeinit0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/a183ddccbd956316c38ef97177b8f088ef0826f62023323f5ae6053d348ccffc.vtl"
     },
@@ -980,10 +980,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/MutationcreateResumeinit0Function/MutationcreateResumeinit0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/MutationcreateAccessCodeinit0Function/MutationcreateAccessCodeinit0Function.AppSyncFunction"
    }
   },
-  "MutationcreateResumeauth0FunctionMutationcreateResumeauth0FunctionAppSyncFunction6E1B39FA": {
+  "MutationcreateAccessCodeinit1FunctionMutationcreateAccessCodeinit1FunctionAppSyncFunction13D96DCF": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -993,7 +993,29 @@
      "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "MutationcreateResumeauth0Function",
+    "Name": "MutationcreateAccessCodeinit1Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c72c39255eebfdc3584d7ec93887db45fac6be8488fd173ca713236731cab050.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/MutationcreateAccessCodeinit1Function/MutationcreateAccessCodeinit1Function.AppSyncFunction"
+   }
+  },
+  "MutationcreateAccessCodeauth0FunctionMutationcreateAccessCodeauth0FunctionAppSyncFunctionAF7B86A1": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationcreateAccessCodeauth0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/b371d68ddfbdd11b176756ce33b2c4e79d26fcc2fd4b7c0c9e75d06efacee90e.vtl"
     },
@@ -1002,10 +1024,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/MutationcreateResumeauth0Function/MutationcreateResumeauth0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/MutationcreateAccessCodeauth0Function/MutationcreateAccessCodeauth0Function.AppSyncFunction"
    }
   },
-  "MutationcreateResumepostAuth0FunctionMutationcreateResumepostAuth0FunctionAppSyncFunction6272AB36": {
+  "MutationcreateAccessCodepostAuth0FunctionMutationcreateAccessCodepostAuth0FunctionAppSyncFunction429D4602": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -1015,7 +1037,7 @@
      "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "MutationcreateResumepostAuth0Function",
+    "Name": "MutationcreateAccessCodepostAuth0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
     },
@@ -1024,10 +1046,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/MutationcreateResumepostAuth0Function/MutationcreateResumepostAuth0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/MutationcreateAccessCodepostAuth0Function/MutationcreateAccessCodepostAuth0Function.AppSyncFunction"
    }
   },
-  "MutationCreateResumeDataResolverFnMutationCreateResumeDataResolverFnAppSyncFunctionC1606493": {
+  "MutationCreateAccessCodeDataResolverFnMutationCreateAccessCodeDataResolverFnAppSyncFunction51821FF1": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -1035,59 +1057,65 @@
     },
     "DataSourceName": {
      "Fn::GetAtt": [
-      "ResumeDataSource",
+      "AccessCodeDataSource",
       "Name"
      ]
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "MutationCreateResumeDataResolverFn",
+    "Name": "MutationCreateAccessCodeDataResolverFn",
     "RequestMappingTemplateS3Location": {
-     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/b1209ffb2923789789e7673416c0eeb1f303d95beb6f591f4eae005fe74b6b76.vtl"
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c145a61c04dcef7be0de77f8c93598aa153dbae38d2513733bc4c09cff5d7311.vtl"
     },
     "ResponseMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/f4a52b72209a9dfa197b5e7367a5c378c5bb86de6e29ddd9e48b49a3fe54b249.vtl"
     }
    },
    "DependsOn": [
-    "ResumeDataSource"
+    "AccessCodeDataSource"
    ],
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/MutationCreateResumeDataResolverFn/MutationCreateResumeDataResolverFn.AppSyncFunction"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/MutationCreateAccessCodeDataResolverFn/MutationCreateAccessCodeDataResolverFn.AppSyncFunction"
    }
   },
-  "CreateResumeResolver": {
+  "CreateAccessCodeResolver": {
    "Type": "AWS::AppSync::Resolver",
    "Properties": {
     "ApiId": {
      "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
     },
-    "FieldName": "createResume",
+    "FieldName": "createAccessCode",
     "Kind": "PIPELINE",
     "PipelineConfig": {
      "Functions": [
       {
        "Fn::GetAtt": [
-        "MutationcreateResumeinit0FunctionMutationcreateResumeinit0FunctionAppSyncFunction3D11484B",
+        "MutationcreateAccessCodeinit0FunctionMutationcreateAccessCodeinit0FunctionAppSyncFunctionDD781D8A",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "MutationcreateResumeauth0FunctionMutationcreateResumeauth0FunctionAppSyncFunction6E1B39FA",
+        "MutationcreateAccessCodeinit1FunctionMutationcreateAccessCodeinit1FunctionAppSyncFunction13D96DCF",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "MutationcreateResumepostAuth0FunctionMutationcreateResumepostAuth0FunctionAppSyncFunction6272AB36",
+        "MutationcreateAccessCodeauth0FunctionMutationcreateAccessCodeauth0FunctionAppSyncFunctionAF7B86A1",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "MutationCreateResumeDataResolverFnMutationCreateResumeDataResolverFnAppSyncFunctionC1606493",
+        "MutationcreateAccessCodepostAuth0FunctionMutationcreateAccessCodepostAuth0FunctionAppSyncFunction429D4602",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "MutationCreateAccessCodeDataResolverFnMutationCreateAccessCodeDataResolverFnAppSyncFunction51821FF1",
         "FunctionId"
        ]
       }
@@ -1097,7 +1125,7 @@
      "Fn::Join": [
       "",
       [
-       "$util.qr($ctx.stash.put(\"typeName\", \"Mutation\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"createResume\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       "$util.qr($ctx.stash.put(\"typeName\", \"Mutation\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"createAccessCode\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
        {
         "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
        },
@@ -1116,7 +1144,7 @@
                ":",
                {
                 "Fn::GetAtt": [
-                 "ResumeTable",
+                 "AccessCodeTable",
                  "TableArn"
                 ]
                }
@@ -1166,10 +1194,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/mutationCreateResumeResolver"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/mutationCreateAccessCodeResolver"
    }
   },
-  "MutationupdateResumeinit0FunctionMutationupdateResumeinit0FunctionAppSyncFunctionAE327CCA": {
+  "MutationupdateAccessCodeinit0FunctionMutationupdateAccessCodeinit0FunctionAppSyncFunction27C5D790": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -1179,7 +1207,7 @@
      "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "MutationupdateResumeinit0Function",
+    "Name": "MutationupdateAccessCodeinit0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/06db846fd14e6fc371f22b12b5545ba8e2dbfeda85d8c8d586c71c282166657b.vtl"
     },
@@ -1188,10 +1216,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/MutationupdateResumeinit0Function/MutationupdateResumeinit0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/MutationupdateAccessCodeinit0Function/MutationupdateAccessCodeinit0Function.AppSyncFunction"
    }
   },
-  "MutationupdateResumeauth0FunctionMutationupdateResumeauth0FunctionAppSyncFunction6F5A4084": {
+  "MutationupdateAccessCodeauth0FunctionMutationupdateAccessCodeauth0FunctionAppSyncFunctionBFE3C1D6": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -1199,12 +1227,12 @@
     },
     "DataSourceName": {
      "Fn::GetAtt": [
-      "ResumeDataSource",
+      "AccessCodeDataSource",
       "Name"
      ]
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "MutationupdateResumeauth0Function",
+    "Name": "MutationupdateAccessCodeauth0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/1f5fed297da9c32ae3af922bf3a38ccf23b956078887d16891ec06c20c64722c.vtl"
     },
@@ -1213,15 +1241,15 @@
     }
    },
    "DependsOn": [
-    "ResumeDataSource"
+    "AccessCodeDataSource"
    ],
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/MutationupdateResumeauth0Function/MutationupdateResumeauth0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/MutationupdateAccessCodeauth0Function/MutationupdateAccessCodeauth0Function.AppSyncFunction"
    }
   },
-  "MutationupdateResumepostAuth0FunctionMutationupdateResumepostAuth0FunctionAppSyncFunctionA672C075": {
+  "MutationupdateAccessCodepostAuth0FunctionMutationupdateAccessCodepostAuth0FunctionAppSyncFunction145354CF": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -1231,7 +1259,7 @@
      "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "MutationupdateResumepostAuth0Function",
+    "Name": "MutationupdateAccessCodepostAuth0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
     },
@@ -1240,10 +1268,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/MutationupdateResumepostAuth0Function/MutationupdateResumepostAuth0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/MutationupdateAccessCodepostAuth0Function/MutationupdateAccessCodepostAuth0Function.AppSyncFunction"
    }
   },
-  "MutationUpdateResumeDataResolverFnMutationUpdateResumeDataResolverFnAppSyncFunction12A3BBD5": {
+  "MutationUpdateAccessCodeDataResolverFnMutationUpdateAccessCodeDataResolverFnAppSyncFunction57548314": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -1251,12 +1279,12 @@
     },
     "DataSourceName": {
      "Fn::GetAtt": [
-      "ResumeDataSource",
+      "AccessCodeDataSource",
       "Name"
      ]
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "MutationUpdateResumeDataResolverFn",
+    "Name": "MutationUpdateAccessCodeDataResolverFn",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/474bf0776ec2164a13191d1a0a9e057154931e4918fea5086f49850d02a5371b.vtl"
     },
@@ -1265,45 +1293,45 @@
     }
    },
    "DependsOn": [
-    "ResumeDataSource"
+    "AccessCodeDataSource"
    ],
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/MutationUpdateResumeDataResolverFn/MutationUpdateResumeDataResolverFn.AppSyncFunction"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/MutationUpdateAccessCodeDataResolverFn/MutationUpdateAccessCodeDataResolverFn.AppSyncFunction"
    }
   },
-  "UpdateResumeResolver": {
+  "UpdateAccessCodeResolver": {
    "Type": "AWS::AppSync::Resolver",
    "Properties": {
     "ApiId": {
      "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
     },
-    "FieldName": "updateResume",
+    "FieldName": "updateAccessCode",
     "Kind": "PIPELINE",
     "PipelineConfig": {
      "Functions": [
       {
        "Fn::GetAtt": [
-        "MutationupdateResumeinit0FunctionMutationupdateResumeinit0FunctionAppSyncFunctionAE327CCA",
+        "MutationupdateAccessCodeinit0FunctionMutationupdateAccessCodeinit0FunctionAppSyncFunction27C5D790",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "MutationupdateResumeauth0FunctionMutationupdateResumeauth0FunctionAppSyncFunction6F5A4084",
+        "MutationupdateAccessCodeauth0FunctionMutationupdateAccessCodeauth0FunctionAppSyncFunctionBFE3C1D6",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "MutationupdateResumepostAuth0FunctionMutationupdateResumepostAuth0FunctionAppSyncFunctionA672C075",
+        "MutationupdateAccessCodepostAuth0FunctionMutationupdateAccessCodepostAuth0FunctionAppSyncFunction145354CF",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "MutationUpdateResumeDataResolverFnMutationUpdateResumeDataResolverFnAppSyncFunction12A3BBD5",
+        "MutationUpdateAccessCodeDataResolverFnMutationUpdateAccessCodeDataResolverFnAppSyncFunction57548314",
         "FunctionId"
        ]
       }
@@ -1313,7 +1341,7 @@
      "Fn::Join": [
       "",
       [
-       "$util.qr($ctx.stash.put(\"typeName\", \"Mutation\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"updateResume\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       "$util.qr($ctx.stash.put(\"typeName\", \"Mutation\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"updateAccessCode\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
        {
         "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
        },
@@ -1332,7 +1360,7 @@
                ":",
                {
                 "Fn::GetAtt": [
-                 "ResumeTable",
+                 "AccessCodeTable",
                  "TableArn"
                 ]
                }
@@ -1382,10 +1410,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/mutationUpdateResumeResolver"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/mutationUpdateAccessCodeResolver"
    }
   },
-  "MutationdeleteResumeauth0FunctionMutationdeleteResumeauth0FunctionAppSyncFunction448ECF1D": {
+  "MutationdeleteAccessCodeauth0FunctionMutationdeleteAccessCodeauth0FunctionAppSyncFunction9AA4D6BC": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -1393,12 +1421,12 @@
     },
     "DataSourceName": {
      "Fn::GetAtt": [
-      "ResumeDataSource",
+      "AccessCodeDataSource",
       "Name"
      ]
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "MutationdeleteResumeauth0Function",
+    "Name": "MutationdeleteAccessCodeauth0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/1f5fed297da9c32ae3af922bf3a38ccf23b956078887d16891ec06c20c64722c.vtl"
     },
@@ -1407,15 +1435,15 @@
     }
    },
    "DependsOn": [
-    "ResumeDataSource"
+    "AccessCodeDataSource"
    ],
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/MutationdeleteResumeauth0Function/MutationdeleteResumeauth0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/MutationdeleteAccessCodeauth0Function/MutationdeleteAccessCodeauth0Function.AppSyncFunction"
    }
   },
-  "MutationdeleteResumepostAuth0FunctionMutationdeleteResumepostAuth0FunctionAppSyncFunction4017A857": {
+  "MutationdeleteAccessCodepostAuth0FunctionMutationdeleteAccessCodepostAuth0FunctionAppSyncFunction6BE599B2": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -1425,7 +1453,7 @@
      "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "MutationdeleteResumepostAuth0Function",
+    "Name": "MutationdeleteAccessCodepostAuth0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
     },
@@ -1434,10 +1462,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/MutationdeleteResumepostAuth0Function/MutationdeleteResumepostAuth0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/MutationdeleteAccessCodepostAuth0Function/MutationdeleteAccessCodepostAuth0Function.AppSyncFunction"
    }
   },
-  "MutationDeleteResumeDataResolverFnMutationDeleteResumeDataResolverFnAppSyncFunction5BA91E54": {
+  "MutationDeleteAccessCodeDataResolverFnMutationDeleteAccessCodeDataResolverFnAppSyncFunction670A64E1": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -1445,12 +1473,12 @@
     },
     "DataSourceName": {
      "Fn::GetAtt": [
-      "ResumeDataSource",
+      "AccessCodeDataSource",
       "Name"
      ]
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "MutationDeleteResumeDataResolverFn",
+    "Name": "MutationDeleteAccessCodeDataResolverFn",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/4f7907d1209a2c9953a0c053df402c634e359546d70c7cc5c2e8e21ea734880f.vtl"
     },
@@ -1459,39 +1487,39 @@
     }
    },
    "DependsOn": [
-    "ResumeDataSource"
+    "AccessCodeDataSource"
    ],
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/MutationDeleteResumeDataResolverFn/MutationDeleteResumeDataResolverFn.AppSyncFunction"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/MutationDeleteAccessCodeDataResolverFn/MutationDeleteAccessCodeDataResolverFn.AppSyncFunction"
    }
   },
-  "DeleteResumeResolver": {
+  "DeleteAccessCodeResolver": {
    "Type": "AWS::AppSync::Resolver",
    "Properties": {
     "ApiId": {
      "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
     },
-    "FieldName": "deleteResume",
+    "FieldName": "deleteAccessCode",
     "Kind": "PIPELINE",
     "PipelineConfig": {
      "Functions": [
       {
        "Fn::GetAtt": [
-        "MutationdeleteResumeauth0FunctionMutationdeleteResumeauth0FunctionAppSyncFunction448ECF1D",
+        "MutationdeleteAccessCodeauth0FunctionMutationdeleteAccessCodeauth0FunctionAppSyncFunction9AA4D6BC",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "MutationdeleteResumepostAuth0FunctionMutationdeleteResumepostAuth0FunctionAppSyncFunction4017A857",
+        "MutationdeleteAccessCodepostAuth0FunctionMutationdeleteAccessCodepostAuth0FunctionAppSyncFunction6BE599B2",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "MutationDeleteResumeDataResolverFnMutationDeleteResumeDataResolverFnAppSyncFunction5BA91E54",
+        "MutationDeleteAccessCodeDataResolverFnMutationDeleteAccessCodeDataResolverFnAppSyncFunction670A64E1",
         "FunctionId"
        ]
       }
@@ -1501,7 +1529,7 @@
      "Fn::Join": [
       "",
       [
-       "$util.qr($ctx.stash.put(\"typeName\", \"Mutation\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"deleteResume\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       "$util.qr($ctx.stash.put(\"typeName\", \"Mutation\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"deleteAccessCode\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
        {
         "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
        },
@@ -1520,7 +1548,7 @@
                ":",
                {
                 "Fn::GetAtt": [
-                 "ResumeTable",
+                 "AccessCodeTable",
                  "TableArn"
                 ]
                }
@@ -1570,10 +1598,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/mutationDeleteResumeResolver"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/mutationDeleteAccessCodeResolver"
    }
   },
-  "SubscriptiononCreateResumeauth0FunctionSubscriptiononCreateResumeauth0FunctionAppSyncFunction1F124268": {
+  "SubscriptiononCreateAccessCodeauth0FunctionSubscriptiononCreateAccessCodeauth0FunctionAppSyncFunctionDC8CFE65": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -1583,7 +1611,7 @@
      "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "SubscriptiononCreateResumeauth0Function",
+    "Name": "SubscriptiononCreateAccessCodeauth0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/6f3a2a9d562ae3058cc1aed6741edbf5edcaef7b3df7b03f52478816a1c95ffb.vtl"
     },
@@ -1592,10 +1620,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/SubscriptiononCreateResumeauth0Function/SubscriptiononCreateResumeauth0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/SubscriptiononCreateAccessCodeauth0Function/SubscriptiononCreateAccessCodeauth0Function.AppSyncFunction"
    }
   },
-  "SubscriptiononCreateResumepostAuth0FunctionSubscriptiononCreateResumepostAuth0FunctionAppSyncFunction57263B8D": {
+  "SubscriptiononCreateAccessCodepostAuth0FunctionSubscriptiononCreateAccessCodepostAuth0FunctionAppSyncFunction475329FD": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -1605,7 +1633,7 @@
      "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "SubscriptiononCreateResumepostAuth0Function",
+    "Name": "SubscriptiononCreateAccessCodepostAuth0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
     },
@@ -1614,10 +1642,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/SubscriptiononCreateResumepostAuth0Function/SubscriptiononCreateResumepostAuth0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/SubscriptiononCreateAccessCodepostAuth0Function/SubscriptiononCreateAccessCodepostAuth0Function.AppSyncFunction"
    }
   },
-  "SubscriptionOnCreateResumeDataResolverFnSubscriptionOnCreateResumeDataResolverFnAppSyncFunctionB4C97BB0": {
+  "SubscriptionOnCreateAccessCodeDataResolverFnSubscriptionOnCreateAccessCodeDataResolverFnAppSyncFunction9CF3F59F": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -1627,7 +1655,7 @@
      "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "SubscriptionOnCreateResumeDataResolverFn",
+    "Name": "SubscriptionOnCreateAccessCodeDataResolverFn",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/fe3c43ada4b9d681a5e2312663ef7a73386424d73b73e51f8e2e9d4b50f7c502.vtl"
     },
@@ -1638,34 +1666,34 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/SubscriptionOnCreateResumeDataResolverFn/SubscriptionOnCreateResumeDataResolverFn.AppSyncFunction"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/SubscriptionOnCreateAccessCodeDataResolverFn/SubscriptionOnCreateAccessCodeDataResolverFn.AppSyncFunction"
    }
   },
-  "SubscriptiononCreateResumeResolver": {
+  "SubscriptiononCreateAccessCodeResolver": {
    "Type": "AWS::AppSync::Resolver",
    "Properties": {
     "ApiId": {
      "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
     },
-    "FieldName": "onCreateResume",
+    "FieldName": "onCreateAccessCode",
     "Kind": "PIPELINE",
     "PipelineConfig": {
      "Functions": [
       {
        "Fn::GetAtt": [
-        "SubscriptiononCreateResumeauth0FunctionSubscriptiononCreateResumeauth0FunctionAppSyncFunction1F124268",
+        "SubscriptiononCreateAccessCodeauth0FunctionSubscriptiononCreateAccessCodeauth0FunctionAppSyncFunctionDC8CFE65",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "SubscriptiononCreateResumepostAuth0FunctionSubscriptiononCreateResumepostAuth0FunctionAppSyncFunction57263B8D",
+        "SubscriptiononCreateAccessCodepostAuth0FunctionSubscriptiononCreateAccessCodepostAuth0FunctionAppSyncFunction475329FD",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "SubscriptionOnCreateResumeDataResolverFnSubscriptionOnCreateResumeDataResolverFnAppSyncFunctionB4C97BB0",
+        "SubscriptionOnCreateAccessCodeDataResolverFnSubscriptionOnCreateAccessCodeDataResolverFnAppSyncFunction9CF3F59F",
         "FunctionId"
        ]
       }
@@ -1675,7 +1703,7 @@
      "Fn::Join": [
       "",
       [
-       "$util.qr($ctx.stash.put(\"typeName\", \"Subscription\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"onCreateResume\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"NONE\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       "$util.qr($ctx.stash.put(\"typeName\", \"Subscription\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"onCreateAccessCode\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"NONE\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
        {
         "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
        },
@@ -1717,10 +1745,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/subscriptionOnCreateResumeResolver"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/subscriptionOnCreateAccessCodeResolver"
    }
   },
-  "SubscriptiononUpdateResumeauth0FunctionSubscriptiononUpdateResumeauth0FunctionAppSyncFunction2CFF0D2B": {
+  "SubscriptiononUpdateAccessCodeauth0FunctionSubscriptiononUpdateAccessCodeauth0FunctionAppSyncFunction4F3DB8BA": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -1730,7 +1758,7 @@
      "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "SubscriptiononUpdateResumeauth0Function",
+    "Name": "SubscriptiononUpdateAccessCodeauth0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/6f3a2a9d562ae3058cc1aed6741edbf5edcaef7b3df7b03f52478816a1c95ffb.vtl"
     },
@@ -1739,10 +1767,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/SubscriptiononUpdateResumeauth0Function/SubscriptiononUpdateResumeauth0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/SubscriptiononUpdateAccessCodeauth0Function/SubscriptiononUpdateAccessCodeauth0Function.AppSyncFunction"
    }
   },
-  "SubscriptiononUpdateResumepostAuth0FunctionSubscriptiononUpdateResumepostAuth0FunctionAppSyncFunction3AD01365": {
+  "SubscriptiononUpdateAccessCodepostAuth0FunctionSubscriptiononUpdateAccessCodepostAuth0FunctionAppSyncFunctionBACC7EFC": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -1752,7 +1780,7 @@
      "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "SubscriptiononUpdateResumepostAuth0Function",
+    "Name": "SubscriptiononUpdateAccessCodepostAuth0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
     },
@@ -1761,10 +1789,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/SubscriptiononUpdateResumepostAuth0Function/SubscriptiononUpdateResumepostAuth0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/SubscriptiononUpdateAccessCodepostAuth0Function/SubscriptiononUpdateAccessCodepostAuth0Function.AppSyncFunction"
    }
   },
-  "SubscriptionOnUpdateResumeDataResolverFnSubscriptionOnUpdateResumeDataResolverFnAppSyncFunctionDCC695C7": {
+  "SubscriptionOnUpdateAccessCodeDataResolverFnSubscriptionOnUpdateAccessCodeDataResolverFnAppSyncFunctionEE5DE55C": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -1774,7 +1802,7 @@
      "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "SubscriptionOnUpdateResumeDataResolverFn",
+    "Name": "SubscriptionOnUpdateAccessCodeDataResolverFn",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/fe3c43ada4b9d681a5e2312663ef7a73386424d73b73e51f8e2e9d4b50f7c502.vtl"
     },
@@ -1785,34 +1813,34 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/SubscriptionOnUpdateResumeDataResolverFn/SubscriptionOnUpdateResumeDataResolverFn.AppSyncFunction"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/SubscriptionOnUpdateAccessCodeDataResolverFn/SubscriptionOnUpdateAccessCodeDataResolverFn.AppSyncFunction"
    }
   },
-  "SubscriptiononUpdateResumeResolver": {
+  "SubscriptiononUpdateAccessCodeResolver": {
    "Type": "AWS::AppSync::Resolver",
    "Properties": {
     "ApiId": {
      "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
     },
-    "FieldName": "onUpdateResume",
+    "FieldName": "onUpdateAccessCode",
     "Kind": "PIPELINE",
     "PipelineConfig": {
      "Functions": [
       {
        "Fn::GetAtt": [
-        "SubscriptiononUpdateResumeauth0FunctionSubscriptiononUpdateResumeauth0FunctionAppSyncFunction2CFF0D2B",
+        "SubscriptiononUpdateAccessCodeauth0FunctionSubscriptiononUpdateAccessCodeauth0FunctionAppSyncFunction4F3DB8BA",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "SubscriptiononUpdateResumepostAuth0FunctionSubscriptiononUpdateResumepostAuth0FunctionAppSyncFunction3AD01365",
+        "SubscriptiononUpdateAccessCodepostAuth0FunctionSubscriptiononUpdateAccessCodepostAuth0FunctionAppSyncFunctionBACC7EFC",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "SubscriptionOnUpdateResumeDataResolverFnSubscriptionOnUpdateResumeDataResolverFnAppSyncFunctionDCC695C7",
+        "SubscriptionOnUpdateAccessCodeDataResolverFnSubscriptionOnUpdateAccessCodeDataResolverFnAppSyncFunctionEE5DE55C",
         "FunctionId"
        ]
       }
@@ -1822,7 +1850,7 @@
      "Fn::Join": [
       "",
       [
-       "$util.qr($ctx.stash.put(\"typeName\", \"Subscription\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"onUpdateResume\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"NONE\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       "$util.qr($ctx.stash.put(\"typeName\", \"Subscription\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"onUpdateAccessCode\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"NONE\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
        {
         "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
        },
@@ -1864,10 +1892,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/subscriptionOnUpdateResumeResolver"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/subscriptionOnUpdateAccessCodeResolver"
    }
   },
-  "SubscriptiononDeleteResumeauth0FunctionSubscriptiononDeleteResumeauth0FunctionAppSyncFunction801C0942": {
+  "SubscriptiononDeleteAccessCodeauth0FunctionSubscriptiononDeleteAccessCodeauth0FunctionAppSyncFunction8DC6E746": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -1877,7 +1905,7 @@
      "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "SubscriptiononDeleteResumeauth0Function",
+    "Name": "SubscriptiononDeleteAccessCodeauth0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/6f3a2a9d562ae3058cc1aed6741edbf5edcaef7b3df7b03f52478816a1c95ffb.vtl"
     },
@@ -1886,10 +1914,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/SubscriptiononDeleteResumeauth0Function/SubscriptiononDeleteResumeauth0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/SubscriptiononDeleteAccessCodeauth0Function/SubscriptiononDeleteAccessCodeauth0Function.AppSyncFunction"
    }
   },
-  "SubscriptiononDeleteResumepostAuth0FunctionSubscriptiononDeleteResumepostAuth0FunctionAppSyncFunction166F4928": {
+  "SubscriptiononDeleteAccessCodepostAuth0FunctionSubscriptiononDeleteAccessCodepostAuth0FunctionAppSyncFunction8862ED09": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -1899,7 +1927,7 @@
      "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "SubscriptiononDeleteResumepostAuth0Function",
+    "Name": "SubscriptiononDeleteAccessCodepostAuth0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
     },
@@ -1908,10 +1936,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/SubscriptiononDeleteResumepostAuth0Function/SubscriptiononDeleteResumepostAuth0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/SubscriptiononDeleteAccessCodepostAuth0Function/SubscriptiononDeleteAccessCodepostAuth0Function.AppSyncFunction"
    }
   },
-  "SubscriptionOnDeleteResumeDataResolverFnSubscriptionOnDeleteResumeDataResolverFnAppSyncFunctionEAC0DB80": {
+  "SubscriptionOnDeleteAccessCodeDataResolverFnSubscriptionOnDeleteAccessCodeDataResolverFnAppSyncFunctionFB277ACC": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -1921,7 +1949,7 @@
      "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPINONEDS4C92C499Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "SubscriptionOnDeleteResumeDataResolverFn",
+    "Name": "SubscriptionOnDeleteAccessCodeDataResolverFn",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/fe3c43ada4b9d681a5e2312663ef7a73386424d73b73e51f8e2e9d4b50f7c502.vtl"
     },
@@ -1932,34 +1960,34 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/SubscriptionOnDeleteResumeDataResolverFn/SubscriptionOnDeleteResumeDataResolverFn.AppSyncFunction"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/SubscriptionOnDeleteAccessCodeDataResolverFn/SubscriptionOnDeleteAccessCodeDataResolverFn.AppSyncFunction"
    }
   },
-  "SubscriptiononDeleteResumeResolver": {
+  "SubscriptiononDeleteAccessCodeResolver": {
    "Type": "AWS::AppSync::Resolver",
    "Properties": {
     "ApiId": {
      "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
     },
-    "FieldName": "onDeleteResume",
+    "FieldName": "onDeleteAccessCode",
     "Kind": "PIPELINE",
     "PipelineConfig": {
      "Functions": [
       {
        "Fn::GetAtt": [
-        "SubscriptiononDeleteResumeauth0FunctionSubscriptiononDeleteResumeauth0FunctionAppSyncFunction801C0942",
+        "SubscriptiononDeleteAccessCodeauth0FunctionSubscriptiononDeleteAccessCodeauth0FunctionAppSyncFunction8DC6E746",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "SubscriptiononDeleteResumepostAuth0FunctionSubscriptiononDeleteResumepostAuth0FunctionAppSyncFunction166F4928",
+        "SubscriptiononDeleteAccessCodepostAuth0FunctionSubscriptiononDeleteAccessCodepostAuth0FunctionAppSyncFunction8862ED09",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "SubscriptionOnDeleteResumeDataResolverFnSubscriptionOnDeleteResumeDataResolverFnAppSyncFunctionEAC0DB80",
+        "SubscriptionOnDeleteAccessCodeDataResolverFnSubscriptionOnDeleteAccessCodeDataResolverFnAppSyncFunctionFB277ACC",
         "FunctionId"
        ]
       }
@@ -1969,7 +1997,7 @@
      "Fn::Join": [
       "",
       [
-       "$util.qr($ctx.stash.put(\"typeName\", \"Subscription\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"onDeleteResume\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"NONE\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       "$util.qr($ctx.stash.put(\"typeName\", \"Subscription\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"onDeleteAccessCode\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"NONE\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
        {
         "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
        },
@@ -2011,7 +2039,7 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/subscriptionOnDeleteResumeResolver"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/subscriptionOnDeleteAccessCodeResolver"
    }
   },
   "CDKMetadata": {
@@ -2020,17 +2048,17 @@
     "Analytics": "v2:deflate64:H4sIAAAAAAAA/1WOwWrDMAyGn6V3R+tSxthxTehxG8nuRbGV4iaRgyW3lJB3H0lHx06/PvQh/Tnk+StsN3iVzLou630D0weJkqsVbWeKlr8w4kBKcYEisPPqA5uKJKRoyRRJNAx/2PJjxqscJ3djHIJr4BubnvYoZDwOMFWhv9uhp9ngOMqNLUzlqpdNiYr14+R/OiS2S4kicOtPKeLa6Pdzf6E4G9kdUYRU4H0JIzvYJ9uRLgXmxf1MOiY167pWPHk+zYaDIzjL0yXfwvMbvGzO4n0WE6sfCKp7/gDouRV5NgEAAA=="
    },
    "Metadata": {
-    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/Resume/CDKMetadata/Default"
+    "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/data/amplifyData/AccessCode/CDKMetadata/Default"
    },
    "Condition": "CDKMetadataAvailable"
   }
  },
  "Outputs": {
-  "GetAttResumeTableStreamArn": {
+  "GetAttAccessCodeTableStreamArn": {
    "Description": "Your DynamoDB table StreamArn.",
    "Value": {
     "Fn::GetAtt": [
-     "ResumeTable",
+     "AccessCodeTable",
      "TableStreamArn"
     ]
    },
@@ -2042,19 +2070,19 @@
        {
         "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
        },
-       "GetAtt:ResumeTable:StreamArn"
+       "GetAtt:AccessCodeTable:StreamArn"
       ]
      ]
     }
    }
   },
-  "GetAttResumeTableName": {
+  "GetAttAccessCodeTableName": {
    "Description": "Your DynamoDB table name.",
    "Value": {
     "Fn::Join": [
      "",
      [
-      "Resume-",
+      "AccessCode-",
       {
        "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
       },
@@ -2070,7 +2098,7 @@
        {
         "Ref": "referencetoamplifymindmyresumeangelmaldonadosandbox3e0615e669dataamplifyDataGraphQLAPI246E009CApiId"
        },
-       "GetAtt:ResumeTable:Name"
+       "GetAtt:AccessCodeTable:Name"
       ]
      ]
     }

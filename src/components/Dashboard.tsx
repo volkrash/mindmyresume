@@ -127,6 +127,9 @@ export default function Dashboard({
         expiresAt: "", // yyyy-mm-dd
     });
 
+    // 🔍 filter for codes
+    const [codesFilter, setCodesFilter] = useState<"all" | "active" | "exhausted">("all");
+
     const previewRef = useRef<HTMLDivElement | null>(null);
 
     const isSpanish = lang === "es";
@@ -180,6 +183,10 @@ export default function Dashboard({
             ? "Crear nuevo código"
             : "Create new code",
         adminRefresh: isSpanish ? "Refrescar lista" : "Refresh list",
+        adminFilterAll: isSpanish ? "Todos" : "All",
+        adminFilterActive: isSpanish ? "Activos" : "Active",
+        adminFilterExhausted: isSpanish ? "Agotados / expirados" : "Exhausted / expired",
+
     };
 
     // Load resumes
@@ -311,88 +318,83 @@ export default function Dashboard({
 
         try {
             setIsRedeeming(true);
-
             const code = redeemCode.trim();
 
-            const { data, errors } = await client.queries.accessCodeByCode({ code });
+            // 🔌 Call the custom query (backed by your Lambda)
+            const { data, errors } = await client.queries.accessByCode({ code });
 
-            if (errors && errors.length > 0) {
-                console.error("accessCodeByCode errors:", errors);
-                const first = errors[0]?.message || "";
-                let msg: string;
+            if (errors?.length) {
+                console.error("accessByCode errors:", errors);
+                const raw = errors[0]?.message || "";
 
-                if (first === "INVALID_CODE") {
-                    msg = isSpanish
-                        ? "Este código no es válido."
-                        : "This code is not valid.";
-                } else if (first === "CODE_EXPIRED") {
-                    msg = isSpanish
-                        ? "Este código ha expirado."
-                        : "This code has expired.";
-                } else if (first === "CODE_ALREADY_USED") {
-                    msg = isSpanish
-                        ? "Este código ya fue utilizado."
-                        : "This code has already been used.";
-                } else {
-                    msg = isSpanish
+                let friendly =
+                    isSpanish
                         ? "Hubo un problema al canjear el código."
                         : "There was a problem redeeming the code.";
+
+                if (raw.includes("INVALID_CODE")) {
+                    friendly = isSpanish
+                        ? "Este código no es válido."
+                        : "This code is not valid.";
+                } else if (raw.includes("CODE_EXPIRED")) {
+                    friendly = isSpanish
+                        ? "Este código ya expiró."
+                        : "This code has expired.";
+                } else if (raw.includes("CODE_EXHAUSTED")) {
+                    friendly = isSpanish
+                        ? "Este código ya se ha utilizado el número máximo de veces."
+                        : "This code has already been used the maximum number of times.";
+                } else if (raw.includes("FAILED_TO_CONSUME_CODE")) {
+                    friendly = isSpanish
+                        ? "No se pudo actualizar el uso del código. Inténtalo de nuevo."
+                        : "Failed to consume the code. Please try again.";
                 }
 
-                alert(msg);
+                alert(friendly);
                 return;
             }
 
             if (!data) {
                 alert(
                     isSpanish
-                        ? "Este código no es válido."
-                        : "This code is not valid."
+                        ? "No se encontró información para este código."
+                        : "No data returned for this code."
                 );
                 return;
             }
 
-            const access: any = data;
-            const days: number = access.days ?? 0;
-            const credits: number = access.credits ?? 0;
+            const grantedDays = data.days ?? 0;
+            const grantedCredits = data.credits ?? 0;
 
-            // 1) Apply / extend unlimited
-            if (days > 0) {
-                const now = new Date();
-                let base = now;
+            // 🕒 Extend unlimited access from whichever is later: now or current expiry
+            const now = new Date();
+            const base =
+                unlimitedExpiresAt && new Date(unlimitedExpiresAt).getTime() > now.getTime()
+                    ? new Date(unlimitedExpiresAt)
+                    : now;
 
-                if (unlimitedExpiresAt) {
-                    const currentExp = new Date(unlimitedExpiresAt);
-                    if (currentExp > now) {
-                        base = currentExp;
-                    }
-                }
+            base.setDate(base.getDate() + grantedDays);
+            const newExpiryIso = base.toISOString();
 
-                base.setDate(base.getDate() + days);
-                const iso = base.toISOString();
+            setHasUnlimited(true);
+            setUnlimitedExpiresAt(newExpiryIso);
+            localStorage.setItem(UNLIMITED_FLAG_KEY, "true");
+            localStorage.setItem(UNLIMITED_EXPIRES_KEY, newExpiryIso);
 
-                setHasUnlimited(true);
-                setUnlimitedExpiresAt(iso);
-                localStorage.setItem(UNLIMITED_FLAG_KEY, "true");
-                localStorage.setItem(UNLIMITED_EXPIRES_KEY, iso);
-            }
-
-            // 2) Add credits
-            if (credits > 0) {
-                const newCredits = rewriteCredits + credits;
-                setRewriteCredits(newCredits);
-                localStorage.setItem(CREDITS_KEY, String(newCredits));
-            }
+            // ➕ Add the credits from the code
+            const updatedCredits = rewriteCredits + grantedCredits;
+            setRewriteCredits(updatedCredits);
+            localStorage.setItem(CREDITS_KEY, String(updatedCredits));
 
             setRedeemCode("");
 
             const successMsg = isSpanish
-                ? `Código canjeado. Se agregaron ${days} días de acceso ilimitado y ${credits} créditos.`
-                : `Code redeemed. Added ${days} days of unlimited access and ${credits} credits.`;
+                ? `Código canjeado. Acceso extendido ${grantedDays} días y ${grantedCredits} créditos añadidos.`
+                : `Code redeemed. Access extended by ${grantedDays} days and ${grantedCredits} credits added.`;
 
             alert(successMsg);
-        } catch (err) {
-            console.error("Error redeeming code:", err);
+        } catch (err: any) {
+            console.error("Error redeeming code via accessByCode:", err);
             alert(
                 isSpanish
                     ? "Hubo un problema al canjear el código."
@@ -815,69 +817,85 @@ export default function Dashboard({
     };
 
     // 🔐 Admin: create new access code
-    const handleCreateAccessCode = async (e: any) => {
+    const handleCreateAccessCode = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!isDevUser) return;
+
+        // basic validation
+        if (!newCodeForm.days || !newCodeForm.credits || !newCodeForm.maxUses) {
+            alert(
+                isSpanish
+                    ? "Días, créditos y usos máximos son obligatorios."
+                    : "Days, credits, and max uses are required."
+            );
+            return;
+        }
 
         try {
-            const codeToUse =
-                newCodeForm.code.trim() || generateRandomCode();
+            setAccessCodesLoading(true);
 
-            const days = Number(newCodeForm.days) || 0;
-            const credits = Number(newCodeForm.credits) || 0;
-            const maxUses = Number(newCodeForm.maxUses) || 1;
+            const rawCode =
+                newCodeForm.code.trim() ||
+                Math.random().toString(36).substring(2, 10).toUpperCase();
 
-            const payload: any = {
-                code: codeToUse,
-                days,
-                credits,
-                maxUses,
-                usedCount: 0,
+            const input: any = {
+                code: rawCode,
+                days: Number(newCodeForm.days),
+                credits: Number(newCodeForm.credits),
+                maxUses: Number(newCodeForm.maxUses),
+                // usedCount: will default to 0 from schema
             };
 
             if (newCodeForm.expiresAt) {
-                const d = new Date(newCodeForm.expiresAt);
-                if (!Number.isNaN(d.getTime())) {
-                    payload.expiresAt = d.toISOString();
-                }
+                const d = new Date(newCodeForm.expiresAt + "T00:00:00.000Z");
+                input.expiresAt = d.toISOString();
             }
 
-            const { data, errors } = await client.models.AccessCode.create(payload);
+            console.log("Creating AccessCode with input:", input);
 
-            if (errors && errors.length) {
-                console.error("AccessCode.create errors:", errors);
+            const result = await (client as any).models.AccessCode.create(input);
+            console.log("AccessCode create result:", result);
+
+            const created = (result as any)?.data || result;
+
+            if (!created || (result as any)?.errors?.length) {
+                console.error("AccessCode create errors:", (result as any)?.errors);
                 alert(
                     isSpanish
-                        ? "Error al crear el código."
-                        : "Error creating access code."
+                        ? "Error al crear el código. Revisa la consola."
+                        : "Error creating code. Check the console."
                 );
                 return;
             }
 
-            if (data) {
-                setAccessCodes((prev) => [data, ...prev]);
-                setNewCodeForm({
-                    code: "",
-                    days: 45,
-                    credits: 10,
-                    maxUses: 1,
-                    expiresAt: "",
-                });
-                alert(
-                    isSpanish
-                        ? `Código creado: ${data.code}`
-                        : `Code created: ${data.code}`
-                );
-            }
-        } catch (err) {
-            console.error("Error creating access code:", err);
+            // Update table immediately
+            setAccessCodes((prev) => [created, ...prev]);
+
+            // Reset form
+            setNewCodeForm({
+                code: "",
+                days: 45,
+                credits: 10,
+                maxUses: 1,
+                expiresAt: "",
+            });
+
             alert(
                 isSpanish
-                    ? "Error al crear el código."
-                    : "Error creating access code."
+                    ? `Código creado: ${created.code}`
+                    : `Code created: ${created.code}`
             );
+        } catch (err) {
+            console.error("Unhandled error creating AccessCode:", err);
+            alert(
+                isSpanish
+                    ? "Hubo un error inesperado al crear el código."
+                    : "There was an unexpected error creating the code."
+            );
+        } finally {
+            setAccessCodesLoading(false);
         }
     };
+
 
     // 🔐 Admin: refresh list
     const handleRefreshAccessCodes = async () => {
@@ -961,8 +979,7 @@ export default function Dashboard({
                         <div
                             style={{ marginTop: "4px", fontSize: "11px", opacity: 0.8 }}
                         >
-                            {t.rewritesLeft}:{" "}
-                            {hasUnlimited ? `∞ (${rewriteCredits})` : rewriteCredits}
+                            {t.rewritesLeft}: {rewriteCredits}
                         </div>
 
                         {/* ⭐ Redeem code mini form */}
@@ -1254,7 +1271,7 @@ export default function Dashboard({
                             borderRadius: "16px",
                             padding: "16px",
                             marginBottom: "24px",
-                            border: "4px dashed red",
+                            border: "1px dashed red",
                         }}
                     >
                         <div
@@ -1277,22 +1294,83 @@ export default function Dashboard({
                                     {t.adminCodesHint}
                                 </p>
                             </div>
-                            <button
-                                type="button"
-                                onClick={handleRefreshAccessCodes}
-                                disabled={accessCodesLoading}
-                                style={{
-                                    padding: "4px 10px",
-                                    borderRadius: "999px",
-                                    border: "1px solid #1f2937",
-                                    backgroundColor: "#020617",
-                                    color: "#e5e7eb",
-                                    fontSize: 11,
-                                    cursor: accessCodesLoading ? "wait" : "pointer",
-                                }}
-                            >
-                                {accessCodesLoading ? "…" : t.adminRefresh}
-                            </button>
+                            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                                {/* Filter controls */}
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        gap: 4,
+                                        padding: "2px",
+                                        borderRadius: 999,
+                                        backgroundColor: "#020617",
+                                        border: "1px solid #1f2937",
+                                        fontSize: 11,
+                                    }}
+                                >
+                                    <button
+                                        type="button"
+                                        onClick={() => setCodesFilter("all")}
+                                        style={{
+                                            padding: "3px 8px",
+                                            borderRadius: 999,
+                                            border: "none",
+                                            cursor: "pointer",
+                                            backgroundColor:
+                                                codesFilter === "all" ? "#1f2937" : "transparent",
+                                            color: "#e5e7eb",
+                                        }}
+                                    >
+                                        {t.adminFilterAll}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setCodesFilter("active")}
+                                        style={{
+                                            padding: "3px 8px",
+                                            borderRadius: 999,
+                                            border: "none",
+                                            cursor: "pointer",
+                                            backgroundColor:
+                                                codesFilter === "active" ? "#16a34a" : "transparent",
+                                            color: codesFilter === "active" ? "#022c22" : "#bbf7d0",
+                                        }}
+                                    >
+                                        {t.adminFilterActive}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setCodesFilter("exhausted")}
+                                        style={{
+                                            padding: "3px 8px",
+                                            borderRadius: 999,
+                                            border: "none",
+                                            cursor: "pointer",
+                                            backgroundColor:
+                                                codesFilter === "exhausted" ? "#7f1d1d" : "transparent",
+                                            color: codesFilter === "exhausted" ? "#fee2e2" : "#fecaca",
+                                        }}
+                                    >
+                                        {t.adminFilterExhausted}
+                                    </button>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    onClick={handleRefreshAccessCodes}
+                                    disabled={accessCodesLoading}
+                                    style={{
+                                        padding: "4px 10px",
+                                        borderRadius: "999px",
+                                        border: "1px solid #1f2937",
+                                        backgroundColor: "#020617",
+                                        color: "#e5e7eb",
+                                        fontSize: 11,
+                                        cursor: accessCodesLoading ? "wait" : "pointer",
+                                    }}
+                                >
+                                    {accessCodesLoading ? "…" : t.adminRefresh}
+                                </button>
+                            </div>
                         </div>
 
                         {/* Create new code */}
@@ -1454,63 +1532,153 @@ export default function Dashboard({
                                         : "No access codes yet."}
                                 </p>
                             ) : (
-                                <table
-                                    style={{
-                                        width: "100%",
-                                        borderCollapse: "collapse",
-                                        fontSize: 11,
-                                    }}
-                                >
-                                    <thead>
-                                    <tr
-                                        style={{
-                                            borderBottom: "1px solid #1f2937",
-                                            textAlign: "left",
-                                        }}
-                                    >
-                                        <th style={{ padding: "4px 6px" }}>Code</th>
-                                        <th style={{ padding: "4px 6px" }}>Days</th>
-                                        <th style={{ padding: "4px 6px" }}>Credits</th>
-                                        <th style={{ padding: "4px 6px" }}>Used / Max</th>
-                                        <th style={{ padding: "4px 6px" }}>Remaining</th>
-                                        <th style={{ padding: "4px 6px" }}>Expires</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {accessCodes.map((ac) => {
+                                (() => {
+                                    const filteredCodes = accessCodes.filter((ac) => {
                                         const remaining =
                                             typeof ac.maxUses === "number" &&
                                             typeof ac.usedCount === "number"
                                                 ? ac.maxUses - ac.usedCount
-                                                : "-";
+                                                : null;
+                                        const isExpired = ac.expiresAt
+                                            ? new Date(ac.expiresAt).getTime() < Date.now()
+                                            : false;
+                                        const isExhausted =
+                                            remaining !== null ? remaining <= 0 : false;
+                                        const isActive = !isExpired && !isExhausted;
+
+                                        if (codesFilter === "active") return isActive;
+                                        if (codesFilter === "exhausted")
+                                            return isExhausted || isExpired;
+                                        return true; // "all"
+                                    });
+
+                                    if (filteredCodes.length === 0) {
                                         return (
+                                            <p style={{ fontSize: 12, opacity: 0.8 }}>
+                                                {isSpanish
+                                                    ? "No hay códigos con este filtro."
+                                                    : "No codes match this filter."}
+                                            </p>
+                                        );
+                                    }
+
+                                    const handleCopy = async (code: string) => {
+                                        try {
+                                            if (navigator.clipboard?.writeText) {
+                                                await navigator.clipboard.writeText(code);
+                                            } else {
+                                                // fallback
+                                                window.prompt(
+                                                    isSpanish
+                                                        ? "Copia el código:"
+                                                        : "Copy this code:",
+                                                    code
+                                                );
+                                            }
+                                        } catch (err) {
+                                            console.error("Clipboard error:", err);
+                                            window.prompt(
+                                                isSpanish
+                                                    ? "Copia el código:"
+                                                    : "Copy this code:",
+                                                code
+                                            );
+                                        }
+                                    };
+
+                                    return (
+                                        <table
+                                            style={{
+                                                width: "100%",
+                                                borderCollapse: "collapse",
+                                                fontSize: 11,
+                                            }}
+                                        >
+                                            <thead>
                                             <tr
-                                                key={ac.id}
                                                 style={{
                                                     borderBottom: "1px solid #1f2937",
+                                                    textAlign: "left",
                                                 }}
                                             >
-                                                <td style={{ padding: "4px 6px" }}>{ac.code}</td>
-                                                <td style={{ padding: "4px 6px" }}>{ac.days}</td>
-                                                <td style={{ padding: "4px 6px" }}>{ac.credits}</td>
-                                                <td style={{ padding: "4px 6px" }}>
-                                                    {ac.usedCount}/{ac.maxUses}
-                                                </td>
-                                                <td style={{ padding: "4px 6px" }}>{remaining}</td>
-                                                <td style={{ padding: "4px 6px" }}>
-                                                    {ac.expiresAt
-                                                        ? new Date(ac.expiresAt).toLocaleDateString()
-                                                        : "—"}
-                                                </td>
+                                                <th style={{ padding: "4px 6px" }}>Code</th>
+                                                <th style={{ padding: "4px 6px" }}>Days</th>
+                                                <th style={{ padding: "4px 6px" }}>Credits</th>
+                                                <th style={{ padding: "4px 6px" }}>Used / Max</th>
+                                                <th style={{ padding: "4px 6px" }}>Remaining</th>
+                                                <th style={{ padding: "4px 6px" }}>Expires</th>
+                                                <th style={{ padding: "4px 6px" }}></th>
                                             </tr>
-                                        );
-                                    })}
-                                    </tbody>
-                                </table>
+                                            </thead>
+                                            <tbody>
+                                            {filteredCodes.map((ac) => {
+                                                const remaining =
+                                                    typeof ac.maxUses === "number" &&
+                                                    typeof ac.usedCount === "number"
+                                                        ? ac.maxUses - ac.usedCount
+                                                        : "-";
+                                                const expired = ac.expiresAt
+                                                    ? new Date(ac.expiresAt).getTime() < Date.now()
+                                                    : false;
+                                                const exhausted =
+                                                    typeof ac.maxUses === "number" &&
+                                                    typeof ac.usedCount === "number"
+                                                        ? ac.usedCount >= ac.maxUses
+                                                        : false;
+
+                                                return (
+                                                    <tr
+                                                        key={ac.id}
+                                                        style={{
+                                                            borderBottom: "1px solid #1f2937",
+                                                            opacity: expired || exhausted ? 0.6 : 1,
+                                                        }}
+                                                    >
+                                                        <td style={{ padding: "4px 6px" }}>{ac.code}</td>
+                                                        <td style={{ padding: "4px 6px" }}>{ac.days}</td>
+                                                        <td style={{ padding: "4px 6px" }}>
+                                                            {ac.credits}
+                                                        </td>
+                                                        <td style={{ padding: "4px 6px" }}>
+                                                            {ac.usedCount}/{ac.maxUses}
+                                                        </td>
+                                                        <td style={{ padding: "4px 6px" }}>
+                                                            {remaining}
+                                                        </td>
+                                                        <td style={{ padding: "4px 6px" }}>
+                                                            {ac.expiresAt
+                                                                ? new Date(ac.expiresAt).toLocaleDateString()
+                                                                : "—"}
+                                                        </td>
+                                                        <td style={{ padding: "4px 6px" }}>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => handleCopy(ac.code)}
+                                                                style={{
+                                                                    padding: "3px 8px",
+                                                                    borderRadius: 999,
+                                                                    border: "1px solid #1f2937",
+                                                                    backgroundColor: "#020617",
+                                                                    color: "#e5e7eb",
+                                                                    fontSize: 10,
+                                                                    cursor: "pointer",
+                                                                }}
+                                                            >
+                                                                {isSpanish ? "Copiar" : "Copy"}
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                            </tbody>
+                                        </table>
+                                    );
+                                })()
                             )}
                         </div>
                     </section>
                 )}
+
 
                 {/* MAIN CONTENT: TOP ROW + EDITOR BELOW */}
                 <main

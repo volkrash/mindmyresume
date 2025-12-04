@@ -82,6 +82,10 @@ function ClassicTemplate({
     );
 }
 
+// Small helper to generate codes when admin creates new ones
+const generateRandomCode = () =>
+    "MMR-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+
 export default function Dashboard({
                                       lang,
                                       user,
@@ -108,6 +112,20 @@ export default function Dashboard({
     const [aiLoading, setAiLoading] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [selectedTemplate, setSelectedTemplate] = useState("classic");
+
+    const [redeemCode, setRedeemCode] = useState("");
+    const [isRedeeming, setIsRedeeming] = useState(false);
+
+    // 🔐 Admin-only AccessCode viewer state
+    const [accessCodes, setAccessCodes] = useState<any[]>([]);
+    const [accessCodesLoading, setAccessCodesLoading] = useState(false);
+    const [newCodeForm, setNewCodeForm] = useState({
+        code: "",
+        days: 45,
+        credits: 10,
+        maxUses: 1,
+        expiresAt: "", // yyyy-mm-dd
+    });
 
     const previewRef = useRef<HTMLDivElement | null>(null);
 
@@ -141,6 +159,27 @@ export default function Dashboard({
             : "For now only .txt. Export your Word/Google Docs/Pages resume as .txt and upload it.",
         downloadPdf: isSpanish ? "Descargar como PDF" : "Download as PDF",
         templateLabel: isSpanish ? "Plantilla" : "Template",
+        redeemLabel: isSpanish ? "Canjear código" : "Redeem code",
+        redeemPlaceholder: isSpanish ? "Ingresa tu código" : "Enter your code",
+        redeemButton: isSpanish ? "Canjear" : "Redeem",
+        redeeming: isSpanish ? "Canjeando..." : "Redeeming...",
+        redeemSuccess: isSpanish
+            ? "Código canjeado correctamente."
+            : "Code redeemed successfully.",
+        redeemEmptyError: isSpanish
+            ? "Por favor ingresa un código."
+            : "Please enter a code.",
+        // Admin-only
+        adminCodesTitle: isSpanish
+            ? "Admin · Códigos de acceso"
+            : "Admin · Access codes",
+        adminCodesHint: isSpanish
+            ? "Solo tú ves esta sección. Administra códigos para pilotos, agencias, etc."
+            : "Only you can see this section. Manage codes for pilots, agencies, etc.",
+        adminCreateLabel: isSpanish
+            ? "Crear nuevo código"
+            : "Create new code",
+        adminRefresh: isSpanish ? "Refrescar lista" : "Refresh list",
     };
 
     // Load resumes
@@ -158,6 +197,30 @@ export default function Dashboard({
         };
         fetchResumes();
     }, []);
+
+    // 🔐 Admin: load AccessCodes when dev user logs in
+    useEffect(() => {
+        if (!isDevUser) return;
+
+        const loadAccessCodes = async () => {
+            try {
+                setAccessCodesLoading(true);
+                const { data, errors } = await client.models.AccessCode.list({
+                    limit: 200,
+                });
+                if (errors && errors.length) {
+                    console.error("AccessCode.list errors:", errors);
+                }
+                setAccessCodes(data || []);
+            } catch (err) {
+                console.error("Error loading access codes:", err);
+            } finally {
+                setAccessCodesLoading(false);
+            }
+        };
+
+        loadAccessCodes();
+    }, [isDevUser]);
 
     // Detect payment & load plan / credits
     useEffect(() => {
@@ -237,6 +300,107 @@ export default function Dashboard({
             return;
         }
         window.location.href = STRIPE_CREDITS_URL;
+    };
+
+    // ✅ NEW: Redeem using AccessCode query
+    const handleRedeemCode = async () => {
+        if (!redeemCode.trim()) {
+            alert(t.redeemEmptyError);
+            return;
+        }
+
+        try {
+            setIsRedeeming(true);
+
+            const code = redeemCode.trim();
+
+            const { data, errors } = await client.queries.accessCodeByCode({ code });
+
+            if (errors && errors.length > 0) {
+                console.error("accessCodeByCode errors:", errors);
+                const first = errors[0]?.message || "";
+                let msg: string;
+
+                if (first === "INVALID_CODE") {
+                    msg = isSpanish
+                        ? "Este código no es válido."
+                        : "This code is not valid.";
+                } else if (first === "CODE_EXPIRED") {
+                    msg = isSpanish
+                        ? "Este código ha expirado."
+                        : "This code has expired.";
+                } else if (first === "CODE_ALREADY_USED") {
+                    msg = isSpanish
+                        ? "Este código ya fue utilizado."
+                        : "This code has already been used.";
+                } else {
+                    msg = isSpanish
+                        ? "Hubo un problema al canjear el código."
+                        : "There was a problem redeeming the code.";
+                }
+
+                alert(msg);
+                return;
+            }
+
+            if (!data) {
+                alert(
+                    isSpanish
+                        ? "Este código no es válido."
+                        : "This code is not valid."
+                );
+                return;
+            }
+
+            const access: any = data;
+            const days: number = access.days ?? 0;
+            const credits: number = access.credits ?? 0;
+
+            // 1) Apply / extend unlimited
+            if (days > 0) {
+                const now = new Date();
+                let base = now;
+
+                if (unlimitedExpiresAt) {
+                    const currentExp = new Date(unlimitedExpiresAt);
+                    if (currentExp > now) {
+                        base = currentExp;
+                    }
+                }
+
+                base.setDate(base.getDate() + days);
+                const iso = base.toISOString();
+
+                setHasUnlimited(true);
+                setUnlimitedExpiresAt(iso);
+                localStorage.setItem(UNLIMITED_FLAG_KEY, "true");
+                localStorage.setItem(UNLIMITED_EXPIRES_KEY, iso);
+            }
+
+            // 2) Add credits
+            if (credits > 0) {
+                const newCredits = rewriteCredits + credits;
+                setRewriteCredits(newCredits);
+                localStorage.setItem(CREDITS_KEY, String(newCredits));
+            }
+
+            setRedeemCode("");
+
+            const successMsg = isSpanish
+                ? `Código canjeado. Se agregaron ${days} días de acceso ilimitado y ${credits} créditos.`
+                : `Code redeemed. Added ${days} days of unlimited access and ${credits} credits.`;
+
+            alert(successMsg);
+        } catch (err) {
+            console.error("Error redeeming code:", err);
+            alert(
+                isSpanish
+                    ? "Hubo un problema al canjear el código."
+                    : "There was a problem redeeming the code."
+            );
+        } finally {
+            setIsRedeeming(false);
+        }
     };
 
     // DEV-ONLY helpers
@@ -395,9 +559,7 @@ export default function Dashboard({
         } catch (err) {
             console.error("Error updating resume", err);
             alert(
-                isSpanish
-                    ? "Error al guardar los cambios."
-                    : "Error saving changes."
+                isSpanish ? "Error al guardar los cambios." : "Error saving changes."
             );
         }
     };
@@ -652,6 +814,90 @@ export default function Dashboard({
         }
     };
 
+    // 🔐 Admin: create new access code
+    const handleCreateAccessCode = async (e: any) => {
+        e.preventDefault();
+        if (!isDevUser) return;
+
+        try {
+            const codeToUse =
+                newCodeForm.code.trim() || generateRandomCode();
+
+            const days = Number(newCodeForm.days) || 0;
+            const credits = Number(newCodeForm.credits) || 0;
+            const maxUses = Number(newCodeForm.maxUses) || 1;
+
+            const payload: any = {
+                code: codeToUse,
+                days,
+                credits,
+                maxUses,
+                usedCount: 0,
+            };
+
+            if (newCodeForm.expiresAt) {
+                const d = new Date(newCodeForm.expiresAt);
+                if (!Number.isNaN(d.getTime())) {
+                    payload.expiresAt = d.toISOString();
+                }
+            }
+
+            const { data, errors } = await client.models.AccessCode.create(payload);
+
+            if (errors && errors.length) {
+                console.error("AccessCode.create errors:", errors);
+                alert(
+                    isSpanish
+                        ? "Error al crear el código."
+                        : "Error creating access code."
+                );
+                return;
+            }
+
+            if (data) {
+                setAccessCodes((prev) => [data, ...prev]);
+                setNewCodeForm({
+                    code: "",
+                    days: 45,
+                    credits: 10,
+                    maxUses: 1,
+                    expiresAt: "",
+                });
+                alert(
+                    isSpanish
+                        ? `Código creado: ${data.code}`
+                        : `Code created: ${data.code}`
+                );
+            }
+        } catch (err) {
+            console.error("Error creating access code:", err);
+            alert(
+                isSpanish
+                    ? "Error al crear el código."
+                    : "Error creating access code."
+            );
+        }
+    };
+
+    // 🔐 Admin: refresh list
+    const handleRefreshAccessCodes = async () => {
+        if (!isDevUser) return;
+        try {
+            setAccessCodesLoading(true);
+            const { data, errors } = await client.models.AccessCode.list({
+                limit: 200,
+            });
+            if (errors && errors.length) {
+                console.error("AccessCode.list errors:", errors);
+            }
+            setAccessCodes(data || []);
+        } catch (err) {
+            console.error("Error refreshing access codes:", err);
+        } finally {
+            setAccessCodesLoading(false);
+        }
+    };
+
     const now = Date.now();
 
     return (
@@ -711,33 +957,62 @@ export default function Dashboard({
                         <div style={{ opacity: 0.7 }}>
                             {t.welcome}, {user?.signInDetails?.loginId}
                         </div>
+
+                        <div
+                            style={{ marginTop: "4px", fontSize: "11px", opacity: 0.8 }}
+                        >
+                            {t.rewritesLeft}:{" "}
+                            {hasUnlimited ? `∞ (${rewriteCredits})` : rewriteCredits}
+                        </div>
+
+                        {/* ⭐ Redeem code mini form */}
                         <div
                             style={{
-                                marginTop: "2px",
-                                fontSize: "11px",
-                                opacity: 0.8,
+                                marginTop: "6px",
+                                display: "flex",
+                                gap: "4px",
+                                justifyContent: "flex-end",
+                                alignItems: "center",
                             }}
                         >
-                            {hasUnlimited ? (
-                                <>
-                                    {isSpanish ? "IA: ilimitada" : "AI: unlimited"}{" "}
-                                    {unlimitedExpiresAt && (
-                                        <>
-                                            {isSpanish ? "hasta" : "until"}{" "}
-                                            {new Date(unlimitedExpiresAt).toLocaleDateString()}
-                                        </>
-                                    )}
-                                </>
-                            ) : (
-                                <>
-                                    {t.rewritesLeft}: {rewriteCredits}
-                                </>
-                            )}
+                            <input
+                                type="text"
+                                value={redeemCode}
+                                onChange={(e) => setRedeemCode(e.target.value)}
+                                placeholder={t.redeemPlaceholder}
+                                style={{
+                                    maxWidth: "140px",
+                                    padding: "4px 8px",
+                                    borderRadius: "999px",
+                                    border: "1px solid #1e293b",
+                                    backgroundColor: "#020617",
+                                    color: "white",
+                                    fontSize: "11px",
+                                }}
+                            />
+                            <button
+                                onClick={handleRedeemCode}
+                                disabled={isRedeeming}
+                                style={{
+                                    padding: "4px 10px",
+                                    borderRadius: "999px",
+                                    border: "none",
+                                    backgroundColor: "#22c55e",
+                                    color: "#022c22",
+                                    cursor: isRedeeming ? "wait" : "pointer",
+                                    fontSize: "11px",
+                                    fontWeight: 600,
+                                    opacity: isRedeeming ? 0.7 : 1,
+                                }}
+                            >
+                                {isRedeeming ? t.redeeming : t.redeemButton}
+                            </button>
                         </div>
+
                         <button
                             onClick={onSignOut}
                             style={{
-                                marginTop: "6px",
+                                marginTop: "8px",
                                 backgroundColor: "#ef4444",
                                 border: "none",
                                 padding: "6px 12px",
@@ -971,6 +1246,272 @@ export default function Dashboard({
                     </section>
                 )}
 
+                {/* 🔐 ADMIN ACCESS CODE VIEWER */}
+                {isDevUser && (
+                    <section
+                        style={{
+                            backgroundColor: "#0f172a",
+                            borderRadius: "16px",
+                            padding: "16px",
+                            marginBottom: "24px",
+                            border: "4px dashed red",
+                        }}
+                    >
+                        <div
+                            style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                gap: 12,
+                                alignItems: "flex-start",
+                            }}
+                        >
+                            <div>
+                                <h2 style={{ margin: 0, fontSize: 16 }}>{t.adminCodesTitle}</h2>
+                                <p
+                                    style={{
+                                        margin: "4px 0 8px 0",
+                                        fontSize: 11,
+                                        opacity: 0.7,
+                                    }}
+                                >
+                                    {t.adminCodesHint}
+                                </p>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={handleRefreshAccessCodes}
+                                disabled={accessCodesLoading}
+                                style={{
+                                    padding: "4px 10px",
+                                    borderRadius: "999px",
+                                    border: "1px solid #1f2937",
+                                    backgroundColor: "#020617",
+                                    color: "#e5e7eb",
+                                    fontSize: 11,
+                                    cursor: accessCodesLoading ? "wait" : "pointer",
+                                }}
+                            >
+                                {accessCodesLoading ? "…" : t.adminRefresh}
+                            </button>
+                        </div>
+
+                        {/* Create new code */}
+                        <form
+                            onSubmit={handleCreateAccessCode}
+                            style={{
+                                marginTop: 8,
+                                display: "flex",
+                                flexWrap: "wrap",
+                                gap: 8,
+                                alignItems: "flex-end",
+                                fontSize: 11,
+                            }}
+                        >
+                            <div style={{ minWidth: 120 }}>
+                                <label style={{ display: "block", marginBottom: 2 }}>
+                                    Code
+                                </label>
+                                <input
+                                    type="text"
+                                    value={newCodeForm.code}
+                                    onChange={(e) =>
+                                        setNewCodeForm((prev) => ({
+                                            ...prev,
+                                            code: e.target.value,
+                                        }))
+                                    }
+                                    placeholder="Auto if blank"
+                                    style={{
+                                        width: "100%",
+                                        padding: "4px 8px",
+                                        borderRadius: 999,
+                                        border: "1px solid #1f2937",
+                                        backgroundColor: "#020617",
+                                        color: "white",
+                                    }}
+                                />
+                            </div>
+                            <div style={{ width: 80 }}>
+                                <label style={{ display: "block", marginBottom: 2 }}>
+                                    Days
+                                </label>
+                                <input
+                                    type="number"
+                                    value={newCodeForm.days}
+                                    onChange={(e) =>
+                                        setNewCodeForm((prev) => ({
+                                            ...prev,
+                                            days: Number(e.target.value),
+                                        }))
+                                    }
+                                    style={{
+                                        width: "100%",
+                                        padding: "4px 8px",
+                                        borderRadius: 999,
+                                        border: "1px solid #1f2937",
+                                        backgroundColor: "#020617",
+                                        color: "white",
+                                    }}
+                                />
+                            </div>
+                            <div style={{ width: 80 }}>
+                                <label style={{ display: "block", marginBottom: 2 }}>
+                                    Credits
+                                </label>
+                                <input
+                                    type="number"
+                                    value={newCodeForm.credits}
+                                    onChange={(e) =>
+                                        setNewCodeForm((prev) => ({
+                                            ...prev,
+                                            credits: Number(e.target.value),
+                                        }))
+                                    }
+                                    style={{
+                                        width: "100%",
+                                        padding: "4px 8px",
+                                        borderRadius: 999,
+                                        border: "1px solid #1f2937",
+                                        backgroundColor: "#020617",
+                                        color: "white",
+                                    }}
+                                />
+                            </div>
+                            <div style={{ width: 80 }}>
+                                <label style={{ display: "block", marginBottom: 2 }}>
+                                    Max uses
+                                </label>
+                                <input
+                                    type="number"
+                                    value={newCodeForm.maxUses}
+                                    onChange={(e) =>
+                                        setNewCodeForm((prev) => ({
+                                            ...prev,
+                                            maxUses: Number(e.target.value),
+                                        }))
+                                    }
+                                    style={{
+                                        width: "100%",
+                                        padding: "4px 8px",
+                                        borderRadius: 999,
+                                        border: "1px solid #1f2937",
+                                        backgroundColor: "#020617",
+                                        color: "white",
+                                    }}
+                                />
+                            </div>
+                            <div style={{ minWidth: 150 }}>
+                                <label style={{ display: "block", marginBottom: 2 }}>
+                                    Expires (optional)
+                                </label>
+                                <input
+                                    type="date"
+                                    value={newCodeForm.expiresAt}
+                                    onChange={(e) =>
+                                        setNewCodeForm((prev) => ({
+                                            ...prev,
+                                            expiresAt: e.target.value,
+                                        }))
+                                    }
+                                    style={{
+                                        width: "100%",
+                                        padding: "4px 8px",
+                                        borderRadius: 999,
+                                        border: "1px solid #1f2937",
+                                        backgroundColor: "#020617",
+                                        color: "white",
+                                    }}
+                                />
+                            </div>
+                            <button
+                                type="submit"
+                                style={{
+                                    padding: "6px 12px",
+                                    borderRadius: 999,
+                                    border: "none",
+                                    backgroundColor: "#22c55e",
+                                    color: "#022c22",
+                                    fontSize: 11,
+                                    fontWeight: 600,
+                                    cursor: "pointer",
+                                    whiteSpace: "nowrap",
+                                }}
+                            >
+                                {t.adminCreateLabel}
+                            </button>
+                        </form>
+
+                        {/* Codes table */}
+                        <div style={{ marginTop: 12, maxHeight: 260, overflow: "auto" }}>
+                            {accessCodesLoading && accessCodes.length === 0 ? (
+                                <p style={{ fontSize: 12, opacity: 0.8 }}>
+                                    {isSpanish ? "Cargando códigos..." : "Loading codes..."}
+                                </p>
+                            ) : accessCodes.length === 0 ? (
+                                <p style={{ fontSize: 12, opacity: 0.8 }}>
+                                    {isSpanish
+                                        ? "No hay códigos aún."
+                                        : "No access codes yet."}
+                                </p>
+                            ) : (
+                                <table
+                                    style={{
+                                        width: "100%",
+                                        borderCollapse: "collapse",
+                                        fontSize: 11,
+                                    }}
+                                >
+                                    <thead>
+                                    <tr
+                                        style={{
+                                            borderBottom: "1px solid #1f2937",
+                                            textAlign: "left",
+                                        }}
+                                    >
+                                        <th style={{ padding: "4px 6px" }}>Code</th>
+                                        <th style={{ padding: "4px 6px" }}>Days</th>
+                                        <th style={{ padding: "4px 6px" }}>Credits</th>
+                                        <th style={{ padding: "4px 6px" }}>Used / Max</th>
+                                        <th style={{ padding: "4px 6px" }}>Remaining</th>
+                                        <th style={{ padding: "4px 6px" }}>Expires</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {accessCodes.map((ac) => {
+                                        const remaining =
+                                            typeof ac.maxUses === "number" &&
+                                            typeof ac.usedCount === "number"
+                                                ? ac.maxUses - ac.usedCount
+                                                : "-";
+                                        return (
+                                            <tr
+                                                key={ac.id}
+                                                style={{
+                                                    borderBottom: "1px solid #1f2937",
+                                                }}
+                                            >
+                                                <td style={{ padding: "4px 6px" }}>{ac.code}</td>
+                                                <td style={{ padding: "4px 6px" }}>{ac.days}</td>
+                                                <td style={{ padding: "4px 6px" }}>{ac.credits}</td>
+                                                <td style={{ padding: "4px 6px" }}>
+                                                    {ac.usedCount}/{ac.maxUses}
+                                                </td>
+                                                <td style={{ padding: "4px 6px" }}>{remaining}</td>
+                                                <td style={{ padding: "4px 6px" }}>
+                                                    {ac.expiresAt
+                                                        ? new Date(ac.expiresAt).toLocaleDateString()
+                                                        : "—"}
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                    </tbody>
+                                </table>
+                            )}
+                        </div>
+                    </section>
+                )}
+
                 {/* MAIN CONTENT: TOP ROW + EDITOR BELOW */}
                 <main
                     style={{
@@ -1043,7 +1584,11 @@ export default function Dashboard({
                             </div>
                             {!hasAnyPlan && (
                                 <p
-                                    style={{ marginTop: "8px", fontSize: "11px", color: "#f97316" }}
+                                    style={{
+                                        marginTop: "8px",
+                                        fontSize: "11px",
+                                        color: "#f97316",
+                                    }}
                                 >
                                     {isSpanish
                                         ? "Activa un plan para habilitar la creación."

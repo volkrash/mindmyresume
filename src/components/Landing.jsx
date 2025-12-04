@@ -284,13 +284,15 @@ export default function Landing({ lang, onLanguageChange, onGetStarted }) {
                                 }
                             }}
                             style={{
-                                padding: "9px 16px",
+                                padding: "9px 18px",
                                 borderRadius: "999px",
-                                border: "1px solid #1e293b",
-                                backgroundColor: "transparent",
-                                color: "white",
-                                fontSize: 13,
+                                border: "none",
                                 cursor: "pointer",
+                                background:
+                                    "linear-gradient(135deg, #22c55e 0%, #2dd4bf 45%, #60a5fa 100%)",
+                                color: "#020617",
+                                fontSize: 13,
+                                fontWeight: 600,
                             }}
                         >
                             {t.heroSecondary}
@@ -422,9 +424,10 @@ export default function Landing({ lang, onLanguageChange, onGetStarted }) {
                     style={{
                         flex: "1 1 320px",
                         maxWidth: 520,
-                        backgroundColor: "#020617",
-                        borderRadius: 16,
-                        border: "1px solid #111827",
+                        background:
+                            "radial-gradient(circle at top left, #1e293b 0, #020617 55%, #020617 100%)",
+                        borderRadius: 18,
+                        border: "1px solid #1f2937",
                         padding: 16,
                     }}
                 >

@@ -3,6 +3,11 @@ import { useEffect, useState, useRef } from "react";
 import { client } from "../amplifyClient";
 import jsPDF from "jspdf";
 import { ModernCleanTemplate } from "../templates/ModernCleanTemplate";
+import mammoth from "mammoth/mammoth.browser";
+import * as pdfjsLib from "pdfjs-dist";
+
+(pdfjsLib as any).GlobalWorkerOptions.workerSrc =
+    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 
 // Config via Vite env vars
 const STRIPE_UNLIMITED_URL = import.meta.env.VITE_STRIPE_UNLIMITED_URL || null;
@@ -82,6 +87,10 @@ function ClassicTemplate({
     );
 }
 
+// Small helper to generate codes when admin creates new ones
+const generateRandomCode = () =>
+    "MMR-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+
 export default function Dashboard({
                                       lang,
                                       user,
@@ -112,28 +121,29 @@ export default function Dashboard({
     const [redeemCode, setRedeemCode] = useState("");
     const [isRedeeming, setIsRedeeming] = useState(false);
 
-    // 🔹 NEW: Federal resume mode toggle
-    const [isFederal, setIsFederal] = useState(false);
+    // 🔐 Admin-only AccessCode viewer state
+    const [accessCodes, setAccessCodes] = useState<any[]>([]);
+    const [accessCodesLoading, setAccessCodesLoading] = useState(false);
+    const [newCodeForm, setNewCodeForm] = useState({
+        code: "",
+        days: 45,
+        credits: 10,
+        maxUses: 1,
+        expiresAt: "", // yyyy-mm-dd
+    });
 
-    // 🔹 NEW: Suggestions state
+    // 🔍 filter for codes
+    const [codesFilter, setCodesFilter] = useState<"all" | "active" | "exhausted">(
+        "all"
+    );
+
+    // 🔹 Suggestions state
     const [suggestionText, setSuggestionText] = useState("");
     const [suggestionSending, setSuggestionSending] = useState(false);
     const [suggestionSuccess, setSuggestionSuccess] = useState<string | null>(
         null
     );
     const [suggestionError, setSuggestionError] = useState<string | null>(null);
-
-    // 🔹 ACCESS CODE ADMIN (DEV ONLY) – state
-    const [accessCodes, setAccessCodes] = useState<any[]>([]);
-    const [codesLoading, setCodesLoading] = useState(false);
-    const [codeFilter, setCodeFilter] = useState<"all" | "active" | "exhausted">(
-        "all"
-    );
-    const [newCode, setNewCode] = useState("");
-    const [newCodeDays, setNewCodeDays] = useState(45);
-    const [newCodeCredits, setNewCodeCredits] = useState(10);
-    const [newCodeMaxUses, setNewCodeMaxUses] = useState(1);
-    const [newCodeExpiresAt, setNewCodeExpiresAt] = useState("");
 
     const previewRef = useRef<HTMLDivElement | null>(null);
 
@@ -161,30 +171,40 @@ export default function Dashboard({
         rewritesLeft: isSpanish
             ? "Reescrituras con IA restantes"
             : "AI rewrites left",
-        uploadLabel: isSpanish ? "Subir archivo (.txt)" : "Upload resume file (.txt)",
+        uploadLabel: isSpanish
+            ? "Subir archivo (.txt, .docx, .pdf)"
+            : "Upload resume (.txt, .docx, .pdf)",
         uploadHint: isSpanish
-            ? "Por ahora solo .txt. Exporta tu currículum de Word/Google Docs/Pages a .txt y súbelo."
-            : "For now only .txt. Export your Word/Google Docs/Pages resume as .txt and upload it.",
+            ? "Puedes subir tu currículum en .txt, .docx o .pdf. Extraeremos el texto automáticamente."
+            : "You can upload your resume as .txt, .docx, or .pdf. We'll extract the text automatically.",
         downloadPdf: isSpanish ? "Descargar como PDF" : "Download as PDF",
         templateLabel: isSpanish ? "Plantilla" : "Template",
         redeemLabel: isSpanish ? "Canjear código" : "Redeem code",
         redeemPlaceholder: isSpanish ? "Ingresa tu código" : "Enter your code",
         redeemButton: isSpanish ? "Canjear" : "Redeem",
         redeeming: isSpanish ? "Canjeando..." : "Redeeming...",
-        redeemEmptyError: isSpanish
-            ? "Por favor ingresa un código."
-            : "Please enter a code.",
         redeemSuccess: isSpanish
             ? "Código canjeado correctamente."
             : "Code redeemed successfully.",
-        // 🔹 Federal mode labels
-        federalLabel: isSpanish
-            ? "Formatear como currículum federal (Gobierno de EE. UU.)"
-            : "Format as Federal résumé (U.S. Government)",
-        federalHint: isSpanish
-            ? "Activa esto si estás aplicando a empleos federales (USAJOBS)."
-            : "Turn this on if you're applying for federal jobs (USAJOBS).",
-        // 🔹 Suggestion labels
+        redeemEmptyError: isSpanish
+            ? "Por favor ingresa un código."
+            : "Please enter a code.",
+        // Admin-only
+        adminCodesTitle: isSpanish
+            ? "Admin · Códigos de acceso"
+            : "Admin · Access codes",
+        adminCodesHint: isSpanish
+            ? "Solo tú ves esta sección. Administra códigos para pilotos, agencias, etc."
+            : "Only you can see this section. Manage codes for pilots, agencies, etc.",
+        adminCreateLabel: isSpanish ? "Crear nuevo código" : "Create new code",
+        adminRefresh: isSpanish ? "Refrescar lista" : "Refresh list",
+        adminFilterAll: isSpanish ? "Todos" : "All",
+        adminFilterActive: isSpanish ? "Activos" : "Active",
+        adminFilterExhausted: isSpanish
+            ? "Agotados / expirados"
+            : "Exhausted / expired",
+
+        // Suggestions
         suggestionTitle: isSpanish
             ? "¿Cómo podemos mejorar esta página?"
             : "How can we improve this page?",
@@ -217,32 +237,34 @@ export default function Dashboard({
         fetchResumes();
     }, []);
 
-    // 🔹 ACCESS CODE ADMIN – loader
-    const loadAccessCodes = async () => {
-        try {
-            setCodesLoading(true);
-            const { data, errors } = await client.models.AccessCode.list();
-            if (errors?.length) {
-                console.error("AccessCode list errors:", errors);
-            }
-            setAccessCodes(data || []);
-        } catch (err) {
-            console.error("Error loading access codes", err);
-        } finally {
-            setCodesLoading(false);
-        }
-    };
-
-    // Load access codes only for dev user
+    // 🔐 Admin: load AccessCodes when dev user logs in
     useEffect(() => {
         if (!isDevUser) return;
+
+        const loadAccessCodes = async () => {
+            try {
+                setAccessCodesLoading(true);
+                const { data, errors } = await client.models.AccessCode.list({
+                    limit: 200,
+                });
+                if (errors && errors.length) {
+                    console.error("AccessCode.list errors:", errors);
+                }
+                setAccessCodes(data || []);
+            } catch (err) {
+                console.error("Error loading access codes:", err);
+            } finally {
+                setAccessCodesLoading(false);
+            }
+        };
+
         loadAccessCodes();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isDevUser]);
 
     // Detect payment & load plan / credits
     useEffect(() => {
         try {
+            // 1) Load stored unlimited plan
             const storedUnlimited = localStorage.getItem(UNLIMITED_FLAG_KEY);
             const storedExpires = localStorage.getItem(UNLIMITED_EXPIRES_KEY);
 
@@ -252,11 +274,13 @@ export default function Dashboard({
                     setHasUnlimited(true);
                     setUnlimitedExpiresAt(storedExpires);
                 } else {
+                    // expired → clear
                     localStorage.removeItem(UNLIMITED_FLAG_KEY);
                     localStorage.removeItem(UNLIMITED_EXPIRES_KEY);
                 }
             }
 
+            // 2) Load stored credits
             const storedCredits = localStorage.getItem(CREDITS_KEY);
             let currentCredits = 0;
             if (storedCredits && !Number.isNaN(parseInt(storedCredits, 10))) {
@@ -264,6 +288,7 @@ export default function Dashboard({
                 setRewriteCredits(currentCredits);
             }
 
+            // 3) Process Stripe callback (?plan=unlimited|credits or ?checkout=...)
             const params = new URLSearchParams(window.location.search);
             const which = params.get("plan") || params.get("checkout");
 
@@ -282,6 +307,7 @@ export default function Dashboard({
                 localStorage.setItem(CREDITS_KEY, String(newCredits));
             }
 
+            // 4) Clean URL
             if (which) {
                 const cleanUrl = window.location.origin + window.location.pathname;
                 window.history.replaceState({}, "", cleanUrl);
@@ -315,6 +341,7 @@ export default function Dashboard({
         window.location.href = STRIPE_CREDITS_URL;
     };
 
+    // ✅ Redeem using AccessCode query
     const handleRedeemCode = async () => {
         if (!redeemCode.trim()) {
             alert(t.redeemEmptyError);
@@ -323,51 +350,83 @@ export default function Dashboard({
 
         try {
             setIsRedeeming(true);
-            setSuggestionError(null);
             const code = redeemCode.trim();
 
-            // Call your Lambda-backed custom query
-            const { data, errors } = await client.queries.accessByCode({
-                code,
-            });
+            // 🔌 Call the custom query (backed by your Lambda)
+            const { data, errors } = await client.queries.accessByCode({ code });
 
-            if (errors?.length || !data) {
+            if (errors?.length) {
                 console.error("accessByCode errors:", errors);
+                const raw = errors[0]?.message || "";
+
+                let friendly = isSpanish
+                    ? "Hubo un problema al canjear el código."
+                    : "There was a problem redeeming the code.";
+
+                if (raw.includes("INVALID_CODE")) {
+                    friendly = isSpanish
+                        ? "Este código no es válido."
+                        : "This code is not valid.";
+                } else if (raw.includes("CODE_EXPIRED")) {
+                    friendly = isSpanish
+                        ? "Este código ya expiró."
+                        : "This code has expired.";
+                } else if (raw.includes("CODE_EXHAUSTED")) {
+                    friendly = isSpanish
+                        ? "Este código ya se ha utilizado el número máximo de veces."
+                        : "This code has already been used the maximum number of times.";
+                } else if (raw.includes("FAILED_TO_CONSUME_CODE")) {
+                    friendly = isSpanish
+                        ? "No se pudo actualizar el uso del código. Inténtalo de nuevo."
+                        : "Failed to consume the code. Please try again.";
+                }
+
+                alert(friendly);
+                return;
+            }
+
+            if (!data) {
                 alert(
                     isSpanish
-                        ? "El código no es válido o ya fue utilizado."
-                        : "The code is invalid or already used."
+                        ? "No se encontró información para este código."
+                        : "No data returned for this code."
                 );
                 return;
             }
 
-            const codeRecord = data as any;
-            const { days, credits } = codeRecord;
+            const grantedDays = data.days ?? 0;
+            const grantedCredits = data.credits ?? 0;
 
-            // Grant unlimited access for X days
-            if (typeof days === "number" && days > 0) {
-                const now = new Date();
-                const expires = new Date(now);
-                expires.setDate(expires.getDate() + days);
-                const iso = expires.toISOString();
+            // 🕒 Extend unlimited access from whichever is later: now or current expiry
+            const now = new Date();
+            const base =
+                unlimitedExpiresAt &&
+                new Date(unlimitedExpiresAt).getTime() > now.getTime()
+                    ? new Date(unlimitedExpiresAt)
+                    : now;
 
-                setHasUnlimited(true);
-                setUnlimitedExpiresAt(iso);
-                localStorage.setItem(UNLIMITED_FLAG_KEY, "true");
-                localStorage.setItem(UNLIMITED_EXPIRES_KEY, iso);
-            }
+            base.setDate(base.getDate() + grantedDays);
+            const newExpiryIso = base.toISOString();
 
-            // Add credits
-            if (typeof credits === "number" && credits > 0) {
-                const newCredits = rewriteCredits + credits;
-                setRewriteCredits(newCredits);
-                localStorage.setItem(CREDITS_KEY, String(newCredits));
-            }
+            setHasUnlimited(true);
+            setUnlimitedExpiresAt(newExpiryIso);
+            localStorage.setItem(UNLIMITED_FLAG_KEY, "true");
+            localStorage.setItem(UNLIMITED_EXPIRES_KEY, newExpiryIso);
+
+            // ➕ Add the credits from the code
+            const updatedCredits = rewriteCredits + grantedCredits;
+            setRewriteCredits(updatedCredits);
+            localStorage.setItem(CREDITS_KEY, String(updatedCredits));
 
             setRedeemCode("");
-            alert(t.redeemSuccess);
-        } catch (err) {
-            console.error("Error redeeming code", err);
+
+            const successMsg = isSpanish
+                ? `Código canjeado. Acceso extendido ${grantedDays} días y ${grantedCredits} créditos añadidos.`
+                : `Code redeemed. Access extended by ${grantedDays} days and ${grantedCredits} credits added.`;
+
+            alert(successMsg);
+        } catch (err: any) {
+            console.error("Error redeeming code via accessByCode:", err);
             alert(
                 isSpanish
                     ? "Hubo un problema al canjear el código."
@@ -436,10 +495,7 @@ export default function Dashboard({
             const result = await client.models.Resume.create({
                 title: title.trim(),
                 language: lang,
-                aiJson: JSON.stringify({
-                    content: placeholderContent,
-                    isFederal: false,
-                }),
+                aiJson: JSON.stringify({ content: placeholderContent }),
                 createdAt: now.toISOString(),
                 expiresAt: expiresAt.toISOString(),
             });
@@ -456,15 +512,12 @@ export default function Dashboard({
             }
 
             let initialContent = "";
-            let initialFederal = false;
             try {
                 if (created.aiJson) {
                     const parsed = JSON.parse(created.aiJson);
                     if (typeof parsed === "string") initialContent = parsed;
-                    else if (parsed && typeof parsed === "object") {
+                    else if (parsed && typeof parsed === "object" && "content" in parsed)
                         initialContent = (parsed as any).content || "";
-                        initialFederal = !!(parsed as any).isFederal;
-                    }
                 }
             } catch {
                 initialContent = created.aiJson || "";
@@ -474,7 +527,6 @@ export default function Dashboard({
             setTitle("");
             setActiveResume(created);
             setEditorContent(initialContent);
-            setIsFederal(initialFederal);
         } catch (err) {
             console.error("Error creating resume", err);
             alert(
@@ -502,7 +554,6 @@ export default function Dashboard({
                 setActiveResume(null);
                 setEditorContent("");
                 setJobDescription("");
-                setIsFederal(false);
             }
         } catch (err) {
             console.error("Error deleting resume", err);
@@ -514,23 +565,18 @@ export default function Dashboard({
         setActiveResume(resume);
 
         let content = "";
-        let federalFlag = false;
-
         try {
             if (resume.aiJson) {
                 const parsed = JSON.parse(resume.aiJson);
                 if (typeof parsed === "string") content = parsed;
-                else if (parsed && typeof parsed === "object") {
+                else if (parsed && typeof parsed === "object" && "content" in parsed)
                     content = (parsed as any).content || "";
-                    federalFlag = !!(parsed as any).isFederal;
-                }
             }
         } catch {
             content = resume.aiJson || "";
         }
 
         setEditorContent(content);
-        setIsFederal(federalFlag);
     };
 
     const handleSaveChanges = async () => {
@@ -538,10 +584,7 @@ export default function Dashboard({
         try {
             const { data: updated } = await client.models.Resume.update({
                 id: activeResume.id,
-                aiJson: JSON.stringify({
-                    content: editorContent,
-                    isFederal,
-                }),
+                aiJson: JSON.stringify({ content: editorContent }),
             });
 
             setResumes((prev) => prev.map((r) => (r.id === updated.id ? updated : r)));
@@ -555,25 +598,92 @@ export default function Dashboard({
         }
     };
 
-    // file upload (MVP: .txt)
+    // file upload: .txt, .docx, .pdf
     const handleFileUpload = async (e: any) => {
         const file = e.target.files?.[0];
         if (!file) return;
 
+        const resetInput = () => {
+            e.target.value = "";
+        };
+
         try {
             setUploading(true);
 
-            if (file.type !== "text/plain") {
+            const name = file.name || "";
+            const ext = name.split(".").pop()?.toLowerCase();
+
+            if (!ext) {
                 alert(
                     isSpanish
-                        ? "Por ahora solo se admiten archivos de texto (.txt). Exporta tu currículum a .txt y súbelo."
-                        : "For now only plain text (.txt) files are supported. Export your resume to .txt and upload it."
+                        ? "Tipo de archivo no reconocido."
+                        : "Unrecognized file type."
                 );
+                resetInput();
                 return;
             }
 
-            const text = await file.text();
-            setEditorContent(text);
+            // ✅ Plain text
+            if (ext === "txt") {
+                const text = await file.text();
+                setEditorContent(text);
+                resetInput();
+                return;
+            }
+
+            // ✅ DOCX (Word)
+            if (ext === "docx") {
+                const arrayBuffer = await file.arrayBuffer();
+                const { value } = await mammoth.extractRawText({ arrayBuffer });
+                // value is plain text
+                setEditorContent(value || "");
+                resetInput();
+                return;
+            }
+
+            // ✅ PDF
+            if (ext === "pdf") {
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+
+                let fullText = "";
+
+                for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                    const page = await pdf.getPage(pageNum);
+                    const content = await page.getTextContent();
+
+                    const pageText = content.items
+                        .map((item: any) =>
+                            typeof item.str === "string" ? item.str : ""
+                        )
+                        .join(" ");
+
+                    fullText += pageText + "\n\n";
+                }
+
+                setEditorContent(fullText.trim());
+                resetInput();
+                return;
+            }
+
+            // optional: old .doc (binary Word) -> reject or handle later
+            if (ext === "doc") {
+                alert(
+                    isSpanish
+                        ? "Los archivos .doc antiguos no están soportados todavía. Guarda tu currículum como .docx o PDF y vuelve a subirlo."
+                        : "Old .doc files are not supported yet. Please save your resume as .docx or PDF and upload again."
+                );
+                resetInput();
+                return;
+            }
+
+            // fallback
+            alert(
+                isSpanish
+                    ? "Tipo de archivo no soportado. Usa .txt, .docx o .pdf."
+                    : "Unsupported file type. Please use .txt, .docx, or .pdf."
+            );
+            resetInput();
         } catch (err) {
             console.error("Error reading file", err);
             alert(
@@ -583,7 +693,6 @@ export default function Dashboard({
             );
         } finally {
             setUploading(false);
-            e.target.value = "";
         }
     };
 
@@ -597,6 +706,7 @@ export default function Dashboard({
             return;
         }
 
+        // Simple parse for header + body
         const lines = editorContent
             .split(/\r?\n/)
             .map((l) => l.trimEnd())
@@ -633,36 +743,12 @@ export default function Dashboard({
         doc.text(nameLine, marginX, y);
         y += 26;
 
-        // Subtitle: Title (with Federal indicator if enabled)
+        // Subtitle: Title
         doc.setFont("Helvetica", "normal");
         doc.setFontSize(11);
         doc.setTextColor(100, 116, 139);
         doc.text(titleLine, marginX, y);
-        y += 18;
-
-        if (isFederal) {
-            // Small badge
-            doc.setFont("Helvetica", "bold");
-            doc.setFontSize(9);
-            doc.setTextColor(37, 99, 235); // blue-600-ish
-            const federalLabel = isSpanish
-                ? "CURRÍCULUM FEDERAL (USAJOBS)"
-                : "FEDERAL RÉSUMÉ (USAJOBS)";
-            doc.text(federalLabel, marginX, y);
-            y += 14;
-            doc.setTextColor(100, 116, 139);
-            doc.setFont("Helvetica", "normal");
-            const hint = isSpanish
-                ? "Incluye detalles clave como horas por semana, supervisor y logros cuantificables."
-                : "Includes key details like hours per week, supervisor, and quantifiable accomplishments.";
-            const hintLines = doc.splitTextToSize(hint, pageWidth - marginX * 2);
-            hintLines.forEach((line) => {
-                doc.text(line, marginX, y);
-                y += 12;
-            });
-        } else {
-            y += 6;
-        }
+        y += 24;
 
         // Optional small job description box
         if (jobDescription && jobDescription.trim()) {
@@ -677,6 +763,8 @@ export default function Dashboard({
             doc.setLineWidth(0.5);
             doc.rect(pageWidth - marginX - 200, marginTop + 10, 200, 60);
             doc.text(jdText, pageWidth - marginX - 194, marginTop + 24);
+
+            y += 8;
         }
 
         // Divider
@@ -687,14 +775,7 @@ export default function Dashboard({
         y += 20;
 
         // Section title
-        const sectionTitle = isFederal
-            ? isSpanish
-                ? "Resumen de Calificaciones"
-                : "Summary of Qualifications"
-            : isSpanish
-                ? "Perfil profesional"
-                : "Professional Profile";
-
+        const sectionTitle = isSpanish ? "Perfil profesional" : "Professional Profile";
         doc.setFont("Helvetica", "bold");
         doc.setFontSize(10);
         doc.setTextColor(75, 85, 99);
@@ -722,7 +803,7 @@ export default function Dashboard({
             /[^a-z0-9\-]+/gi,
             "_"
         );
-        doc.save(`${safeTitle}${isFederal ? "_federal" : ""}.pdf`);
+        doc.save(`${safeTitle}.pdf`);
     };
 
     const handleRewriteWithAI = async () => {
@@ -763,6 +844,7 @@ export default function Dashboard({
             return;
         }
 
+        // For credits plan, ensure there is at least 1 credit
         if (!hasUnlimited && rewriteCredits <= 0) {
             alert(
                 isSpanish
@@ -782,45 +864,17 @@ export default function Dashboard({
                     resumeText: editorContent,
                     jobDescription,
                     language: lang,
-                    mode: isFederal ? "federal" : "standard",
                 }),
             });
 
             if (!response.ok) {
-                const status = response.status;
-                let rawText = "";
-
-                try {
-                    rawText = await response.text();
-                } catch (e) {
-                    console.error("Failed to read error response text", e);
-                }
-
-                console.error("AI response not OK", { status, rawText });
-
-                let msg: string;
-                try {
-                    const parsed = rawText ? JSON.parse(rawText) : null;
-                    let detailsText =
-                        typeof parsed?.details === "string"
-                            ? parsed.details
-                            : parsed?.details?.error?.message;
-
-                    msg =
-                        detailsText ||
-                        parsed?.error ||
-                        parsed?.message ||
-                        (isSpanish
-                            ? `El servicio de IA devolvió un error (${status}).`
-                            : `The AI service returned an error (${status}).`);
-                } catch {
-                    msg =
-                        (rawText && rawText.slice(0, 200)) ||
-                        (isSpanish
-                            ? `El servicio de IA devolvió un error (${status}).`
-                            : `The AI service returned an error (${status}).`);
-                }
-
+                const errorBody = await response.json().catch(() => null);
+                console.error("AI response not OK", errorBody);
+                const msg =
+                    errorBody?.details?.error?.message ||
+                    (isSpanish
+                        ? "El servicio de IA no está disponible."
+                        : "The AI service is currently unavailable.");
                 alert(msg);
                 return;
             }
@@ -831,16 +885,14 @@ export default function Dashboard({
 
             const { data: updated } = await client.models.Resume.update({
                 id: activeResume.id,
-                aiJson: JSON.stringify({
-                    content: rewrittenText,
-                    isFederal,
-                }),
+                aiJson: JSON.stringify({ content: rewrittenText }),
             });
 
             setActiveResume(updated);
             setResumes((prev) => prev.map((r) => (r.id === updated.id ? updated : r)));
 
-            if (!hasUnlimited) {
+            // ✅ Decrement credit whenever there *are* credits, so you see the counter move
+            if (rewriteCredits > 0) {
                 const remaining = rewriteCredits - 1;
                 setRewriteCredits(remaining);
                 localStorage.setItem(CREDITS_KEY, String(remaining));
@@ -861,7 +913,106 @@ export default function Dashboard({
         }
     };
 
-    // 🔹 NEW: submit suggestion
+    // 🔐 Admin: create new access code
+    const handleCreateAccessCode = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        // basic validation
+        if (!newCodeForm.days || !newCodeForm.credits || !newCodeForm.maxUses) {
+            alert(
+                isSpanish
+                    ? "Días, créditos y usos máximos son obligatorios."
+                    : "Days, credits, and max uses are required."
+            );
+            return;
+        }
+
+        try {
+            setAccessCodesLoading(true);
+
+            const rawCode =
+                newCodeForm.code.trim() ||
+                Math.random().toString(36).substring(2, 10).toUpperCase();
+
+            const input: any = {
+                code: rawCode,
+                days: Number(newCodeForm.days),
+                credits: Number(newCodeForm.credits),
+                maxUses: Number(newCodeForm.maxUses),
+                // usedCount: will default to 0 from schema
+            };
+
+            if (newCodeForm.expiresAt) {
+                const d = new Date(newCodeForm.expiresAt + "T00:00:00.000Z");
+                input.expiresAt = d.toISOString();
+            }
+
+            console.log("Creating AccessCode with input:", input);
+
+            const result = await (client as any).models.AccessCode.create(input);
+            console.log("AccessCode create result:", result);
+
+            const created = (result as any)?.data || result;
+
+            if (!created || (result as any)?.errors?.length) {
+                console.error("AccessCode create errors:", (result as any)?.errors);
+                alert(
+                    isSpanish
+                        ? "Error al crear el código. Revisa la consola."
+                        : "Error creating code. Check the console."
+                );
+                return;
+            }
+
+            // Update table immediately
+            setAccessCodes((prev) => [created, ...prev]);
+
+            // Reset form
+            setNewCodeForm({
+                code: "",
+                days: 45,
+                credits: 10,
+                maxUses: 1,
+                expiresAt: "",
+            });
+
+            alert(
+                isSpanish
+                    ? `Código creado: ${created.code}`
+                    : `Code created: ${created.code}`
+            );
+        } catch (err) {
+            console.error("Unhandled error creating AccessCode:", err);
+            alert(
+                isSpanish
+                    ? "Hubo un error inesperado al crear el código."
+                    : "There was an unexpected error creating the code."
+            );
+        } finally {
+            setAccessCodesLoading(false);
+        }
+    };
+
+    // 🔐 Admin: refresh list
+    const handleRefreshAccessCodes = async () => {
+        if (!isDevUser) return;
+        try {
+            setAccessCodesLoading(true);
+            const { data, errors } = await client.models.AccessCode.list({
+                limit: 200,
+            });
+            if (errors && errors.length) {
+                console.error("AccessCode.list errors:", errors);
+            }
+            setAccessCodes(data || []);
+        } catch (err) {
+            console.error("Error refreshing access codes:", err);
+        } finally {
+            setAccessCodesLoading(false);
+        }
+    };
+
+    // 🔹 Submit suggestion
     const handleSubmitSuggestion = async () => {
         if (!suggestionText.trim()) return;
 
@@ -893,78 +1044,7 @@ export default function Dashboard({
         }
     };
 
-    // 🔹 ACCESS CODE ADMIN – create handler
-    const handleCreateAccessCode = async () => {
-        if (!newCode.trim()) {
-            alert("Code is required");
-            return;
-        }
-        try {
-            const payload: any = {
-                code: newCode.trim(),
-                days: Number(newCodeDays) || 0,
-                credits: Number(newCodeCredits) || 0,
-                maxUses: Number(newCodeMaxUses) || 1,
-            };
-
-            if (newCodeExpiresAt) {
-                const d = new Date(newCodeExpiresAt);
-                if (!Number.isNaN(d.getTime())) {
-                    payload.expiresAt = d.toISOString();
-                }
-            }
-
-            const { data, errors } = await client.models.AccessCode.create(payload);
-            if (errors?.length || !data) {
-                console.error("AccessCode create errors:", errors);
-                alert("There was an error creating the code.");
-                return;
-            }
-
-            // Refresh list
-            setNewCode("");
-            setNewCodeDays(45);
-            setNewCodeCredits(10);
-            setNewCodeMaxUses(1);
-            setNewCodeExpiresAt("");
-            await loadAccessCodes();
-        } catch (err) {
-            console.error("Error creating access code", err);
-            alert("There was an unexpected error creating the code.");
-        }
-    };
-
-    const handleCopyCode = (code: string) => {
-        if (navigator.clipboard?.writeText) {
-            navigator.clipboard.writeText(code).then(
-                () => {
-                    // Small, non-obnoxious feedback
-                    console.log("Copied code:", code);
-                },
-                (err) => {
-                    console.error("Clipboard copy failed", err);
-                    alert("Could not copy code to clipboard.");
-                }
-            );
-        } else {
-            alert("Clipboard API not available in this browser.");
-        }
-    };
-
     const now = Date.now();
-
-    const filteredAccessCodes = accessCodes.filter((c) => {
-        if (codeFilter === "all") return true;
-
-        const exhaustedByUses = c.usedCount >= c.maxUses;
-        const expiredByDate =
-            c.expiresAt && new Date(c.expiresAt).getTime() < now;
-        const isExhausted = exhaustedByUses || expiredByDate;
-
-        if (codeFilter === "exhausted") return isExhausted;
-        if (codeFilter === "active") return !isExhausted;
-        return true;
-    });
 
     return (
         <div
@@ -1028,7 +1108,7 @@ export default function Dashboard({
                             {t.rewritesLeft}: {rewriteCredits}
                         </div>
 
-                        {/* Redeem code mini form */}
+                        {/* ⭐ Redeem code mini form */}
                         <div
                             style={{
                                 marginTop: "6px",
@@ -1209,7 +1289,9 @@ export default function Dashboard({
                                     }}
                                 >
                                     <div style={{ fontSize: 12, opacity: 0.9 }}>
-                                        {isSpanish ? "Paquete de 5 reescrituras" : "5-rewrite pack"}
+                                        {isSpanish
+                                            ? "Paquete de 5 reescrituras"
+                                            : "5-rewrite pack"}
                                     </div>
                                     <div
                                         style={{
@@ -1256,6 +1338,7 @@ export default function Dashboard({
 
                         {isDevUser && (
                             <>
+                                {/* DEV ONLY (visible only to almaldonado@gmail.com) */}
                                 <p
                                     style={{
                                         marginTop: 10,
@@ -1304,15 +1387,15 @@ export default function Dashboard({
                     </section>
                 )}
 
-                {/* 🔹 ACCESS CODE ADMIN (DEV ONLY) */}
+                {/* 🔐 ADMIN ACCESS CODE VIEWER */}
                 {isDevUser && (
                     <section
                         style={{
                             backgroundColor: "#0f172a",
                             borderRadius: "16px",
                             padding: "16px",
-                            marginBottom: "16px",
-                            border: "1px solid red",
+                            marginBottom: "24px",
+                            border: "1px dashed red",
                         }}
                     >
                         <div
@@ -1320,258 +1403,398 @@ export default function Dashboard({
                                 display: "flex",
                                 justifyContent: "space-between",
                                 gap: 12,
-                                alignItems: "center",
-                                marginBottom: 10,
+                                alignItems: "flex-start",
                             }}
                         >
-                            <h3
-                                style={{
-                                    margin: 0,
-                                    fontSize: "14px",
-                                    opacity: 0.95,
-                                }}
-                            >
-                                Access codes (admin)
-                            </h3>
-                            <button
-                                type="button"
-                                onClick={loadAccessCodes}
-                                disabled={codesLoading}
-                                style={{
-                                    padding: "4px 10px",
-                                    borderRadius: "999px",
-                                    border: "1px solid #1f2937",
-                                    backgroundColor: "#020617",
-                                    color: "#e5e7eb",
-                                    fontSize: "11px",
-                                    cursor: codesLoading ? "wait" : "pointer",
-                                }}
-                            >
-                                {codesLoading ? "Refreshing..." : "Refresh"}
-                            </button>
-                        </div>
+                            <div>
+                                <h2 style={{ margin: 0, fontSize: 16 }}>
+                                    {t.adminCodesTitle}
+                                </h2>
+                                <p
+                                    style={{
+                                        margin: "4px 0 8px 0",
+                                        fontSize: 11,
+                                        opacity: 0.7,
+                                    }}
+                                >
+                                    {t.adminCodesHint}
+                                </p>
+                            </div>
+                            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                                {/* Filter controls */}
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        gap: 4,
+                                        padding: "2px",
+                                        borderRadius: 999,
+                                        backgroundColor: "#020617",
+                                        border: "1px solid #1f2937",
+                                        fontSize: 11,
+                                    }}
+                                >
+                                    <button
+                                        type="button"
+                                        onClick={() => setCodesFilter("all")}
+                                        style={{
+                                            padding: "3px 8px",
+                                            borderRadius: 999,
+                                            border: "none",
+                                            cursor: "pointer",
+                                            backgroundColor:
+                                                codesFilter === "all" ? "#1f2937" : "transparent",
+                                            color: "#e5e7eb",
+                                        }}
+                                    >
+                                        {t.adminFilterAll}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setCodesFilter("active")}
+                                        style={{
+                                            padding: "3px 8px",
+                                            borderRadius: 999,
+                                            border: "none",
+                                            cursor: "pointer",
+                                            backgroundColor:
+                                                codesFilter === "active" ? "#16a34a" : "transparent",
+                                            color: codesFilter === "active" ? "#022c22" : "#bbf7d0",
+                                        }}
+                                    >
+                                        {t.adminFilterActive}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setCodesFilter("exhausted")}
+                                        style={{
+                                            padding: "3px 8px",
+                                            borderRadius: 999,
+                                            border: "none",
+                                            cursor: "pointer",
+                                            backgroundColor:
+                                                codesFilter === "exhausted" ? "#7f1d1d" : "transparent",
+                                            color:
+                                                codesFilter === "exhausted" ? "#fee2e2" : "#fecaca",
+                                        }}
+                                    >
+                                        {t.adminFilterExhausted}
+                                    </button>
+                                </div>
 
-                        {/* New code form */}
-                        <div
-                            style={{
-                                display: "grid",
-                                gridTemplateColumns: "2fr repeat(3, 1fr) 1.4fr auto",
-                                gap: "6px",
-                                alignItems: "center",
-                                marginBottom: "10px",
-                                fontSize: "11px",
-                            }}
-                        >
-                            <input
-                                placeholder="Code (ex: PILOT-2025-ANGEL)"
-                                value={newCode}
-                                onChange={(e) => setNewCode(e.target.value)}
-                                style={{
-                                    padding: "6px 8px",
-                                    borderRadius: "999px",
-                                    border: "1px solid #1f2937",
-                                    backgroundColor: "#020617",
-                                    color: "#e5e7eb",
-                                    fontSize: "11px",
-                                }}
-                            />
-                            <input
-                                type="number"
-                                placeholder="Days"
-                                value={newCodeDays}
-                                onChange={(e) => setNewCodeDays(Number(e.target.value) || 0)}
-                                style={{
-                                    padding: "6px 8px",
-                                    borderRadius: "999px",
-                                    border: "1px solid #1f2937",
-                                    backgroundColor: "#020617",
-                                    color: "#e5e7eb",
-                                    fontSize: "11px",
-                                }}
-                            />
-                            <input
-                                type="number"
-                                placeholder="Credits"
-                                value={newCodeCredits}
-                                onChange={(e) => setNewCodeCredits(Number(e.target.value) || 0)}
-                                style={{
-                                    padding: "6px 8px",
-                                    borderRadius: "999px",
-                                    border: "1px solid #1f2937",
-                                    backgroundColor: "#020617",
-                                    color: "#e5e7eb",
-                                    fontSize: "11px",
-                                }}
-                            />
-                            <input
-                                type="number"
-                                placeholder="Max uses"
-                                value={newCodeMaxUses}
-                                onChange={(e) => setNewCodeMaxUses(Number(e.target.value) || 1)}
-                                style={{
-                                    padding: "6px 8px",
-                                    borderRadius: "999px",
-                                    border: "1px solid #1f2937",
-                                    backgroundColor: "#020617",
-                                    color: "#e5e7eb",
-                                    fontSize: "11px",
-                                }}
-                            />
-                            <input
-                                type="date"
-                                value={newCodeExpiresAt}
-                                onChange={(e) => setNewCodeExpiresAt(e.target.value)}
-                                style={{
-                                    padding: "6px 8px",
-                                    borderRadius: "999px",
-                                    border: "1px solid #1f2937",
-                                    backgroundColor: "#020617",
-                                    color: "#e5e7eb",
-                                    fontSize: "11px",
-                                }}
-                            />
-                            <button
-                                type="button"
-                                onClick={handleCreateAccessCode}
-                                style={{
-                                    padding: "6px 10px",
-                                    borderRadius: "999px",
-                                    border: "none",
-                                    backgroundColor: "#22c55e",
-                                    color: "#022c22",
-                                    fontWeight: 600,
-                                    fontSize: "11px",
-                                    cursor: "pointer",
-                                }}
-                            >
-                                Create
-                            </button>
-                        </div>
-
-                        {/* Filter toggles */}
-                        <div
-                            style={{
-                                display: "flex",
-                                gap: 6,
-                                marginBottom: 8,
-                                fontSize: "11px",
-                                flexWrap: "wrap",
-                            }}
-                        >
-                            {["all", "active", "exhausted"].map((mode) => (
                                 <button
-                                    key={mode}
                                     type="button"
-                                    onClick={() =>
-                                        setCodeFilter(mode as "all" | "active" | "exhausted")
-                                    }
+                                    onClick={handleRefreshAccessCodes}
+                                    disabled={accessCodesLoading}
                                     style={{
                                         padding: "4px 10px",
                                         borderRadius: "999px",
-                                        border:
-                                            codeFilter === mode
-                                                ? "1px solid #22c55e"
-                                                : "1px solid #1f2937",
-                                        backgroundColor:
-                                            codeFilter === mode ? "#022c22" : "#020617",
+                                        border: "1px solid #1f2937",
+                                        backgroundColor: "#020617",
                                         color: "#e5e7eb",
-                                        cursor: "pointer",
+                                        fontSize: 11,
+                                        cursor: accessCodesLoading ? "wait" : "pointer",
                                     }}
                                 >
-                                    {mode === "all"
-                                        ? "All"
-                                        : mode === "active"
-                                            ? "Active"
-                                            : "Exhausted"}
+                                    {accessCodesLoading ? "…" : t.adminRefresh}
                                 </button>
-                            ))}
+                            </div>
                         </div>
 
-                        {/* Codes table */}
-                        {codesLoading && accessCodes.length === 0 ? (
-                            <p style={{ fontSize: "12px", opacity: 0.8 }}>Loading codes…</p>
-                        ) : filteredAccessCodes.length === 0 ? (
-                            <p style={{ fontSize: "12px", opacity: 0.8 }}>
-                                No access codes found for this filter.
-                            </p>
-                        ) : (
-                            <table
+                        {/* Create new code */}
+                        <form
+                            onSubmit={handleCreateAccessCode}
+                            style={{
+                                marginTop: 8,
+                                display: "flex",
+                                flexWrap: "wrap",
+                                gap: 8,
+                                alignItems: "flex-end",
+                                fontSize: 11,
+                            }}
+                        >
+                            <div style={{ minWidth: 120 }}>
+                                <label style={{ display: "block", marginBottom: 2 }}>Code</label>
+                                <input
+                                    type="text"
+                                    value={newCodeForm.code}
+                                    onChange={(e) =>
+                                        setNewCodeForm((prev) => ({
+                                            ...prev,
+                                            code: e.target.value,
+                                        }))
+                                    }
+                                    placeholder="Auto if blank"
+                                    style={{
+                                        width: "100%",
+                                        padding: "4px 8px",
+                                        borderRadius: 999,
+                                        border: "1px solid #1f2937",
+                                        backgroundColor: "#020617",
+                                        color: "white",
+                                    }}
+                                />
+                            </div>
+                            <div style={{ width: 80 }}>
+                                <label style={{ display: "block", marginBottom: 2 }}>Days</label>
+                                <input
+                                    type="number"
+                                    value={newCodeForm.days}
+                                    onChange={(e) =>
+                                        setNewCodeForm((prev) => ({
+                                            ...prev,
+                                            days: Number(e.target.value),
+                                        }))
+                                    }
+                                    style={{
+                                        width: "100%",
+                                        padding: "4px 8px",
+                                        borderRadius: 999,
+                                        border: "1px solid #1f2937",
+                                        backgroundColor: "#020617",
+                                        color: "white",
+                                    }}
+                                />
+                            </div>
+                            <div style={{ width: 80 }}>
+                                <label style={{ display: "block", marginBottom: 2 }}>
+                                    Credits
+                                </label>
+                                <input
+                                    type="number"
+                                    value={newCodeForm.credits}
+                                    onChange={(e) =>
+                                        setNewCodeForm((prev) => ({
+                                            ...prev,
+                                            credits: Number(e.target.value),
+                                        }))
+                                    }
+                                    style={{
+                                        width: "100%",
+                                        padding: "4px 8px",
+                                        borderRadius: 999,
+                                        border: "1px solid #1f2937",
+                                        backgroundColor: "#020617",
+                                        color: "white",
+                                    }}
+                                />
+                            </div>
+                            <div style={{ width: 80 }}>
+                                <label style={{ display: "block", marginBottom: 2 }}>
+                                    Max uses
+                                </label>
+                                <input
+                                    type="number"
+                                    value={newCodeForm.maxUses}
+                                    onChange={(e) =>
+                                        setNewCodeForm((prev) => ({
+                                            ...prev,
+                                            maxUses: Number(e.target.value),
+                                        }))
+                                    }
+                                    style={{
+                                        width: "100%",
+                                        padding: "4px 8px",
+                                        borderRadius: 999,
+                                        border: "1px solid #1f2937",
+                                        backgroundColor: "#020617",
+                                        color: "white",
+                                    }}
+                                />
+                            </div>
+                            <div style={{ minWidth: 150 }}>
+                                <label style={{ display: "block", marginBottom: 2 }}>
+                                    Expires (optional)
+                                </label>
+                                <input
+                                    type="date"
+                                    value={newCodeForm.expiresAt}
+                                    onChange={(e) =>
+                                        setNewCodeForm((prev) => ({
+                                            ...prev,
+                                            expiresAt: e.target.value,
+                                        }))
+                                    }
+                                    style={{
+                                        width: "100%",
+                                        padding: "4px 8px",
+                                        borderRadius: 999,
+                                        border: "1px solid #1f2937",
+                                        backgroundColor: "#020617",
+                                        color: "white",
+                                    }}
+                                />
+                            </div>
+                            <button
+                                type="submit"
                                 style={{
-                                    width: "100%",
-                                    borderCollapse: "collapse",
-                                    fontSize: "11px",
+                                    padding: "6px 12px",
+                                    borderRadius: 999,
+                                    border: "none",
+                                    backgroundColor: "#22c55e",
+                                    color: "#022c22",
+                                    fontSize: 11,
+                                    fontWeight: 600,
+                                    cursor: "pointer",
+                                    whiteSpace: "nowrap",
                                 }}
                             >
-                                <thead>
-                                <tr
-                                    style={{
-                                        borderBottom: "1px solid #1f2937",
-                                        textAlign: "left",
-                                    }}
-                                >
-                                    <th style={{ padding: "4px 6px" }}>Code</th>
-                                    <th style={{ padding: "4px 6px" }}>Days</th>
-                                    <th style={{ padding: "4px 6px" }}>Credits</th>
-                                    <th style={{ padding: "4px 6px" }}>Uses</th>
-                                    <th style={{ padding: "4px 6px" }}>Expires</th>
-                                    <th style={{ padding: "4px 6px" }}>Status</th>
-                                    <th style={{ padding: "4px 6px" }}>Actions</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {filteredAccessCodes.map((c) => {
-                                    const exhaustedByUses = c.usedCount >= c.maxUses;
-                                    const expiredByDate =
-                                        c.expiresAt &&
-                                        new Date(c.expiresAt).getTime() < now;
-                                    const isExhausted = exhaustedByUses || expiredByDate;
+                                {t.adminCreateLabel}
+                            </button>
+                        </form>
+
+                        {/* Codes table */}
+                        <div style={{ marginTop: 12, maxHeight: 260, overflow: "auto" }}>
+                            {accessCodesLoading && accessCodes.length === 0 ? (
+                                <p style={{ fontSize: 12, opacity: 0.8 }}>
+                                    {isSpanish ? "Cargando códigos..." : "Loading codes..."}
+                                </p>
+                            ) : accessCodes.length === 0 ? (
+                                <p style={{ fontSize: 12, opacity: 0.8 }}>
+                                    {isSpanish ? "No hay códigos aún." : "No access codes yet."}
+                                </p>
+                            ) : (
+                                (() => {
+                                    const filteredCodes = accessCodes.filter((ac) => {
+                                        const remaining =
+                                            typeof ac.maxUses === "number" &&
+                                            typeof ac.usedCount === "number"
+                                                ? ac.maxUses - ac.usedCount
+                                                : null;
+                                        const isExpired = ac.expiresAt
+                                            ? new Date(ac.expiresAt).getTime() < Date.now()
+                                            : false;
+                                        const isExhausted =
+                                            remaining !== null ? remaining <= 0 : false;
+                                        const isActive = !isExpired && !isExhausted;
+
+                                        if (codesFilter === "active") return isActive;
+                                        if (codesFilter === "exhausted")
+                                            return isExhausted || isExpired;
+                                        return true; // "all"
+                                    });
+
+                                    if (filteredCodes.length === 0) {
+                                        return (
+                                            <p style={{ fontSize: 12, opacity: 0.8 }}>
+                                                {isSpanish
+                                                    ? "No hay códigos con este filtro."
+                                                    : "No codes match this filter."}
+                                            </p>
+                                        );
+                                    }
+
+                                    const handleCopy = async (code: string) => {
+                                        try {
+                                            if (navigator.clipboard?.writeText) {
+                                                await navigator.clipboard.writeText(code);
+                                            } else {
+                                                // fallback
+                                                window.prompt(
+                                                    isSpanish ? "Copia el código:" : "Copy this code:",
+                                                    code
+                                                );
+                                            }
+                                        } catch (err) {
+                                            console.error("Clipboard error:", err);
+                                            window.prompt(
+                                                isSpanish ? "Copia el código:" : "Copy this code:",
+                                                code
+                                            );
+                                        }
+                                    };
 
                                     return (
-                                        <tr
-                                            key={c.id}
+                                        <table
                                             style={{
-                                                borderBottom: "1px solid #1f2937",
+                                                width: "100%",
+                                                borderCollapse: "collapse",
+                                                fontSize: 11,
                                             }}
                                         >
-                                            <td style={{ padding: "4px 6px", fontFamily: "monospace" }}>
-                                                {c.code}
-                                            </td>
-                                            <td style={{ padding: "4px 6px" }}>{c.days}</td>
-                                            <td style={{ padding: "4px 6px" }}>{c.credits}</td>
-                                            <td style={{ padding: "4px 6px" }}>
-                                                {c.usedCount}/{c.maxUses}
-                                            </td>
-                                            <td style={{ padding: "4px 6px" }}>
-                                                {c.expiresAt
-                                                    ? new Date(c.expiresAt).toLocaleDateString()
-                                                    : "—"}
-                                            </td>
-                                            <td style={{ padding: "4px 6px" }}>
-                                                {isExhausted ? "Exhausted" : "Active"}
-                                            </td>
-                                            <td style={{ padding: "4px 6px" }}>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => handleCopyCode(c.code)}
-                                                    style={{
-                                                        padding: "4px 8px",
-                                                        borderRadius: "999px",
-                                                        border: "none",
-                                                        fontSize: "11px",
-                                                        cursor: "pointer",
-                                                        backgroundColor: "#0f172a",
-                                                        color: "#e5e7eb",
-                                                    }}
-                                                >
-                                                    Copy
-                                                </button>
-                                            </td>
-                                        </tr>
+                                            <thead>
+                                            <tr
+                                                style={{
+                                                    borderBottom: "1px solid #1f2937",
+                                                    textAlign: "left",
+                                                }}
+                                            >
+                                                <th style={{ padding: "4px 6px" }}>Code</th>
+                                                <th style={{ padding: "4px 6px" }}>Days</th>
+                                                <th style={{ padding: "4px 6px" }}>Credits</th>
+                                                <th style={{ padding: "4px 6px" }}>Used / Max</th>
+                                                <th style={{ padding: "4px 6px" }}>Remaining</th>
+                                                <th style={{ padding: "4px 6px" }}>Expires</th>
+                                                <th style={{ padding: "4px 6px" }}></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {filteredCodes.map((ac) => {
+                                                const remaining =
+                                                    typeof ac.maxUses === "number" &&
+                                                    typeof ac.usedCount === "number"
+                                                        ? ac.maxUses - ac.usedCount
+                                                        : "-";
+                                                const expired = ac.expiresAt
+                                                    ? new Date(ac.expiresAt).getTime() < Date.now()
+                                                    : false;
+                                                const exhausted =
+                                                    typeof ac.maxUses === "number" &&
+                                                    typeof ac.usedCount === "number"
+                                                        ? ac.usedCount >= ac.maxUses
+                                                        : false;
+
+                                                return (
+                                                    <tr
+                                                        key={ac.id}
+                                                        style={{
+                                                            borderBottom: "1px solid #1f2937",
+                                                            opacity: expired || exhausted ? 0.6 : 1,
+                                                        }}
+                                                    >
+                                                        <td style={{ padding: "4px 6px" }}>{ac.code}</td>
+                                                        <td style={{ padding: "4px 6px" }}>{ac.days}</td>
+                                                        <td style={{ padding: "4px 6px" }}>
+                                                            {ac.credits}
+                                                        </td>
+                                                        <td style={{ padding: "4px 6px" }}>
+                                                            {ac.usedCount}/{ac.maxUses}
+                                                        </td>
+                                                        <td style={{ padding: "4px 6px" }}>
+                                                            {remaining}
+                                                        </td>
+                                                        <td style={{ padding: "4px 6px" }}>
+                                                            {ac.expiresAt
+                                                                ? new Date(
+                                                                    ac.expiresAt
+                                                                ).toLocaleDateString()
+                                                                : "—"}
+                                                        </td>
+                                                        <td style={{ padding: "4px 6px" }}>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => handleCopy(ac.code)}
+                                                                style={{
+                                                                    padding: "3px 8px",
+                                                                    borderRadius: 999,
+                                                                    border: "1px solid #1f2937",
+                                                                    backgroundColor: "#020617",
+                                                                    color: "#e5e7eb",
+                                                                    fontSize: 10,
+                                                                    cursor: "pointer",
+                                                                }}
+                                                            >
+                                                                {isSpanish ? "Copiar" : "Copy"}
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                            </tbody>
+                                        </table>
                                     );
-                                })}
-                                </tbody>
-                            </table>
-                        )}
+                                })()
+                            )}
+                        </div>
                     </section>
                 )}
 
@@ -1647,7 +1870,11 @@ export default function Dashboard({
                             </div>
                             {!hasAnyPlan && (
                                 <p
-                                    style={{ marginTop: "8px", fontSize: "11px", color: "#f97316" }}
+                                    style={{
+                                        marginTop: "8px",
+                                        fontSize: "11px",
+                                        color: "#f97316",
+                                    }}
                                 >
                                     {isSpanish
                                         ? "Activa un plan para habilitar la creación."
@@ -1815,28 +2042,9 @@ export default function Dashboard({
                                     <option value="classic">
                                         {isSpanish ? "Clásica" : "Classic"}
                                     </option>
+                                    {/* Add more templates later */}
                                 </select>
                             </div>
-
-                            {/* 🔹 Federal toggle */}
-                            <label
-                                style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: 6,
-                                    cursor: "pointer",
-                                    fontSize: "11px",
-                                    opacity: 0.9,
-                                }}
-                            >
-                                <input
-                                    type="checkbox"
-                                    checked={isFederal}
-                                    onChange={(e) => setIsFederal(e.target.checked)}
-                                    style={{ cursor: "pointer" }}
-                                />
-                                <span>{t.federalLabel}</span>
-                            </label>
                         </div>
 
                         {activeResume ? (
@@ -1851,18 +2059,6 @@ export default function Dashboard({
                                 >
                                     {activeResume.title}
                                 </p>
-                                {isFederal && (
-                                    <p
-                                        style={{
-                                            fontSize: "11px",
-                                            opacity: 0.75,
-                                            marginTop: 0,
-                                            marginBottom: "8px",
-                                        }}
-                                    >
-                                        {t.federalHint}
-                                    </p>
-                                )}
 
                                 {/* Job description */}
                                 <label
@@ -1989,7 +2185,7 @@ export default function Dashboard({
                                             >
                                                 <input
                                                     type="file"
-                                                    accept=".txt"
+                                                    accept=".txt,.doc,.docx,.pdf"
                                                     onChange={handleFileUpload}
                                                     disabled={uploading}
                                                     style={{ display: "none" }}
@@ -2162,7 +2358,9 @@ export default function Dashboard({
                                         suggestionSending || !suggestionText.trim() ? 0.7 : 1,
                                 }}
                             >
-                                {suggestionSending ? t.suggestionSending : t.suggestionButton}
+                                {suggestionSending
+                                    ? t.suggestionSending
+                                    : t.suggestionButton}
                             </button>
 
                             <div style={{ fontSize: "11px", minHeight: "1.5em" }}>

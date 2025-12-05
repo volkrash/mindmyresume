@@ -61,7 +61,7 @@
      "S3Bucket": {
       "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
      },
-     "S3Key": "e41fb3a90f2d0dbd17f4f6a73b5166526e3bfc56e1f9bfabb53a74969c7d0a3f.zip"
+     "S3Key": "6e9c8072bedd4b1dd1afbfa8be636dd0364ae4ad56cc3022475bfc6f49a4a2ca.zip"
     },
     "Environment": {
      "Variables": {
@@ -104,7 +104,7 @@
    "DeletionPolicy": "Delete",
    "Metadata": {
     "aws:cdk:path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669/function/rewriteResume-lambda/Resource",
-    "aws:asset:path": "asset.e41fb3a90f2d0dbd17f4f6a73b5166526e3bfc56e1f9bfabb53a74969c7d0a3f",
+    "aws:asset:path": "asset.6e9c8072bedd4b1dd1afbfa8be636dd0364ae4ad56cc3022475bfc6f49a4a2ca",
     "aws:asset:is-bundled": true,
     "aws:asset:property": "Code"
    }

@@ -1,153 +1,127 @@
 // src/templates/ModernCleanTemplate.tsx
 import React from "react";
 
-type ModernCleanTemplateProps = {
+type Props = {
     content: string;
     jobDescription?: string;
 };
 
-export const ModernCleanTemplate: React.FC<ModernCleanTemplateProps> = ({
-                                                                            content,
-                                                                            jobDescription,
-                                                                        }) => {
-    // Very simple parsing:
-    // - First non-empty line = Name
-    // - Second non-empty line = Title
-    // - Rest = body text
-    const lines = content
-        .split(/\r?\n/)
-        .map((l) => l.trimEnd())
-        .filter((l) => l.trim().length > 0);
+export const ModernCleanTemplate: React.FC<Props> = ({
+                                                         content,
+                                                         jobDescription,
+                                                     }) => {
+    // Normalize line endings
+    const normalized = (content || "").replace(/\r\n/g, "\n");
 
-    const nameLine = lines[0] || "Your Name";
-    const titleLine = lines[1] || "Professional Title";
-    const bodyLines = lines.slice(2);
-    const bodyText = bodyLines.join("\n") || "Add your experience, skills, and education here.";
+    const allLines = normalized.split("\n");
+    const nonEmpty = allLines.filter((l) => l.trim() !== "");
+
+    const nameLine = nonEmpty[0] || "";
+    const titleLine = nonEmpty[1] || "";
+
+    // Body = everything after the first 2 lines, but we keep original line breaks
+    const bodyText = allLines.slice(2).join("\n");
 
     return (
         <div
             style={{
-                width: "800px",
-                minHeight: "1040px",
+                width: "100%",
+                maxWidth: 800,
+                minHeight: 600,
                 margin: "0 auto",
+                padding: "32px 40px",
                 backgroundColor: "#ffffff",
                 color: "#111827",
                 fontFamily:
-                    "-apple-system, BlinkMacSystemFont, system-ui, Segoe UI, sans-serif",
-                padding: "40px 52px",
+                    '-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif',
+                fontSize: 12,
                 boxSizing: "border-box",
-                boxShadow: "0 18px 45px rgba(15,23,42,0.22)",
-                borderRadius: "12px",
+                borderRadius: 12,
             }}
         >
             {/* Header */}
-            <header
+            <div
                 style={{
                     borderBottom: "1px solid #e5e7eb",
-                    paddingBottom: "18px",
-                    marginBottom: "20px",
+                    paddingBottom: 8,
+                    marginBottom: 12,
                     display: "flex",
                     justifyContent: "space-between",
-                    alignItems: "flex-end",
-                    gap: "16px",
+                    gap: 24,
                 }}
             >
                 <div>
-                    <h1
-                        style={{
-                            margin: 0,
-                            fontSize: "28px",
-                            letterSpacing: "0.04em",
-                            textTransform: "uppercase",
-                        }}
-                    >
-                        {nameLine}
-                    </h1>
-                    <p
-                        style={{
-                            margin: "6px 0 0",
-                            fontSize: "13px",
-                            letterSpacing: "0.12em",
-                            textTransform: "uppercase",
-                            color: "#6b7280",
-                        }}
-                    >
-                        {titleLine}
-                    </p>
+                    {nameLine && (
+                        <h1
+                            style={{
+                                margin: 0,
+                                fontSize: 20,
+                                letterSpacing: 0.03,
+                                fontWeight: 700,
+                            }}
+                        >
+                            {nameLine}
+                        </h1>
+                    )}
+                    {titleLine && (
+                        <p
+                            style={{
+                                margin: "4px 0 0 0",
+                                fontSize: 11,
+                                color: "#6b7280",
+                            }}
+                        >
+                            {titleLine}
+                        </p>
+                    )}
                 </div>
 
                 {jobDescription && jobDescription.trim() && (
                     <div
                         style={{
-                            maxWidth: "260px",
-                            fontSize: "10px",
+                            maxWidth: 260,
+                            padding: "8px 10px",
+                            borderRadius: 8,
+                            border: "1px solid #e5e7eb",
+                            backgroundColor: "#f9fafb",
+                            fontSize: 10,
                             color: "#4b5563",
-                            textAlign: "right",
                         }}
                     >
                         <div
                             style={{
+                                fontSize: 10,
                                 fontWeight: 600,
-                                fontSize: "11px",
-                                marginBottom: "4px",
+                                marginBottom: 4,
+                                letterSpacing: 0.04,
                                 textTransform: "uppercase",
-                                letterSpacing: "0.1em",
+                                color: "#6b7280",
                             }}
                         >
                             Target role
                         </div>
                         <div
                             style={{
-                                padding: "6px 8px",
-                                borderRadius: "8px",
-                                border: "1px solid #e5e7eb",
-                                backgroundColor: "#f9fafb",
-                                maxHeight: "84px",
-                                overflow: "hidden",
+                                whiteSpace: "pre-line",
+                                lineHeight: 1.4,
                             }}
                         >
                             {jobDescription}
                         </div>
                     </div>
                 )}
-            </header>
+            </div>
 
-            {/* Body */}
-            <main>
-                {/* Simple single-column layout for now – clean and ATS friendly */}
-                <section
-                    style={{
-                        marginBottom: "14px",
-                    }}
-                >
-                    <h2
-                        style={{
-                            margin: 0,
-                            fontSize: "11px",
-                            letterSpacing: "0.16em",
-                            textTransform: "uppercase",
-                            color: "#6b7280",
-                        }}
-                    >
-                        Professional Profile
-                    </h2>
-                </section>
-
-                <section>
-          <pre
-              style={{
-                  whiteSpace: "pre-wrap",
-                  fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
-                  fontSize: "11.5px",
-                  lineHeight: 1.6,
-                  margin: 0,
-                  color: "#111827",
-              }}
-          >
-            {bodyText}
-          </pre>
-                </section>
-            </main>
+            {/* Body – this is where spacing matters */}
+            <div
+                style={{
+                    whiteSpace: "pre-line", // <-- preserves \n and blank lines
+                    lineHeight: 1.5,
+                    fontSize: 11.5,
+                }}
+            >
+                {bodyText || normalized}
+            </div>
         </div>
     );
 };

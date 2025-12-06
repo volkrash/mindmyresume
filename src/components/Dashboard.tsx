@@ -706,21 +706,14 @@ export default function Dashboard({
             return;
         }
 
-        // Simple parse for header + body
-        const lines = editorContent
-            .split(/\r?\n/)
-            .map((l) => l.trimEnd())
-            .filter((l) => l.trim().length > 0);
+        const allLines = editorContent.split(/\r?\n/);
 
-        const nameLine = lines[0] || (isSpanish ? "Nombre Apellido" : "Your Name");
-        const titleLine =
-            lines[1] || (isSpanish ? "Título profesional" : "Professional Title");
-        const bodyLines = lines.slice(2);
-        const bodyText =
-            bodyLines.join("\n") ||
-            (isSpanish
-                ? "Agrega tu experiencia, habilidades y educación aquí."
-                : "Add your experience, skills, and education here.");
+        // --- Split header vs body by first blank line ---
+        let splitIndex = allLines.findIndex((l) => l.trim() === "");
+        if (splitIndex === -1) splitIndex = allLines.length;
+
+        const headerLines = allLines.slice(0, splitIndex).filter((l) => l.trim() !== "");
+        const bodyLines = allLines.slice(splitIndex + 1); // may be empty
 
         const doc = new jsPDF({
             unit: "pt",
@@ -730,79 +723,170 @@ export default function Dashboard({
 
         const pageWidth = doc.internal.pageSize.getWidth();
         const pageHeight = doc.internal.pageSize.getHeight();
-        const marginX = 48;
+        const marginX = 52;
         const marginTop = 60;
         const marginBottom = 60;
+        const contentWidth = pageWidth - marginX * 2;
 
         let y = marginTop;
 
-        // Header: Name
-        doc.setFont("Helvetica", "bold");
-        doc.setFontSize(20);
-        doc.setTextColor(15, 23, 42);
-        doc.text(nameLine, marginX, y);
-        y += 26;
+        const lineHeightBody = 14;
+        const lineHeightHeading = 16;
+        const lineHeightName = 26;
 
-        // Subtitle: Title
-        doc.setFont("Helvetica", "normal");
-        doc.setFontSize(11);
-        doc.setTextColor(100, 116, 139);
-        doc.text(titleLine, marginX, y);
-        y += 24;
-
-        // Optional small job description box
-        if (jobDescription && jobDescription.trim()) {
-            doc.setFontSize(9);
-            doc.setTextColor(107, 114, 128);
-
-            const label = isSpanish ? "Puesto objetivo" : "Target role";
-            doc.text(label.toUpperCase(), pageWidth - marginX - 200, marginTop);
-
-            const jdText = doc.splitTextToSize(jobDescription, 190);
-            doc.setDrawColor(209, 213, 219);
-            doc.setLineWidth(0.5);
-            doc.rect(pageWidth - marginX - 200, marginTop + 10, 200, 60);
-            doc.text(jdText, pageWidth - marginX - 194, marginTop + 24);
-
-            y += 8;
-        }
-
-        // Divider
-        y += 4;
-        doc.setDrawColor(229, 231, 235);
-        doc.setLineWidth(0.8);
-        doc.line(marginX, y, pageWidth - marginX, y);
-        y += 20;
-
-        // Section title
-        const sectionTitle = isSpanish ? "Perfil profesional" : "Professional Profile";
-        doc.setFont("Helvetica", "bold");
-        doc.setFontSize(10);
-        doc.setTextColor(75, 85, 99);
-        doc.text(sectionTitle.toUpperCase(), marginX, y);
-        y += 16;
-
-        // Body text
-        doc.setFont("Helvetica", "normal");
-        doc.setFontSize(11);
-        doc.setTextColor(17, 24, 39);
-
-        const maxWidth = pageWidth - marginX * 2;
-        const bodyLinesWrapped = doc.splitTextToSize(bodyText, maxWidth);
-
-        bodyLinesWrapped.forEach((line) => {
-            if (y > pageHeight - marginBottom) {
+        const ensureSpace = (neededHeight: number) => {
+            if (y + neededHeight > pageHeight - marginBottom) {
                 doc.addPage();
                 y = marginTop;
             }
-            doc.text(line, marginX, y);
-            y += 16;
-        });
+        };
 
-        const safeTitle = (activeResume?.title || "resume").replace(
-            /[^a-z0-9\-]+/gi,
-            "_"
-        );
+        // --- Header block (name, location, contact) ---
+        const nameLine = headerLines[0] || (isSpanish ? "NOMBRE APELLIDO" : "YOUR NAME");
+        const locationLine = headerLines[1] || "";
+
+        doc.setFont("Helvetica", "bold");
+        doc.setFontSize(20);
+        doc.setTextColor(15, 23, 42);
+        ensureSpace(lineHeightName);
+        doc.text(nameLine.trim(), marginX, y);
+        y += lineHeightName;
+
+        if (locationLine) {
+            doc.setFont("Helvetica", "normal");
+            doc.setFontSize(10);
+            doc.setTextColor(100, 116, 139);
+            ensureSpace(lineHeightBody);
+            doc.text(locationLine.trim(), marginX, y);
+            y += lineHeightBody;
+        }
+
+        // Remaining header lines (phone, email, LinkedIn…) each on its own line
+        if (headerLines.length > 2) {
+            doc.setFont("Helvetica", "normal");
+            doc.setFontSize(10);
+            doc.setTextColor(55, 65, 81);
+
+            for (let i = 2; i < headerLines.length; i++) {
+                const line = headerLines[i].trim();
+                if (!line) continue;
+                ensureSpace(lineHeightBody);
+                doc.text(line, marginX, y);
+                y += lineHeightBody;
+            }
+        }
+
+        // Divider
+        y += 8;
+        ensureSpace(10);
+        doc.setDrawColor(229, 231, 235);
+        doc.setLineWidth(0.8);
+        doc.line(marginX, y, pageWidth - marginX, y);
+        y += 18;
+
+        // --- Helpers for body formatting ---
+
+        const isHeadingLine = (raw: string) => {
+            const text = raw.trim();
+            if (!text) return false;
+            // If it contains lowercase letters, it's not a heading
+            if (/[a-z]/.test(text)) return false;
+            // Ignore pure bullet characters
+            if (/^[•\-]+$/.test(text)) return false;
+            return true;
+        };
+
+        const isBulletLine = (raw: string) => {
+            return raw.trim().startsWith("• ") || raw.trim().startsWith("- ");
+        };
+
+        const renderHeading = (text: string) => {
+            const trimmed = text.trim();
+            ensureSpace(lineHeightHeading * 2);
+            // Extra space before headings
+            y += 4;
+
+            doc.setFont("Helvetica", "bold");
+            doc.setFontSize(11);
+            doc.setTextColor(55, 65, 81);
+            doc.text(trimmed, marginX, y);
+            y += lineHeightHeading;
+        };
+
+        const renderParagraph = (text: string) => {
+            const trimmed = text.trim();
+            if (!trimmed) {
+                // blank line → vertical spacing
+                y += lineHeightBody;
+                return;
+            }
+
+            doc.setFont("Helvetica", "normal");
+            doc.setFontSize(11);
+            doc.setTextColor(17, 24, 39);
+
+            const wrapped = doc.splitTextToSize(trimmed, contentWidth);
+            wrapped.forEach((line) => {
+                ensureSpace(lineHeightBody);
+                doc.text(line, marginX, y);
+                y += lineHeightBody;
+            });
+        };
+
+        const renderBullet = (raw: string) => {
+            const trimmed = raw.trim().replace(/^[-•]\s*/, ""); // remove bullet char + space
+
+            doc.setFont("Helvetica", "normal");
+            doc.setFontSize(11);
+            doc.setTextColor(17, 24, 39);
+
+            const bulletIndent = 12; // space from bullet dot to text
+            const bulletX = marginX + 2; // bullet position
+            const textX = marginX + bulletIndent + 4;
+            const bulletWidth = contentWidth - bulletIndent - 4;
+
+            const wrapped = doc.splitTextToSize(trimmed, bulletWidth);
+
+            wrapped.forEach((line, idx) => {
+                ensureSpace(lineHeightBody);
+                if (idx === 0) {
+                    // First line: draw bullet + text
+                    doc.text("•", bulletX, y);
+                    doc.text(line, textX, y);
+                } else {
+                    // Continuation lines aligned with text
+                    doc.text(line, textX, y);
+                }
+                y += lineHeightBody;
+            });
+        };
+
+        // --- Render body lines ---
+        for (let i = 0; i < bodyLines.length; i++) {
+            const raw = bodyLines[i] ?? "";
+            const trimmed = raw.trim();
+
+            if (!trimmed) {
+                // preserve blank line spacing between sections
+                y += lineHeightBody;
+                continue;
+            }
+
+            if (isHeadingLine(trimmed)) {
+                renderHeading(trimmed);
+                continue;
+            }
+
+            if (isBulletLine(trimmed)) {
+                renderBullet(trimmed);
+                continue;
+            }
+
+            // Normal paragraph (job titles, company lines, etc.)
+            renderParagraph(trimmed);
+        }
+
+        const safeTitle = (activeResume?.title || "resume").replace(/[^a-z0-9\-]+/gi, "_");
         doc.save(`${safeTitle}.pdf`);
     };
 

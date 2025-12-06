@@ -13,6 +13,7 @@ import * as pdfjsLib from "pdfjs-dist";
 const STRIPE_UNLIMITED_URL = import.meta.env.VITE_STRIPE_UNLIMITED_URL || null;
 const STRIPE_CREDITS_URL = import.meta.env.VITE_STRIPE_CREDITS_URL || null;
 const REWRITE_URL = import.meta.env.VITE_REWRITE_URL || null;
+const SUGGESTION_URL = import.meta.env.VITE_SUGGESTION_URL || null;
 
 // LocalStorage keys
 const UNLIMITED_FLAG_KEY = "mmr_unlimited_active";
@@ -1105,17 +1106,41 @@ export default function Dashboard({
             setSuggestionError(null);
             setSuggestionSuccess(null);
 
-            const { data, errors } = await client.models.Suggestion.create({
+            const payload = {
                 message: suggestionText.trim(),
                 page: "dashboard",
                 userEmail: loginEmail,
                 createdAt: new Date().toISOString(),
-            });
+            };
+
+            // 1) Store in DB
+            const { data, errors } = await client.models.Suggestion.create(payload);
 
             if (errors?.length || !data) {
                 console.error("Suggestion create errors:", errors);
                 setSuggestionError(t.suggestionError);
                 return;
+            }
+
+            // 2) Send email (if configured)
+            if (SUGGESTION_URL) {
+                try {
+                    const resp = await fetch(SUGGESTION_URL, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(payload),
+                    });
+
+                    if (!resp.ok) {
+                        const raw = await resp.text().catch(() => "");
+                        console.error("Suggestion email not OK", resp.status, raw);
+                        // don't block UI success if email fails – just log
+                    }
+                } catch (err) {
+                    console.error("Suggestion email call failed:", err);
+                }
+            } else {
+                console.warn("VITE_SUGGESTION_URL not configured; no email sent");
             }
 
             setSuggestionText("");

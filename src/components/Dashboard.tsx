@@ -26,6 +26,7 @@ const UNLIMITED_PRICE = 24.99; // $24.99
 const CREDITS_PRICE = 5.99; // $5.99
 const CREDITS_PER_PACK = 5; // 5 rewrites per credits pack
 
+
 // Optional classic template (kept if you want to use later)
 function ClassicTemplate({
                              content,
@@ -138,12 +139,15 @@ export default function Dashboard({
         "all"
     );
 
+    // 🔹 Admin-only suggestions viewer state
+    const [suggestions, setSuggestions] = useState<any[]>([]);
+    const [suggestionsLoading, setSuggestionsLoading] = useState(false);
+    const [suggestionsFilter, setSuggestionsFilter] = useState<"all" | "dashboard" | "resume">("all");
+
     // 🔹 Suggestions state
     const [suggestionText, setSuggestionText] = useState("");
     const [suggestionSending, setSuggestionSending] = useState(false);
-    const [suggestionSuccess, setSuggestionSuccess] = useState<string | null>(
-        null
-    );
+    const [suggestionSuccess, setSuggestionSuccess] = useState<string | null>(null);
     const [suggestionError, setSuggestionError] = useState<string | null>(null);
 
     const previewRef = useRef<HTMLDivElement | null>(null);
@@ -260,6 +264,39 @@ export default function Dashboard({
         };
 
         loadAccessCodes();
+    }, [isDevUser]);
+
+    // 🔐 Admin: load Suggestions when dev user logs in
+    useEffect(() => {
+        if (!isDevUser) return;
+
+        const loadSuggestions = async () => {
+            try {
+                setSuggestionsLoading(true);
+                const { data, errors } = await client.models.Suggestion.list({
+                    limit: 200,
+                });
+
+                if (errors && errors.length) {
+                    console.error("Suggestion.list errors:", errors);
+                }
+
+                // sort newest first
+                const sorted = (data || []).sort((a: any, b: any) => {
+                    const ta = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+                    const tb = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+                    return tb - ta;
+                });
+
+                setSuggestions(sorted);
+            } catch (err) {
+                console.error("Error loading suggestions:", err);
+            } finally {
+                setSuggestionsLoading(false);
+            }
+        };
+
+        loadSuggestions();
     }, [isDevUser]);
 
     // Detect payment & load plan / credits
@@ -1106,48 +1143,42 @@ export default function Dashboard({
             setSuggestionError(null);
             setSuggestionSuccess(null);
 
-            const payload = {
+            const { data, errors } = await client.models.Suggestion.create({
                 message: suggestionText.trim(),
-                page: "dashboard",
+                page: "dashboard",                 // or "resume-editor", etc.
                 userEmail: loginEmail,
-                createdAt: new Date().toISOString(),
-            };
-
-            // 1) Store in DB
-            const { data, errors } = await client.models.Suggestion.create(payload);
+                createdAt: new Date().toISOString()
+            });
 
             if (errors?.length || !data) {
-                console.error("Suggestion create errors:", errors);
-                setSuggestionError(t.suggestionError);
+                console.error("Suggestion.create errors:", errors);
+                setSuggestionError(
+                    isSpanish
+                        ? "Hubo un problema al enviar tu sugerencia."
+                        : "There was a problem submitting your suggestion."
+                );
                 return;
             }
 
-            // 2) Send email (if configured)
-            if (SUGGESTION_URL) {
-                try {
-                    const resp = await fetch(SUGGESTION_URL, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(payload),
-                    });
-
-                    if (!resp.ok) {
-                        const raw = await resp.text().catch(() => "");
-                        console.error("Suggestion email not OK", resp.status, raw);
-                        // don't block UI success if email fails – just log
-                    }
-                } catch (err) {
-                    console.error("Suggestion email call failed:", err);
-                }
-            } else {
-                console.warn("VITE_SUGGESTION_URL not configured; no email sent");
-            }
-
+            // clear input
             setSuggestionText("");
-            setSuggestionSuccess(t.suggestionThanks);
+            setSuggestionSuccess(
+                isSpanish
+                    ? "¡Gracias! Tu sugerencia ha sido enviada."
+                    : "Thank you! Your suggestion has been submitted."
+            );
+
+            // ✅ update local admin dashboard state if you're logged in as dev
+            if (isDevUser) {
+                setSuggestions((prev) => [data, ...prev]);
+            }
         } catch (err) {
-            console.error("Error creating suggestion", err);
-            setSuggestionError(t.suggestionError);
+            console.error("Error creating suggestion:", err);
+            setSuggestionError(
+                isSpanish
+                    ? "Hubo un problema al enviar tu sugerencia."
+                    : "There was a problem submitting your suggestion."
+            );
         } finally {
             setSuggestionSending(false);
         }
@@ -1898,6 +1929,197 @@ export default function Dashboard({
                                                     </tr>
                                                 );
                                             })}
+                                            </tbody>
+                                        </table>
+                                    );
+                                })()
+                            )}
+                        </div>
+                    </section>
+                )}
+
+                {/* 🔐 ADMIN SUGGESTIONS DASHBOARD */}
+                {isDevUser && (
+                    <section
+                        style={{
+                            backgroundColor: "#0f172a",
+                            borderRadius: "16px",
+                            padding: "16px",
+                            marginBottom: "24px",
+                            border: "1px solid #1f2937",
+                        }}
+                    >
+                        <div
+                            style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                gap: 12,
+                                alignItems: "center",
+                            }}
+                        >
+                            <div>
+                                <h2 style={{ margin: 0, fontSize: 16 }}>
+                                    {isSpanish ? "Panel de sugerencias" : "Suggestions dashboard"}
+                                </h2>
+                                <p
+                                    style={{
+                                        margin: "4px 0 8px 0",
+                                        fontSize: 11,
+                                        opacity: 0.7,
+                                    }}
+                                >
+                                    {isSpanish
+                                        ? "Solo tú puedes ver este panel. Aquí se muestran todas las sugerencias enviadas desde MindMyResume."
+                                        : "Only you can see this panel. All suggestions submitted from MindMyResume appear here."}
+                                </p>
+                            </div>
+
+                            {/* Simple filter by page */}
+                            <div
+                                style={{
+                                    display: "flex",
+                                    gap: 4,
+                                    padding: "2px",
+                                    borderRadius: 999,
+                                    backgroundColor: "#020617",
+                                    border: "1px solid #1f2937",
+                                    fontSize: 11,
+                                }}
+                            >
+                                <button
+                                    type="button"
+                                    onClick={() => setSuggestionsFilter("all")}
+                                    style={{
+                                        padding: "3px 8px",
+                                        borderRadius: 999,
+                                        border: "none",
+                                        cursor: "pointer",
+                                        backgroundColor:
+                                            suggestionsFilter === "all" ? "#1f2937" : "transparent",
+                                        color: "#e5e7eb",
+                                    }}
+                                >
+                                    {isSpanish ? "Todas" : "All"}
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setSuggestionsFilter("dashboard")}
+                                    style={{
+                                        padding: "3px 8px",
+                                        borderRadius: 999,
+                                        border: "none",
+                                        cursor: "pointer",
+                                        backgroundColor:
+                                            suggestionsFilter === "dashboard" ? "#16a34a" : "transparent",
+                                        color:
+                                            suggestionsFilter === "dashboard" ? "#022c22" : "#bbf7d0",
+                                    }}
+                                >
+                                    {isSpanish ? "Dashboard" : "Dashboard"}
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setSuggestionsFilter("resume")}
+                                    style={{
+                                        padding: "3px 8px",
+                                        borderRadius: 999,
+                                        border: "none",
+                                        cursor: "pointer",
+                                        backgroundColor:
+                                            suggestionsFilter === "resume" ? "#7c2d12" : "transparent",
+                                        color:
+                                            suggestionsFilter === "resume" ? "#ffedd5" : "#fed7aa",
+                                    }}
+                                >
+                                    {isSpanish ? "Editor" : "Resume editor"}
+                                </button>
+                            </div>
+                        </div>
+
+                        <div style={{ marginTop: 12, maxHeight: 260, overflow: "auto" }}>
+                            {suggestionsLoading && suggestions.length === 0 ? (
+                                <p style={{ fontSize: 12, opacity: 0.8 }}>
+                                    {isSpanish ? "Cargando sugerencias..." : "Loading suggestions..."}
+                                </p>
+                            ) : suggestions.length === 0 ? (
+                                <p style={{ fontSize: 12, opacity: 0.8 }}>
+                                    {isSpanish ? "Aún no hay sugerencias." : "No suggestions yet."}
+                                </p>
+                            ) : (
+                                (() => {
+                                    const filtered = suggestions.filter((s: any) => {
+                                        if (suggestionsFilter === "all") return true;
+                                        if (suggestionsFilter === "dashboard") return s.page === "dashboard";
+                                        if (suggestionsFilter === "resume")
+                                            return s.page === "resume" || s.page === "resume-editor";
+                                        return true;
+                                    });
+
+                                    if (filtered.length === 0) {
+                                        return (
+                                            <p style={{ fontSize: 12, opacity: 0.8 }}>
+                                                {isSpanish
+                                                    ? "No hay sugerencias con este filtro."
+                                                    : "No suggestions match this filter."}
+                                            </p>
+                                        );
+                                    }
+
+                                    return (
+                                        <table
+                                            style={{
+                                                width: "100%",
+                                                borderCollapse: "collapse",
+                                                fontSize: 11,
+                                            }}
+                                        >
+                                            <thead>
+                                            <tr
+                                                style={{
+                                                    borderBottom: "1px solid #1f2937",
+                                                    textAlign: "left",
+                                                }}
+                                            >
+                                                <th style={{ padding: "4px 6px" }}>
+                                                    {isSpanish ? "Fecha" : "Date"}
+                                                </th>
+                                                <th style={{ padding: "4px 6px" }}>Page</th>
+                                                <th style={{ padding: "4px 6px" }}>
+                                                    {isSpanish ? "Usuario" : "User"}
+                                                </th>
+                                                <th style={{ padding: "4px 6px" }}>
+                                                    {isSpanish ? "Mensaje" : "Message"}
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {filtered.map((s: any) => (
+                                                <tr
+                                                    key={s.id}
+                                                    style={{
+                                                        borderBottom: "1px solid #1f2937",
+                                                    }}
+                                                >
+                                                    <td style={{ padding: "4px 6px", whiteSpace: "nowrap" }}>
+                                                        {s.createdAt
+                                                            ? new Date(s.createdAt).toLocaleString()
+                                                            : "—"}
+                                                    </td>
+                                                    <td style={{ padding: "4px 6px" }}>{s.page || "—"}</td>
+                                                    <td style={{ padding: "4px 6px" }}>
+                                                        {s.userEmail || "—"}
+                                                    </td>
+                                                    <td
+                                                        style={{
+                                                            padding: "4px 6px",
+                                                            maxWidth: 400,
+                                                            whiteSpace: "pre-wrap",
+                                                        }}
+                                                    >
+                                                        {s.message}
+                                                    </td>
+                                                </tr>
+                                            ))}
                                             </tbody>
                                         </table>
                                     );

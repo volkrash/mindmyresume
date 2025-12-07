@@ -118,7 +118,9 @@ export default function Dashboard({
     const [jobDescription, setJobDescription] = useState("");
     const [aiLoading, setAiLoading] = useState(false);
     const [uploading, setUploading] = useState(false);
-    const [selectedTemplate, setSelectedTemplate] = useState("classic");
+    const [selectedTemplate, setSelectedTemplate] = useState<"classic" | "federal">("classic");
+
+    const isFederalTemplate = selectedTemplate === "federal";
 
     const [redeemCode, setRedeemCode] = useState("");
     const [isRedeeming, setIsRedeeming] = useState(false);
@@ -533,7 +535,8 @@ export default function Dashboard({
             const result = await client.models.Resume.create({
                 title: title.trim(),
                 language: lang,
-                aiJson: JSON.stringify({ content: placeholderContent }),
+                aiJson: JSON.stringify({ content: placeholderContent,
+                template: selectedTemplate,}),
                 createdAt: now.toISOString(),
                 expiresAt: expiresAt.toISOString(),
             });
@@ -603,18 +606,24 @@ export default function Dashboard({
         setActiveResume(resume);
 
         let content = "";
+        let template: "classic" | "federal" = "classic";
         try {
             if (resume.aiJson) {
                 const parsed = JSON.parse(resume.aiJson);
                 if (typeof parsed === "string") content = parsed;
-                else if (parsed && typeof parsed === "object" && "content" in parsed)
+                else if (parsed && typeof parsed === "object") {
                     content = (parsed as any).content || "";
+                    if ((parsed as any).template === "federal") {
+                        template = "federal";
+                    }
+                }
             }
-        } catch {
+        }catch {
             content = resume.aiJson || "";
         }
 
         setEditorContent(content);
+        setSelectedTemplate(template);
     };
 
     const handleSaveChanges = async () => {
@@ -622,7 +631,10 @@ export default function Dashboard({
         try {
             const { data: updated } = await client.models.Resume.update({
                 id: activeResume.id,
-                aiJson: JSON.stringify({ content: editorContent }),
+                aiJson: JSON.stringify({
+                    content: editorContent,
+                template: selectedTemplate,
+                }),
             });
 
             setResumes((prev) => prev.map((r) => (r.id === updated.id ? updated : r)));
@@ -782,6 +794,7 @@ export default function Dashboard({
         // --- Header block (name, location, contact) ---
         const nameLine = headerLines[0] || (isSpanish ? "NOMBRE APELLIDO" : "YOUR NAME");
         const locationLine = headerLines[1] || "";
+        const isFederalTemplate = selectedTemplate === "federal";
 
         doc.setFont("Helvetica", "bold");
         doc.setFontSize(20);
@@ -929,6 +942,9 @@ export default function Dashboard({
     };
 
     const handleRewriteWithAI = async () => {
+
+        const mode = selectedTemplate === "federal" ? "federal" : "standard";
+
         if (!REWRITE_URL) {
             console.error("VITE_REWRITE_URL not configured");
             alert(
@@ -986,6 +1002,7 @@ export default function Dashboard({
                     resumeText: editorContent,
                     jobDescription,
                     language: lang,
+                    mode,
                 }),
             });
 
@@ -1007,7 +1024,10 @@ export default function Dashboard({
 
             const { data: updated } = await client.models.Resume.update({
                 id: activeResume.id,
-                aiJson: JSON.stringify({ content: rewrittenText }),
+                aiJson: JSON.stringify({
+                    content: rewrittenText,
+                template: selectedTemplate,
+                }),
             });
 
             setActiveResume(updated);
@@ -2372,6 +2392,9 @@ export default function Dashboard({
                                 >
                                     <option value="classic">
                                         {isSpanish ? "Clásica" : "Classic"}
+                                    </option>
+                                    <option value="federal">
+                                        {isSpanish ? "Federal (USAJOBS)" : "Federal (USAJOBS"}
                                     </option>
                                     {/* Add more templates later */}
                                 </select>

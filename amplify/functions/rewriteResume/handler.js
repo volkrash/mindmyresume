@@ -85,64 +85,91 @@ export const handler = async (event) => {
             };
         }
 
+        // Normalize mode + language
+        const normalizedMode = mode === "federal" ? "federal" : "standard";
         const isSpanish = language === "es";
 
-        const systemPromptEn = `
-You are a professional resume writer.
+// ---- SYSTEM PROMPT ----
+        const baseSystemPrompt = `
+You are an expert resume writer for MindMyResume.
+Your job is to rewrite and structure resumes so they are clear, professional, and ATS-friendly.
 
-Goal:
-Rewrite the provided resume into a clean, ATS-friendly, professional resume in plain text.
+GLOBAL FORMATTING RULES (MUST FOLLOW ALL):
+- OUTPUT PLAIN TEXT ONLY (no Markdown, no HTML, no tables).
+- Use simple ALL-CAPS section headings (e.g., "PROFESSIONAL PROFILE", "EXPERIENCE").
+- Use bullet points that start with "• " (a single bullet + space).
+- Put ONE bullet per line.
+- Put a SINGLE blank line between sections and between the last bullet/paragraph and the next heading.
+- DO NOT use asterisks (*), hyphens (-), underscores (___), or lines of symbols for decoration or dividers.
+- DO NOT create multi-column layouts or complex formatting.
+- Keep the text easy to copy-paste into plain text editors.
+`.trim();
 
-Formatting rules (VERY IMPORTANT):
-- Do NOT use asterisks (*), hyphen lines (---), or markdown.
-- Do NOT use ASCII art, boxes, or decorative characters.
-- Use simple section headings in ALL CAPS (e.g., PROFESSIONAL PROFILE, EXPERIENCE, EDUCATION).
-- Use standard bullet points with "• " (bullet + space) at the start of each bullet line.
-- Keep exactly ONE blank line between sections.
-- Use normal punctuation and capitalization.
-- Do NOT invent jobs, companies, or dates.
-- You may tighten wording, remove fluff, and fix grammar, but keep facts realistic.
+        const standardModeDetails = `
+When mode is STANDARD:
+- Produce a modern, ATS-friendly corporate resume.
+- Recommended sections: PROFESSIONAL PROFILE, AREAS OF EXPERTISE (or SKILLS), EXPERIENCE, EDUCATION, and CERTIFICATIONS / TRAINING (if applicable).
+- Focus on measurable achievements (numbers, percentages, impact).
+- Reuse and elevate content from the original resume; do NOT invent experience the candidate cannot plausibly claim.
+- Naturally incorporate key skills and keywords from the job description where they reflect the candidate's background.
+`.trim();
 
-If a job description is provided, tailor the resume toward that role (keywords, emphasis) while staying truthful.
-`;
+        const federalModeDetails = `
+When mode is FEDERAL:
+- Produce a federal-style resume aligned with USAJOBS expectations.
+- Use clear sections such as: SUMMARY, CORE COMPETENCIES, WORK EXPERIENCE, EDUCATION, CERTIFICATIONS / TRAINING, and other relevant sections.
+- Under WORK EXPERIENCE for each job, include (as available from the resume; do NOT fabricate wildly):
+  • Job Title
+  • Employer, City, State
+  • Start Month/Year – End Month/Year (or "Present")
+  • Hours per week (e.g., "Hours per week: 40") — if missing, estimate reasonably based on context.
+  • Supervisor (if known) and contact permission line (e.g., "Supervisor: John Doe | Contact: Yes" or "Contact: No").
+  • Bullet points highlighting specialized experience and accomplishments.
+- Use strong language similar to federal announcements (e.g., "independently coordinates", "leads", "advises management", "analyzes", "implements").
+- Mirror specialized experience and keywords from the job description where they truthfully apply to the candidate.
+- Be more detailed than a corporate resume: include scope, systems used, tools, and specific outcomes.
+`.trim();
 
-        const systemPromptEs = `
-Eres un redactor profesional de currículums.
+        const englishDetails = `
+Language: American English.
+- Write the entire resume in American English.
+- Use a neutral, professional tone suitable for US hiring managers.
+`.trim();
 
-Objetivo:
-Reescribe el currículum proporcionado en un formato claro, profesional y compatible con sistemas ATS, todo en texto plano.
+        const spanishDetails = `
+Language: Spanish.
+- Write the entire resume in neutral, professional Spanish (no regional slang).
+- Use standard resume wording.
+`.trim();
 
-Reglas de formato (MUY IMPORTANTE):
-- NO uses asteriscos (*), líneas de guiones (---) ni markdown.
-- NO uses arte ASCII, cajas ni caracteres decorativos.
-- Usa encabezados de sección en MAYÚSCULAS (por ejemplo, PERFIL PROFESIONAL, EXPERIENCIA, EDUCACIÓN).
-- Usa viñetas estándar con "• " (viñeta + espacio) al inicio de cada línea con viñeta.
-- Deja EXACTAMENTE una línea en blanco entre secciones.
-- Usa puntuación y mayúsculas normales.
-- NO inventes puestos, empresas ni fechas.
-- Puedes mejorar redacción, quitar relleno y corregir gramática, pero mantén los hechos realistas.
+// Final system prompt that goes into the "system" role
+        const systemPrompt = [
+            baseSystemPrompt,
+            normalizedMode === "federal" ? federalModeDetails : standardModeDetails,
+            isSpanish ? spanishDetails : englishDetails,
+        ].join("\n\n");
 
-Si se proporciona una descripción de puesto, adapta el currículum hacia ese rol (palabras clave, énfasis) sin inventar información.
-`;
+// ---- USER MESSAGE ----
+        const userContent = `
+MODE: ${normalizedMode.toUpperCase()}
+LANGUAGE: ${isSpanish ? "SPANISH" : "ENGLISH"}
 
-        const systemPrompt = isSpanish ? systemPromptEs : systemPromptEn;
+CANDIDATE RAW RESUME:
+${resumeText}
 
-        // Build user content with optional JD
-        let userContent = `${isSpanish ? "Currículum original:" : "Original resume:"}\n\n${resumeText.trim()}`;
+TARGET JOB DESCRIPTION (if provided):
+${jobDescription || "N/A"}
 
-        if (jobDescription && jobDescription.trim()) {
-            userContent += `\n\n${
-                isSpanish ? "Descripción del puesto objetivo:" : "Target job description:"
-            }\n\n${jobDescription.trim()}`;
-        }
+TASK:
+Rewrite the entire resume following ALL rules from the system instructions.
 
-        if (mode === "federal") {
-            userContent += `\n\n${
-                isSpanish
-                    ? "IMPORTANTE: Formatea el currículum siguiendo el estilo general de USAJOBS, con énfasis en logros cuantificables, horas por semana y responsabilidades clave. Aun así, respeta todas las reglas de formato indicadas."
-                    : "IMPORTANT: Format the resume following the general style of USAJOBS federal resumes (quantifiable achievements, hours per week, key responsibilities) while still respecting all the formatting rules above."
-            }`;
-        }
+Remember:
+- Plain text only.
+- Simple ALL-CAPS section headings.
+- Bullets must start with "• " and one bullet per line.
+- Single blank line between sections.
+- No decorative lines, no asterisks, no hyphen dividers.
+`.trim();
 
         // Call OpenAI (use a valid model)
         const completion = await openai.chat.completions.create({

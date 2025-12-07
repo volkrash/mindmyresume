@@ -449,16 +449,16 @@
         }
       }
     },
-    "6e9c8072bedd4b1dd1afbfa8be636dd0364ae4ad56cc3022475bfc6f49a4a2ca": {
+    "9f2cd81b80bc2e4866fdd9670eb1ebf4dd559584ff79eb0d0dd61f98251c8211": {
       "displayName": "function/rewriteResume-lambda/Code",
       "source": {
-        "path": "asset.6e9c8072bedd4b1dd1afbfa8be636dd0364ae4ad56cc3022475bfc6f49a4a2ca",
+        "path": "asset.9f2cd81b80bc2e4866fdd9670eb1ebf4dd559584ff79eb0d0dd61f98251c8211",
         "packaging": "zip"
       },
       "destinations": {
-        "current_account-current_region-209156c1": {
+        "current_account-current_region-2e79f969": {
           "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}",
-          "objectKey": "6e9c8072bedd4b1dd1afbfa8be636dd0364ae4ad56cc3022475bfc6f49a4a2ca.zip",
+          "objectKey": "9f2cd81b80bc2e4866fdd9670eb1ebf4dd559584ff79eb0d0dd61f98251c8211.zip",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-${AWS::Region}"
         }
       }
@@ -575,30 +575,30 @@
         }
       }
     },
-    "f24ebb8e2dadafcf3a9101c5c21ef87d3ce764b00e8cac09bc04c51e2b1bdede": {
+    "a675f406789bba58bafa06776bed8364fa1402030800edb324005a0bc2f4ca97": {
       "displayName": "function Nested Stack Template",
       "source": {
         "path": "amplifymindmyresumeangelmaldonadosandbox3e0615e669functionEB2E390B.nested.template.json",
         "packaging": "file"
       },
       "destinations": {
-        "current_account-current_region-befd4aa1": {
+        "current_account-current_region-55dc4ef8": {
           "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}",
-          "objectKey": "f24ebb8e2dadafcf3a9101c5c21ef87d3ce764b00e8cac09bc04c51e2b1bdede.json",
+          "objectKey": "a675f406789bba58bafa06776bed8364fa1402030800edb324005a0bc2f4ca97.json",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-${AWS::Region}"
         }
       }
     },
-    "a806f74e4bceb9c35c56a350938bba32df018977a7fb42d7c5c7aec68583aa19": {
+    "36a1f7a57679ec12252baa03290a2cd65dbffbe80fa2fe656a08f6bed88ee844": {
       "displayName": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669 Template",
       "source": {
         "path": "amplify-mindmyresume-angelmaldonado-sandbox-3e0615e669.template.json",
         "packaging": "file"
       },
       "destinations": {
-        "current_account-current_region-b8837ff8": {
+        "current_account-current_region-26cd4c8d": {
           "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}",
-          "objectKey": "a806f74e4bceb9c35c56a350938bba32df018977a7fb42d7c5c7aec68583aa19.json",
+          "objectKey": "36a1f7a57679ec12252baa03290a2cd65dbffbe80fa2fe656a08f6bed88ee844.json",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-${AWS::Region}"
         }
       }

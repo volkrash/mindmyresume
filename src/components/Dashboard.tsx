@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import { client } from "../amplifyClient";
 import jsPDF from "jspdf";
 import { ModernCleanTemplate } from "../templates/ModernCleanTemplate";
+import { FederalTemplate } from "../templates/FederalTemplate";
 import mammoth from "mammoth/mammoth.browser";
 import * as pdfjsLib from "pdfjs-dist";
 
@@ -756,15 +757,6 @@ export default function Dashboard({
             return;
         }
 
-        const allLines = editorContent.split(/\r?\n/);
-
-        // --- Split header vs body by first blank line ---
-        let splitIndex = allLines.findIndex((l) => l.trim() === "");
-        if (splitIndex === -1) splitIndex = allLines.length;
-
-        const headerLines = allLines.slice(0, splitIndex).filter((l) => l.trim() !== "");
-        const bodyLines = allLines.slice(splitIndex + 1); // may be empty
-
         const doc = new jsPDF({
             unit: "pt",
             format: "a4",
@@ -773,172 +765,78 @@ export default function Dashboard({
 
         const pageWidth = doc.internal.pageSize.getWidth();
         const pageHeight = doc.internal.pageSize.getHeight();
-        const marginX = 52;
+        const marginX = 48;
         const marginTop = 60;
         const marginBottom = 60;
-        const contentWidth = pageWidth - marginX * 2;
+        const maxWidth = pageWidth - marginX * 2;
+
+        const rawLines = editorContent.split(/\r?\n/).map((l) => l.replace(/\s+$/, ""));
+        const firstNonEmptyIndex = rawLines.findIndex((l) => l.trim().length > 0);
 
         let y = marginTop;
 
-        const lineHeightBody = 14;
-        const lineHeightHeading = 16;
-        const lineHeightName = 26;
+        // Header: treat first non-empty line as name
+        if (firstNonEmptyIndex !== -1) {
+            const nameLine = rawLines[firstNonEmptyIndex];
 
-        const ensureSpace = (neededHeight: number) => {
-            if (y + neededHeight > pageHeight - marginBottom) {
-                doc.addPage();
-                y = marginTop;
-            }
-        };
+            doc.setFont("Helvetica", "bold");
+            doc.setFontSize(18);
+            doc.setTextColor(15, 23, 42);
+            doc.text(nameLine, marginX, y);
+            y += 26;
 
-        // --- Header block (name, location, contact) ---
-        const nameLine = headerLines[0] || (isSpanish ? "NOMBRE APELLIDO" : "YOUR NAME");
-        const locationLine = headerLines[1] || "";
-        const isFederalTemplate = selectedTemplate === "federal";
-
-        doc.setFont("Helvetica", "bold");
-        doc.setFontSize(20);
-        doc.setTextColor(15, 23, 42);
-        ensureSpace(lineHeightName);
-        doc.text(nameLine.trim(), marginX, y);
-        y += lineHeightName;
-
-        if (locationLine) {
+            // Sub-header: show up to 3 more lines as contact info
             doc.setFont("Helvetica", "normal");
             doc.setFontSize(10);
             doc.setTextColor(100, 116, 139);
-            ensureSpace(lineHeightBody);
-            doc.text(locationLine.trim(), marginX, y);
-            y += lineHeightBody;
-        }
 
-        // Remaining header lines (phone, email, LinkedIn…) each on its own line
-        if (headerLines.length > 2) {
-            doc.setFont("Helvetica", "normal");
-            doc.setFontSize(10);
-            doc.setTextColor(55, 65, 81);
-
-            for (let i = 2; i < headerLines.length; i++) {
-                const line = headerLines[i].trim();
+            for (
+                let i = firstNonEmptyIndex + 1;
+                i < rawLines.length && i <= firstNonEmptyIndex + 3;
+                i++
+            ) {
+                const line = rawLines[i].trim();
                 if (!line) continue;
-                ensureSpace(lineHeightBody);
                 doc.text(line, marginX, y);
-                y += lineHeightBody;
+                y += 14;
             }
+
+            y += 12; // space before body
         }
 
-        // Divider
-        y += 8;
-        ensureSpace(10);
-        doc.setDrawColor(229, 231, 235);
-        doc.setLineWidth(0.8);
-        doc.line(marginX, y, pageWidth - marginX, y);
-        y += 18;
+        // Body: render every line respecting line breaks
+        doc.setFont("Helvetica", "normal");
+        doc.setFontSize(11);
+        doc.setTextColor(17, 24, 39);
+        const lineHeight = 14;
 
-        // --- Helpers for body formatting ---
+        for (let i = (firstNonEmptyIndex === -1 ? 0 : firstNonEmptyIndex + 4); i < rawLines.length; i++) {
+            const line = rawLines[i];
 
-        const isHeadingLine = (raw: string) => {
-            const text = raw.trim();
-            if (!text) return false;
-            // If it contains lowercase letters, it's not a heading
-            if (/[a-z]/.test(text)) return false;
-            // Ignore pure bullet characters
-            if (/^[•\-]+$/.test(text)) return false;
-            return true;
-        };
-
-        const isBulletLine = (raw: string) => {
-            return raw.trim().startsWith("• ") || raw.trim().startsWith("- ");
-        };
-
-        const renderHeading = (text: string) => {
-            const trimmed = text.trim();
-            ensureSpace(lineHeightHeading * 2);
-            // Extra space before headings
-            y += 4;
-
-            doc.setFont("Helvetica", "bold");
-            doc.setFontSize(11);
-            doc.setTextColor(55, 65, 81);
-            doc.text(trimmed, marginX, y);
-            y += lineHeightHeading;
-        };
-
-        const renderParagraph = (text: string) => {
-            const trimmed = text.trim();
-            if (!trimmed) {
-                // blank line → vertical spacing
-                y += lineHeightBody;
-                return;
+            // Blank line => vertical space
+            if (!line.trim()) {
+                y += lineHeight;
+                continue;
             }
 
-            doc.setFont("Helvetica", "normal");
-            doc.setFontSize(11);
-            doc.setTextColor(17, 24, 39);
-
-            const wrapped = doc.splitTextToSize(trimmed, contentWidth);
-            wrapped.forEach((line) => {
-                ensureSpace(lineHeightBody);
-                doc.text(line, marginX, y);
-                y += lineHeightBody;
-            });
-        };
-
-        const renderBullet = (raw: string) => {
-            const trimmed = raw.trim().replace(/^[-•]\s*/, ""); // remove bullet char + space
-
-            doc.setFont("Helvetica", "normal");
-            doc.setFontSize(11);
-            doc.setTextColor(17, 24, 39);
-
-            const bulletIndent = 12; // space from bullet dot to text
-            const bulletX = marginX + 2; // bullet position
-            const textX = marginX + bulletIndent + 4;
-            const bulletWidth = contentWidth - bulletIndent - 4;
-
-            const wrapped = doc.splitTextToSize(trimmed, bulletWidth);
-
-            wrapped.forEach((line, idx) => {
-                ensureSpace(lineHeightBody);
-                if (idx === 0) {
-                    // First line: draw bullet + text
-                    doc.text("•", bulletX, y);
-                    doc.text(line, textX, y);
-                } else {
-                    // Continuation lines aligned with text
-                    doc.text(line, textX, y);
+            const wrapped = doc.splitTextToSize(line, maxWidth);
+            for (const wLine of wrapped) {
+                if (y > pageHeight - marginBottom) {
+                    doc.addPage();
+                    y = marginTop;
                 }
-                y += lineHeightBody;
-            });
-        };
-
-        // --- Render body lines ---
-        for (let i = 0; i < bodyLines.length; i++) {
-            const raw = bodyLines[i] ?? "";
-            const trimmed = raw.trim();
-
-            if (!trimmed) {
-                // preserve blank line spacing between sections
-                y += lineHeightBody;
-                continue;
+                doc.text(wLine, marginX, y);
+                y += lineHeight;
             }
-
-            if (isHeadingLine(trimmed)) {
-                renderHeading(trimmed);
-                continue;
-            }
-
-            if (isBulletLine(trimmed)) {
-                renderBullet(trimmed);
-                continue;
-            }
-
-            // Normal paragraph (job titles, company lines, etc.)
-            renderParagraph(trimmed);
         }
 
-        const safeTitle = (activeResume?.title || "resume").replace(/[^a-z0-9\-]+/gi, "_");
-        doc.save(`${safeTitle}.pdf`);
+        const safeTitle = (activeResume?.title || "resume").replace(
+            /[^a-z0-9\-]+/gi,
+            "_"
+        );
+
+        const isFederalTemplate = selectedTemplate === "federal";
+        doc.save(`${safeTitle}${isFederalTemplate ? "_federal" : ""}.pdf`);
     };
 
     const handleRewriteWithAI = async () => {
@@ -1002,7 +900,7 @@ export default function Dashboard({
                     resumeText: editorContent,
                     jobDescription,
                     language: lang,
-                    mode,
+                    mode, //"standard | "federal"
                 }),
             });
 
@@ -2413,6 +2311,20 @@ export default function Dashboard({
                                 >
                                     {activeResume.title}
                                 </p>
+                                {selectedTemplate === "federal" && (
+                                    <p
+                                        style={{
+                                            fontSize: "11px",
+                                            opacity: 0.75,
+                                            marginTop: 0,
+                                            marginBottom: "8px",
+                                        }}
+                                    >
+                                        {isSpanish
+                                            ? "Plantilla pensada para anuncios en USAJOBS (más detalle, horas por semana y logros cuantificables)."
+                                            : "Template aligned with USAJOBS job posts (more detail, hours per week, and quantifiable accomplishments)."}
+                                    </p>
+                                )}
 
                                 {/* Job description */}
                                 <label
@@ -2494,10 +2406,17 @@ export default function Dashboard({
                                         maxHeight: "460px",
                                     }}
                                 >
+                                    {selectedTemplate === "federal" ? (
+                                        <FederalTemplate
+                                            content={editorContent}
+                                            jobDescription={jobDescription}
+                                            />
+                                        ) : (
                                     <ModernCleanTemplate
                                         content={editorContent}
                                         jobDescription={jobDescription}
                                     />
+                                        )}
                                 </div>
 
                                 {/* Bottom controls */}

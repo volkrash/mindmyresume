@@ -28,7 +28,6 @@ const schema = a.schema({
             expiresAt: a.datetime(),
         })
         .authorization((allow) => [
-            allow.resource(billing),
             allow.group("ADMINS"),
         ]),
     // NEW: Suggestion / feedback
@@ -47,11 +46,7 @@ const schema = a.schema({
         ownerSub: a.string().required(),
         credits: a.integer().default(0),
         unlimitedExpiresAt: a.datetime(),
-    }).identifier(["ownerSub"]).authorization((allow) => [
-        allow.resource(billing),
-        allow.resource(stripeWebhook),
-        allow.resource(rewriteResume),
-    ]),
+    }).identifier(["ownerSub"]),
 
     PaymentEvent: a.model({
         stripeEventId: a.string().required(),
@@ -59,7 +54,7 @@ const schema = a.schema({
         ownerSub: a.string().required(),
         plan: a.string().required(),
         processedAt: a.datetime().required(),
-    }).identifier(["stripeEventId"]).authorization((allow) => [allow.resource(stripeWebhook)]),
+    }).identifier(["stripeEventId"]),
 
     BillingResult: a.customType({
         checkoutUrl: a.url(),
@@ -90,7 +85,11 @@ const schema = a.schema({
         .authorization((allow) => [allow.authenticated()])
         .handler(a.handler.function(rewriteResume)),
 
-});
+}).authorization((allow) => [
+    allow.resource(billing),
+    allow.resource(stripeWebhook),
+    allow.resource(rewriteResume),
+]);
 
 export const data = defineData({
     schema,

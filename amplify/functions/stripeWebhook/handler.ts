@@ -3,14 +3,14 @@ import Stripe from "stripe";
 import { Amplify } from "aws-amplify";
 import { generateClient } from "aws-amplify/data";
 import { getAmplifyDataClientConfig } from "@aws-amplify/backend/function/runtime";
-import { env } from "$amplify/env/stripeWebhook";
 
-const { resourceConfig, libraryOptions } = await getAmplifyDataClientConfig(env);
+const functionEnv = process.env as Record<string, string>;
+const { resourceConfig, libraryOptions } = await getAmplifyDataClientConfig(functionEnv as any);
 Amplify.configure(resourceConfig, libraryOptions);
 // Resource-authorized models are intentionally omitted from the public client
 // surface. The Lambda's IAM role still enforces access at runtime.
 const dataClient = generateClient<any>();
-const stripe = new Stripe(env.STRIPE_SECRET_KEY);
+const stripe = new Stripe(functionEnv.STRIPE_SECRET_KEY);
 
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
     const signature = event.headers?.["stripe-signature"];
@@ -21,7 +21,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
         const rawBody = event.isBase64Encoded
             ? Buffer.from(event.body, "base64")
             : Buffer.from(event.body, "utf8");
-        stripeEvent = stripe.webhooks.constructEvent(rawBody, signature, env.STRIPE_WEBHOOK_SECRET);
+        stripeEvent = stripe.webhooks.constructEvent(rawBody, signature, functionEnv.STRIPE_WEBHOOK_SECRET);
     } catch (error) {
         console.error("Invalid Stripe signature", error);
         return { statusCode: 400, body: "Invalid signature" };
@@ -39,7 +39,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
         return { statusCode: 400, body: "Missing fulfillment metadata" };
     }
 
-    const { data: priorEvent } = await dataClient.models.PaymentEvent.get({ stripeEventId: stripeEvent.id });
+    const { data: priorEvent } = await dataClient.models.PaymentEvent.get({ stripeEventId: stripeEvent.id }) as { data: any };
     if (priorEvent) return { statusCode: 200, body: "Already fulfilled" };
 
     const { errors: claimErrors } = await dataClient.models.PaymentEvent.create({
@@ -51,7 +51,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
     });
     if (claimErrors?.length) return { statusCode: 200, body: "Already processing" };
 
-    const { data: current } = await dataClient.models.Entitlement.get({ ownerSub });
+    const { data: current } = await dataClient.models.Entitlement.get({ ownerSub }) as { data: any };
     const now = new Date();
     const currentExpiry = current?.unlimitedExpiresAt ? new Date(current.unlimitedExpiresAt) : null;
     const base = currentExpiry && currentExpiry > now ? currentExpiry : now;

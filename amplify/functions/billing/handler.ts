@@ -4,11 +4,12 @@ import { Amplify } from "aws-amplify";
 import { generateClient } from "aws-amplify/data";
 import { getAmplifyDataClientConfig } from "@aws-amplify/backend/function/runtime";
 import { env } from "$amplify/env/billing";
-import type { Schema } from "../../data/resource";
 
 const { resourceConfig, libraryOptions } = await getAmplifyDataClientConfig(env);
 Amplify.configure(resourceConfig, libraryOptions);
-const dataClient = generateClient<Schema>();
+// Resource-authorized models are intentionally omitted from the public client
+// surface. The Lambda's IAM role still enforces access at runtime.
+const dataClient = generateClient<any>();
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
 type BillingArgs = { action: "status" | "checkout" | "redeem"; plan?: "unlimited" | "credits"; code?: string };

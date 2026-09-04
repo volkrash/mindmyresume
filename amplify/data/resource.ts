@@ -46,7 +46,9 @@ const schema = a.schema({
         ownerSub: a.string().required(),
         credits: a.integer().default(0),
         unlimitedExpiresAt: a.datetime(),
-    }).identifier(["ownerSub"]),
+    }).identifier(["ownerSub"]).authorization((allow) => [
+        allow.group("ADMINS"),
+    ]),
 
     PaymentEvent: a.model({
         stripeEventId: a.string().required(),
@@ -54,7 +56,9 @@ const schema = a.schema({
         ownerSub: a.string().required(),
         plan: a.string().required(),
         processedAt: a.datetime().required(),
-    }).identifier(["stripeEventId"]),
+    }).identifier(["stripeEventId"]).authorization((allow) => [
+        allow.group("ADMINS"),
+    ]),
 
     BillingResult: a.customType({
         checkoutUrl: a.url(),

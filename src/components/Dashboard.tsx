@@ -10,23 +10,25 @@ import * as pdfjsLib from "pdfjs-dist";
 (pdfjsLib as any).GlobalWorkerOptions.workerSrc =
     "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 
-// Config via Vite env vars
-const STRIPE_UNLIMITED_URL = import.meta.env.VITE_STRIPE_UNLIMITED_URL || null;
-const STRIPE_CREDITS_URL = import.meta.env.VITE_STRIPE_CREDITS_URL || null;
-const REWRITE_URL = import.meta.env.VITE_REWRITE_URL || null;
 const SUGGESTION_URL = import.meta.env.VITE_SUGGESTION_URL || null;
 
-// LocalStorage keys
-const UNLIMITED_FLAG_KEY = "mmr_unlimited_active";
-const UNLIMITED_EXPIRES_KEY = "mmr_unlimited_expires_at";
-const CREDITS_KEY = "mmr_rewrite_credits";
-
 // Plan settings
-const ACCESS_DAYS = 90; // 90-day unlimited plan
 const UNLIMITED_PRICE = 24.99; // $24.99
 const CREDITS_PRICE = 5.99; // $5.99
-const CREDITS_PER_PACK = 5; // 5 rewrites per credits pack
+type FitRequirement = {
+    requirement: string;
+    importance: "required" | "preferred";
+    status: "supported" | "partial" | "missing";
+    evidence: string;
+    question: string;
+};
 
+type FitAnalysis = {
+    summary: string;
+    requirements: FitRequirement[];
+    strengths: string[];
+    risks: string[];
+};
 
 // Optional classic template (kept if you want to use later)
 function ClassicTemplate({
@@ -113,10 +115,14 @@ export default function Dashboard({
         null
     );
     const [rewriteCredits, setRewriteCredits] = useState(0);
+    const [billingLoading, setBillingLoading] = useState(true);
 
     const [activeResume, setActiveResume] = useState<any | null>(null);
     const [editorContent, setEditorContent] = useState("");
     const [jobDescription, setJobDescription] = useState("");
+    const [fitAnalysis, setFitAnalysis] = useState<FitAnalysis | null>(null);
+    const [evidenceNotes, setEvidenceNotes] = useState("");
+    const [analysisLoading, setAnalysisLoading] = useState(false);
     const [aiLoading, setAiLoading] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [selectedTemplate, setSelectedTemplate] = useState<"classic" | "federal">("classic");
@@ -302,85 +308,59 @@ export default function Dashboard({
         loadSuggestions();
     }, [isDevUser]);
 
-    // Detect payment & load plan / credits
+    const applyBillingStatus = (status: any) => {
+        const expiry = status?.unlimitedExpiresAt || null;
+        setUnlimitedExpiresAt(expiry);
+        setHasUnlimited(Boolean(expiry && new Date(expiry).getTime() > Date.now()));
+        setRewriteCredits(status?.credits || 0);
+    };
+
+    const refreshBillingStatus = async () => {
+        const { data, errors } = await (client as any).queries.billing({ action: "status" });
+        if (errors?.length) throw new Error(errors[0]?.message || "Unable to load billing status");
+        applyBillingStatus(data);
+        return data;
+    };
+
     useEffect(() => {
-        try {
-            // 1) Load stored unlimited plan
-            const storedUnlimited = localStorage.getItem(UNLIMITED_FLAG_KEY);
-            const storedExpires = localStorage.getItem(UNLIMITED_EXPIRES_KEY);
-
-            if (storedUnlimited === "true" && storedExpires) {
-                const expTime = new Date(storedExpires).getTime();
-                if (!Number.isNaN(expTime) && expTime > Date.now()) {
-                    setHasUnlimited(true);
-                    setUnlimitedExpiresAt(storedExpires);
-                } else {
-                    // expired → clear
-                    localStorage.removeItem(UNLIMITED_FLAG_KEY);
-                    localStorage.removeItem(UNLIMITED_EXPIRES_KEY);
+        const loadBilling = async () => {
+            try {
+                setBillingLoading(true);
+                const params = new URLSearchParams(window.location.search);
+                const returningFromPayment = params.get("payment") === "success";
+                for (let attempt = 0; attempt < (returningFromPayment ? 5 : 1); attempt += 1) {
+                    const status = await refreshBillingStatus();
+                    const active = status?.credits > 0 || (status?.unlimitedExpiresAt && new Date(status.unlimitedExpiresAt).getTime() > Date.now());
+                    if (active || !returningFromPayment) break;
+                    await new Promise((resolve) => window.setTimeout(resolve, 1000));
                 }
+                if (params.has("payment") || params.has("session_id")) {
+                    window.history.replaceState({}, "", window.location.pathname);
+                }
+            } catch (err) {
+                console.error("Error loading server billing status", err);
+            } finally {
+                setBillingLoading(false);
             }
-
-            // 2) Load stored credits
-            const storedCredits = localStorage.getItem(CREDITS_KEY);
-            let currentCredits = 0;
-            if (storedCredits && !Number.isNaN(parseInt(storedCredits, 10))) {
-                currentCredits = parseInt(storedCredits, 10);
-                setRewriteCredits(currentCredits);
-            }
-
-            // 3) Process Stripe callback (?plan=unlimited|credits or ?checkout=...)
-            const params = new URLSearchParams(window.location.search);
-            const which = params.get("plan") || params.get("checkout");
-
-            if (which === "unlimited") {
-                const expires = new Date();
-                expires.setDate(expires.getDate() + ACCESS_DAYS);
-                const iso = expires.toISOString();
-
-                setHasUnlimited(true);
-                setUnlimitedExpiresAt(iso);
-                localStorage.setItem(UNLIMITED_FLAG_KEY, "true");
-                localStorage.setItem(UNLIMITED_EXPIRES_KEY, iso);
-            } else if (which === "credits") {
-                const newCredits = currentCredits + CREDITS_PER_PACK;
-                setRewriteCredits(newCredits);
-                localStorage.setItem(CREDITS_KEY, String(newCredits));
-            }
-
-            // 4) Clean URL
-            if (which) {
-                const cleanUrl = window.location.origin + window.location.pathname;
-                window.history.replaceState({}, "", cleanUrl);
-            }
-        } catch (err) {
-            console.error("Error loading plan status", err);
-        }
+        };
+        loadBilling();
     }, []);
 
-    const handlePurchaseUnlimited = () => {
-        if (!STRIPE_UNLIMITED_URL) {
-            alert(
-                isSpanish
-                    ? "Falta configurar VITE_STRIPE_UNLIMITED_URL en .env.local."
-                    : "VITE_STRIPE_UNLIMITED_URL is not configured in .env.local."
-            );
-            return;
+    const startCheckout = async (plan: "unlimited" | "credits") => {
+        try {
+            setBillingLoading(true);
+            const { data, errors } = await (client as any).queries.billing({ action: "checkout", plan });
+            if (errors?.length || !data?.checkoutUrl) throw new Error(errors?.[0]?.message || "Checkout unavailable");
+            window.location.assign(data.checkoutUrl);
+        } catch (err) {
+            console.error("Unable to start checkout", err);
+            alert(isSpanish ? "No se pudo iniciar el pago." : "We couldn't start checkout.");
+            setBillingLoading(false);
         }
-        window.location.href = STRIPE_UNLIMITED_URL;
     };
 
-    const handlePurchaseCredits = () => {
-        if (!STRIPE_CREDITS_URL) {
-            alert(
-                isSpanish
-                    ? "Falta configurar VITE_STRIPE_CREDITS_URL en .env.local."
-                    : "VITE_STRIPE_CREDITS_URL is not configured in .env.local."
-            );
-            return;
-        }
-        window.location.href = STRIPE_CREDITS_URL;
-    };
+    const handlePurchaseUnlimited = () => startCheckout("unlimited");
+    const handlePurchaseCredits = () => startCheckout("credits");
 
     // ✅ Redeem using AccessCode query
     const handleRedeemCode = async () => {
@@ -391,83 +371,16 @@ export default function Dashboard({
 
         try {
             setIsRedeeming(true);
-            const code = redeemCode.trim();
-
-            // 🔌 Call the custom query (backed by your Lambda)
-            const { data, errors } = await client.queries.accessByCode({ code });
-
-            if (errors?.length) {
-                console.error("accessByCode errors:", errors);
-                const raw = errors[0]?.message || "";
-
-                let friendly = isSpanish
-                    ? "Hubo un problema al canjear el código."
-                    : "There was a problem redeeming the code.";
-
-                if (raw.includes("INVALID_CODE")) {
-                    friendly = isSpanish
-                        ? "Este código no es válido."
-                        : "This code is not valid.";
-                } else if (raw.includes("CODE_EXPIRED")) {
-                    friendly = isSpanish
-                        ? "Este código ya expiró."
-                        : "This code has expired.";
-                } else if (raw.includes("CODE_EXHAUSTED")) {
-                    friendly = isSpanish
-                        ? "Este código ya se ha utilizado el número máximo de veces."
-                        : "This code has already been used the maximum number of times.";
-                } else if (raw.includes("FAILED_TO_CONSUME_CODE")) {
-                    friendly = isSpanish
-                        ? "No se pudo actualizar el uso del código. Inténtalo de nuevo."
-                        : "Failed to consume the code. Please try again.";
-                }
-
-                alert(friendly);
-                return;
-            }
-
-            if (!data) {
-                alert(
-                    isSpanish
-                        ? "No se encontró información para este código."
-                        : "No data returned for this code."
-                );
-                return;
-            }
-
-            const grantedDays = data.days ?? 0;
-            const grantedCredits = data.credits ?? 0;
-
-            // 🕒 Extend unlimited access from whichever is later: now or current expiry
-            const now = new Date();
-            const base =
-                unlimitedExpiresAt &&
-                new Date(unlimitedExpiresAt).getTime() > now.getTime()
-                    ? new Date(unlimitedExpiresAt)
-                    : now;
-
-            base.setDate(base.getDate() + grantedDays);
-            const newExpiryIso = base.toISOString();
-
-            setHasUnlimited(true);
-            setUnlimitedExpiresAt(newExpiryIso);
-            localStorage.setItem(UNLIMITED_FLAG_KEY, "true");
-            localStorage.setItem(UNLIMITED_EXPIRES_KEY, newExpiryIso);
-
-            // ➕ Add the credits from the code
-            const updatedCredits = rewriteCredits + grantedCredits;
-            setRewriteCredits(updatedCredits);
-            localStorage.setItem(CREDITS_KEY, String(updatedCredits));
-
+            const { data, errors } = await (client as any).queries.billing({
+                action: "redeem",
+                code: redeemCode.trim(),
+            });
+            if (errors?.length || !data) throw new Error(errors?.[0]?.message || "INVALID_CODE");
+            applyBillingStatus(data);
             setRedeemCode("");
-
-            const successMsg = isSpanish
-                ? `Código canjeado. Acceso extendido ${grantedDays} días y ${grantedCredits} créditos añadidos.`
-                : `Code redeemed. Access extended by ${grantedDays} days and ${grantedCredits} credits added.`;
-
-            alert(successMsg);
+            alert(isSpanish ? "Código canjeado correctamente." : "Code redeemed successfully.");
         } catch (err: any) {
-            console.error("Error redeeming code via accessByCode:", err);
+            console.error("Error redeeming code:", err);
             alert(
                 isSpanish
                     ? "Hubo un problema al canjear el código."
@@ -475,39 +388,6 @@ export default function Dashboard({
             );
         } finally {
             setIsRedeeming(false);
-        }
-    };
-
-    // DEV-ONLY helpers
-    const handleDevUnlimited = () => {
-        if (
-            window.confirm(
-                isSpanish
-                    ? "Simular compra del plan ilimitado de 90 días?"
-                    : "Simulate purchase of the 90-day unlimited plan?"
-            )
-        ) {
-            const expires = new Date();
-            expires.setDate(expires.getDate() + ACCESS_DAYS);
-            const iso = expires.toISOString();
-            setHasUnlimited(true);
-            setUnlimitedExpiresAt(iso);
-            localStorage.setItem(UNLIMITED_FLAG_KEY, "true");
-            localStorage.setItem(UNLIMITED_EXPIRES_KEY, iso);
-        }
-    };
-
-    const handleDevCredits = () => {
-        if (
-            window.confirm(
-                isSpanish
-                    ? "Simular compra de 5 reescrituras?"
-                    : "Simulate purchase of 5 rewrites?"
-            )
-        ) {
-            const newCredits = rewriteCredits + CREDITS_PER_PACK;
-            setRewriteCredits(newCredits);
-            localStorage.setItem(CREDITS_KEY, String(newCredits));
         }
     };
 
@@ -569,6 +449,9 @@ export default function Dashboard({
             setTitle("");
             setActiveResume(created);
             setEditorContent(initialContent);
+            setJobDescription("");
+            setFitAnalysis(null);
+            setEvidenceNotes("");
         } catch (err) {
             console.error("Error creating resume", err);
             alert(
@@ -605,6 +488,9 @@ export default function Dashboard({
     const handleSelectResume = (resume: any) => {
         if (!resume) return;
         setActiveResume(resume);
+        setJobDescription("");
+        setFitAnalysis(null);
+        setEvidenceNotes("");
 
         let content = "";
         let template: "classic" | "federal" = "classic";
@@ -614,6 +500,9 @@ export default function Dashboard({
                 if (typeof parsed === "string") content = parsed;
                 else if (parsed && typeof parsed === "object") {
                     content = (parsed as any).content || "";
+                    setJobDescription((parsed as any).jobDescription || "");
+                    setFitAnalysis((parsed as any).fitAnalysis || null);
+                    setEvidenceNotes((parsed as any).evidenceNotes || "");
                     if ((parsed as any).template === "federal") {
                         template = "federal";
                     }
@@ -634,7 +523,10 @@ export default function Dashboard({
                 id: activeResume.id,
                 aiJson: JSON.stringify({
                     content: editorContent,
-                template: selectedTemplate,
+                    template: selectedTemplate,
+                    jobDescription,
+                    fitAnalysis,
+                    evidenceNotes,
                 }),
             });
 
@@ -839,19 +731,58 @@ export default function Dashboard({
         doc.save(`${safeTitle}${isFederalTemplate ? "_federal" : ""}.pdf`);
     };
 
-    const handleRewriteWithAI = async () => {
-
-        const mode = selectedTemplate === "federal" ? "federal" : "standard";
-
-        if (!REWRITE_URL) {
-            console.error("VITE_REWRITE_URL not configured");
+    const handleAnalyzeFit = async () => {
+        if (!activeResume || !editorContent.trim() || !jobDescription.trim()) {
             alert(
                 isSpanish
-                    ? "El servicio de IA no está configurado."
-                    : "The AI service is not configured."
+                    ? "Añade el currículum y la descripción del puesto antes de analizar la compatibilidad."
+                    : "Add both the resume and job description before analyzing fit."
             );
             return;
         }
+
+        try {
+            setAnalysisLoading(true);
+            const { data, errors } = await (client as any).mutations.applicationAssistant({
+                action: "analyze",
+                resumeText: editorContent,
+                jobDescription,
+                language: lang,
+                mode: selectedTemplate === "federal" ? "federal" : "standard",
+            });
+            if (errors?.length || !data) throw new Error(errors?.[0]?.message || "Analysis request failed");
+            const analysis = data.analysis as FitAnalysis;
+            setFitAnalysis(analysis);
+
+            const { data: updated } = await client.models.Resume.update({
+                id: activeResume.id,
+                aiJson: JSON.stringify({
+                    content: editorContent,
+                    template: selectedTemplate,
+                    jobDescription,
+                    fitAnalysis: analysis,
+                    evidenceNotes,
+                }),
+            });
+            if (updated) {
+                setActiveResume(updated);
+                setResumes((prev) => prev.map((r) => (r.id === updated.id ? updated : r)));
+            }
+        } catch (err) {
+            console.error("Fit analysis failed", err);
+            alert(
+                isSpanish
+                    ? "No se pudo analizar la compatibilidad en este momento."
+                    : "We couldn't analyze the application fit right now."
+            );
+        } finally {
+            setAnalysisLoading(false);
+        }
+    };
+
+    const handleRewriteWithAI = async () => {
+
+        const mode = selectedTemplate === "federal" ? "federal" : "standard";
 
         if (!activeResume) {
             alert(
@@ -893,30 +824,15 @@ export default function Dashboard({
         try {
             setAiLoading(true);
 
-            const response = await fetch(REWRITE_URL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    resumeText: editorContent,
-                    jobDescription,
-                    language: lang,
-                    mode, //"standard | "federal"
-                }),
+            const { data, errors } = await (client as any).mutations.applicationAssistant({
+                action: "rewrite",
+                resumeText: editorContent,
+                jobDescription,
+                evidenceNotes,
+                language: lang,
+                mode,
             });
-
-            if (!response.ok) {
-                const errorBody = await response.json().catch(() => null);
-                console.error("AI response not OK", errorBody);
-                const msg =
-                    errorBody?.details?.error?.message ||
-                    (isSpanish
-                        ? "El servicio de IA no está disponible."
-                        : "The AI service is currently unavailable.");
-                alert(msg);
-                return;
-            }
-
-            const data = await response.json();
+            if (errors?.length || !data) throw new Error(errors?.[0]?.message || "AI service unavailable");
             const rewrittenText = data.rewrittenText || "";
             setEditorContent(rewrittenText);
 
@@ -924,19 +840,17 @@ export default function Dashboard({
                 id: activeResume.id,
                 aiJson: JSON.stringify({
                     content: rewrittenText,
-                template: selectedTemplate,
+                    template: selectedTemplate,
+                    jobDescription,
+                    fitAnalysis,
+                    evidenceNotes,
                 }),
             });
 
             setActiveResume(updated);
             setResumes((prev) => prev.map((r) => (r.id === updated.id ? updated : r)));
 
-            // ✅ Decrement credit whenever there *are* credits, so you see the counter move
-            if (rewriteCredits > 0) {
-                const remaining = rewriteCredits - 1;
-                setRewriteCredits(remaining);
-                localStorage.setItem(CREDITS_KEY, String(remaining));
-            }
+            await refreshBillingStatus();
 
             alert(
                 isSpanish
@@ -1229,7 +1143,7 @@ export default function Dashboard({
                 </header>
 
                 {/* PAYMENT GATE */}
-                {!hasAnyPlan && (
+                {!billingLoading && !hasAnyPlan && (
                     <section
                         style={{
                             backgroundColor: "#0f172a",
@@ -1394,54 +1308,6 @@ export default function Dashboard({
                             </div>
                         </div>
 
-                        {isDevUser && (
-                            <>
-                                {/* DEV ONLY (visible only to almaldonado@gmail.com) */}
-                                <p
-                                    style={{
-                                        marginTop: 10,
-                                        fontSize: 10,
-                                        opacity: 0.6,
-                                    }}
-                                >
-                                    {isSpanish
-                                        ? "DEV: usa estos botones para simular compras."
-                                        : "DEV: use these buttons to simulate purchases."}
-                                </p>
-                                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                                    <button
-                                        type="button"
-                                        onClick={handleDevUnlimited}
-                                        style={{
-                                            padding: "4px 10px",
-                                            borderRadius: "999px",
-                                            border: "none",
-                                            fontSize: 10,
-                                            cursor: "pointer",
-                                            backgroundColor: "#f97316",
-                                            color: "#020617",
-                                        }}
-                                    >
-                                        DEV: 90-day unlimited
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={handleDevCredits}
-                                        style={{
-                                            padding: "4px 10px",
-                                            borderRadius: "999px",
-                                            border: "none",
-                                            fontSize: 10,
-                                            cursor: "pointer",
-                                            backgroundColor: "#fb7185",
-                                            color: "#020617",
-                                        }}
-                                    >
-                                        DEV: +5 rewrites
-                                    </button>
-                                </div>
-                            </>
-                        )}
                     </section>
                 )}
 
@@ -2321,8 +2187,8 @@ export default function Dashboard({
                                         }}
                                     >
                                         {isSpanish
-                                            ? "Plantilla pensada para anuncios en USAJOBS (más detalle, horas por semana y logros cuantificables)."
-                                            : "Template aligned with USAJOBS job posts (more detail, hours per week, and quantifiable accomplishments)."}
+                                            ? "Alineado con el límite actual de dos páginas de USAJOBS. Los datos faltantes, como horas por semana, se preguntan; nunca se inventan."
+                                            : "Aligned with USAJOBS' current two-page limit. Missing facts such as hours per week are requested, never invented."}
                                     </p>
                                 )}
 
@@ -2341,7 +2207,10 @@ export default function Dashboard({
                                 </label>
                                 <textarea
                                     value={jobDescription}
-                                    onChange={(e) => setJobDescription(e.target.value)}
+                                    onChange={(e) => {
+                                        setJobDescription(e.target.value);
+                                        setFitAnalysis(null);
+                                    }}
                                     placeholder={
                                         isSpanish
                                             ? "Pega aquí la descripción del puesto al que estás aplicando..."
@@ -2360,6 +2229,86 @@ export default function Dashboard({
                                         marginBottom: "8px",
                                     }}
                                 />
+
+                                <div style={{ marginBottom: "12px" }}>
+                                    <button
+                                        type="button"
+                                        onClick={handleAnalyzeFit}
+                                        disabled={analysisLoading || !canUseAI || !jobDescription.trim() || !editorContent.trim()}
+                                        style={{
+                                            padding: "8px 14px",
+                                            borderRadius: "999px",
+                                            border: "1px solid #2dd4bf",
+                                            backgroundColor: "#042f2e",
+                                            color: "#99f6e4",
+                                            fontSize: "12px",
+                                            fontWeight: 700,
+                                            cursor: analysisLoading ? "wait" : "pointer",
+                                            opacity: !jobDescription.trim() || !editorContent.trim() ? 0.5 : 1,
+                                        }}
+                                    >
+                                        {analysisLoading
+                                            ? isSpanish ? "Analizando requisitos..." : "Analyzing requirements..."
+                                            : isSpanish ? "Analizar compatibilidad" : "Analyze application fit"}
+                                    </button>
+                                </div>
+
+                                {fitAnalysis && (
+                                    <section
+                                        style={{
+                                            marginBottom: "14px",
+                                            padding: "14px",
+                                            borderRadius: "12px",
+                                            border: "1px solid #2dd4bf55",
+                                            backgroundColor: "#042f2e55",
+                                        }}
+                                    >
+                                        <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", alignItems: "start" }}>
+                                            <div>
+                                                <div style={{ color: "#5eead4", fontSize: "11px", fontWeight: 800, letterSpacing: ".08em", textTransform: "uppercase" }}>
+                                                    {isSpanish ? "Mapa de evidencia" : "Evidence map"}
+                                                </div>
+                                                <p style={{ margin: "5px 0 12px", fontSize: "13px", color: "#ccfbf1" }}>
+                                                    {fitAnalysis.summary}
+                                                </p>
+                                            </div>
+                                            <div style={{ whiteSpace: "nowrap", fontSize: "11px", color: "#99f6e4" }}>
+                                                {fitAnalysis.requirements.filter((item) => item.status === "supported").length}/{fitAnalysis.requirements.length} {isSpanish ? "demostrados" : "supported"}
+                                            </div>
+                                        </div>
+
+                                        <div style={{ display: "grid", gap: "8px" }}>
+                                            {fitAnalysis.requirements.map((item, index) => {
+                                                const color = item.status === "supported" ? "#86efac" : item.status === "partial" ? "#fde68a" : "#fca5a5";
+                                                const label = isSpanish
+                                                    ? item.status === "supported" ? "Demostrado" : item.status === "partial" ? "Parcial" : "Falta evidencia"
+                                                    : item.status === "supported" ? "Supported" : item.status === "partial" ? "Partial" : "Evidence missing";
+                                                return (
+                                                    <div key={`${item.requirement}-${index}`} style={{ padding: "10px", borderRadius: "9px", backgroundColor: "#020617aa", border: "1px solid #134e4a" }}>
+                                                        <div style={{ display: "flex", justifyContent: "space-between", gap: "10px" }}>
+                                                            <strong style={{ fontSize: "12px" }}>{item.requirement}</strong>
+                                                            <span style={{ color, fontSize: "10px", fontWeight: 800, whiteSpace: "nowrap" }}>{label}</span>
+                                                        </div>
+                                                        {item.evidence && <p style={{ margin: "5px 0 0", fontSize: "11px", opacity: .78 }}>{item.evidence}</p>}
+                                                        {item.status !== "supported" && item.question && <p style={{ margin: "6px 0 0", fontSize: "11px", color: "#bae6fd" }}>{item.question}</p>}
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+
+                                        <label style={{ display: "block", marginTop: "12px", marginBottom: "4px", fontSize: "12px", color: "#ccfbf1", fontWeight: 700 }}>
+                                            {isSpanish ? "Añade hechos que puedas defender" : "Add facts you can defend"}
+                                        </label>
+                                        <textarea
+                                            value={evidenceNotes}
+                                            onChange={(e) => setEvidenceNotes(e.target.value)}
+                                            placeholder={isSpanish
+                                                ? "Responde las preguntas anteriores con ejemplos, métricas y contexto reales. No adivines."
+                                                : "Answer the questions above with real examples, metrics, and context. Don't guess."}
+                                            style={{ width: "100%", minHeight: "90px", resize: "vertical", padding: "8px", boxSizing: "border-box", borderRadius: "8px", border: "1px solid #0f766e", backgroundColor: "#020617", color: "white", fontSize: "12px" }}
+                                        />
+                                    </section>
+                                )}
 
                                 {/* Resume content */}
                                 <label
@@ -2527,11 +2476,11 @@ export default function Dashboard({
                                         >
                                             {aiLoading
                                                 ? isSpanish
-                                                    ? "Reescribiendo..."
-                                                    : "Rewriting..."
+                                                    ? "Adaptando..."
+                                                    : "Tailoring..."
                                                 : isSpanish
-                                                    ? "Reescribir con IA"
-                                                    : "Rewrite with AI"}
+                                                    ? "Adaptar con evidencia verificada"
+                                                    : "Tailor with verified evidence"}
                                         </button>
 
                                         <button

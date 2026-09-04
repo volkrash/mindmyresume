@@ -2,10 +2,18 @@
 // ESM handler for Amplify Lambda URL + OpenAI
 
 import OpenAI from "openai";
+import { Amplify } from "aws-amplify";
+import { generateClient } from "aws-amplify/data";
+import { getAmplifyDataClientConfig } from "@aws-amplify/backend/function/runtime";
+import { env } from "$amplify/env/rewriteResume";
+
+const { resourceConfig, libraryOptions } = await getAmplifyDataClientConfig(env);
+Amplify.configure(resourceConfig, libraryOptions);
+const dataClient = generateClient();
 
 // Make sure OPENAI_API_KEY is set in this function's environment
 const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
+    apiKey: env.OPENAI_API_KEY,
 });
 
 function buildCorsHeaders() {
@@ -19,6 +27,7 @@ function buildCorsHeaders() {
 }
 
 export const handler = async (event) => {
+    const isAppSync = Boolean(event?.arguments);
     const origin =
         event?.headers?.origin ||
         event?.headers?.Origin ||
@@ -37,7 +46,7 @@ export const handler = async (event) => {
             };
         }
 
-        if (!process.env.OPENAI_API_KEY) {
+        if (!env.OPENAI_API_KEY) {
             console.error("Missing OPENAI_API_KEY env var");
             return {
                 statusCode: 500,
@@ -49,7 +58,7 @@ export const handler = async (event) => {
             };
         }
 
-        if (!event.body) {
+        if (!isAppSync && !event.body) {
             return {
                 statusCode: 400,
                 headers,
@@ -59,8 +68,9 @@ export const handler = async (event) => {
 
         let parsed;
         try {
-            parsed =
-                typeof event.body === "string"
+            parsed = isAppSync
+                ? event.arguments
+                : typeof event.body === "string"
                     ? JSON.parse(event.body || "{}")
                     : event.body || {};
         } catch (e) {
@@ -74,6 +84,8 @@ export const handler = async (event) => {
 
         const resumeText = parsed.resumeText;
         const jobDescription = parsed.jobDescription || "";
+        const evidenceNotes = parsed.evidenceNotes || "";
+        const action = parsed.action === "analyze" ? "analyze" : "rewrite";
         const language = parsed.language === "es" ? "es" : "en";
         const mode = parsed.mode === "federal" ? "federal" : "standard";
 
@@ -88,6 +100,55 @@ export const handler = async (event) => {
         // Normalize mode + language
         const normalizedMode = mode === "federal" ? "federal" : "standard";
         const isSpanish = language === "es";
+
+        let entitlement = null;
+        if (isAppSync) {
+            const ownerSub = event.identity?.sub;
+            if (!ownerSub) throw new Error("UNAUTHENTICATED");
+            const { data } = await dataClient.models.Entitlement.get({ ownerSub });
+            entitlement = data || null;
+            const unlimitedActive = entitlement?.unlimitedExpiresAt
+                && new Date(entitlement.unlimitedExpiresAt).getTime() > Date.now();
+            if (!unlimitedActive && (entitlement?.credits || 0) <= 0) {
+                throw new Error("PAYMENT_REQUIRED");
+            }
+        }
+
+        if (action === "analyze") {
+            if (!jobDescription.trim()) {
+                return {
+                    statusCode: 400,
+                    headers,
+                    body: JSON.stringify({ error: "jobDescription is required for analysis" }),
+                };
+            }
+
+            const analysisCompletion = await openai.chat.completions.create({
+                model: "chatgpt-4o-latest",
+                response_format: { type: "json_object" },
+                messages: [
+                    {
+                        role: "system",
+                        content: `You are a rigorous job-application analyst. Compare a candidate resume with a target job. Never infer, embellish, or invent experience. Return JSON only with this exact shape: {"summary":"string","requirements":[{"requirement":"string","importance":"required|preferred","status":"supported|partial|missing","evidence":"string","question":"string"}],"strengths":["string"],"risks":["string"]}. Evidence must identify facts present in the resume. If evidence is absent, use an empty string and ask one concise question that could uncover truthful relevant experience. Keep at most 10 requirements, ordered by importance. Write all user-facing values in ${isSpanish ? "Spanish" : "American English"}.`,
+                    },
+                    {
+                        role: "user",
+                        content: `CANDIDATE RESUME:\n${resumeText}\n\nTARGET JOB DESCRIPTION:\n${jobDescription}`,
+                    },
+                ],
+                temperature: 0.1,
+                max_tokens: 1800,
+            });
+
+            const rawAnalysis = analysisCompletion?.choices?.[0]?.message?.content || "{}";
+            const result = { analysis: JSON.parse(rawAnalysis) };
+            if (isAppSync) return result;
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify(result),
+            };
+        }
 
 // ---- SYSTEM PROMPT ----
         const baseSystemPrompt = `
@@ -118,16 +179,17 @@ When mode is STANDARD:
 When mode is FEDERAL:
 - Produce a federal-style resume aligned with USAJOBS expectations.
 - Use clear sections such as: SUMMARY, CORE COMPETENCIES, WORK EXPERIENCE, EDUCATION, CERTIFICATIONS / TRAINING, and other relevant sections.
-- Under WORK EXPERIENCE for each job, include (as available from the resume; do NOT fabricate wildly):
+- Under WORK EXPERIENCE for each job, include only facts explicitly supplied by the candidate:
   • Job Title
   • Employer, City, State
   • Start Month/Year – End Month/Year (or "Present")
-  • Hours per week (e.g., "Hours per week: 40") — if missing, estimate reasonably based on context.
+  • Hours per week (e.g., "Hours per week: 40") — if missing, omit it; never estimate it.
   • Supervisor (if known) and contact permission line (e.g., "Supervisor: John Doe | Contact: Yes" or "Contact: No").
   • Bullet points highlighting specialized experience and accomplishments.
 - Use strong language similar to federal announcements (e.g., "independently coordinates", "leads", "advises management", "analyzes", "implements").
 - Mirror specialized experience and keywords from the job description where they truthfully apply to the candidate.
-- Be more detailed than a corporate resume: include scope, systems used, tools, and specific outcomes.
+- Keep the complete federal resume to two pages or less and prioritize the qualifications in the announcement.
+- Include scope, systems used, tools, and specific outcomes only when supported by candidate-provided facts.
 `.trim();
 
         const englishDetails = `
@@ -160,6 +222,9 @@ ${resumeText}
 TARGET JOB DESCRIPTION (if provided):
 ${jobDescription || "N/A"}
 
+CANDIDATE-SUPPLIED EVIDENCE NOTES:
+${evidenceNotes || "N/A"}
+
 TASK:
 Rewrite the entire resume following ALL rules from the system instructions.
 
@@ -169,6 +234,8 @@ Remember:
 - Bullets must start with "• " and one bullet per line.
 - Single blank line between sections.
 - No decorative lines, no asterisks, no hyphen dividers.
+- Use only facts found in the raw resume or candidate-supplied evidence notes.
+- Never invent or estimate metrics, dates, hours per week, credentials, job titles, employers, tools, or responsibilities.
 `.trim();
 
         // Call OpenAI (use a valid model)
@@ -195,6 +262,19 @@ Remember:
                     details: "OpenAI returned an empty response.",
                 }),
             };
+        }
+
+        if (isAppSync) {
+            const unlimitedActive = entitlement?.unlimitedExpiresAt
+                && new Date(entitlement.unlimitedExpiresAt).getTime() > Date.now();
+            if (!unlimitedActive && entitlement?.id) {
+                const nextCredits = Math.max(0, (entitlement.credits || 0) - 1);
+                await dataClient.models.Entitlement.update({
+                    ownerSub: event.identity.sub,
+                    credits: nextCredits,
+                });
+            }
+            return { rewrittenText };
         }
 
         return {

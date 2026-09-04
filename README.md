@@ -1,5 +1,24 @@
 # React + Vite
 
+## Secure billing deployment
+
+Billing is fulfilled server-side through Stripe Checkout and a signed Stripe webhook. For a local Amplify sandbox, configure these secrets:
+
+```bash
+npx ampx sandbox secret set STRIPE_SECRET_KEY
+npx ampx sandbox secret set STRIPE_WEBHOOK_SECRET
+npx ampx sandbox secret set STRIPE_UNLIMITED_PRICE_ID
+npx ampx sandbox secret set STRIPE_CREDITS_PRICE_ID
+npx ampx sandbox secret set APP_URL
+npx ampx sandbox secret set OPENAI_API_KEY
+```
+
+Use Stripe Price IDs (`price_...`), not Payment Link URLs. After deployment, copy `custom.stripeWebhookUrl` from `amplify_outputs.json` into a Stripe webhook endpoint and subscribe it to `checkout.session.completed`. Then update `STRIPE_WEBHOOK_SECRET` with that endpoint's signing secret and redeploy.
+
+For a hosted branch, add the same six names under **Amplify Console → Hosting → Secrets** instead of using the sandbox commands.
+
+Add the operator account to the Cognito `ADMINS` group before using the access-code administration screen. Billing status, access-code redemption, and AI credits are stored and enforced in the backend; browser URL parameters and local storage do not grant access.
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:

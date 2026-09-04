@@ -4,13 +4,13 @@ export default function Landing({ lang, onLanguageChange, onGetStarted }) {
     const isSpanish = lang === "es";
 
     const t = {
-        heroEyebrow: isSpanish ? "Impulsado por IA, centrado en ti" : "AI-powered, centered on you",
+        heroEyebrow: isSpanish ? "Aplicaciones verificables, no currículums genéricos" : "Defensible applications, not generic resumes",
         heroTitle: isSpanish
-            ? "Convierte tu experiencia en un currículum que consiga entrevistas."
-            : "Turn your experience into a resume that gets interviews.",
+            ? "Convierte tu experiencia real en una candidatura que puedas defender."
+            : "Turn your real experience into an application you can defend.",
         heroSubtitle: isSpanish
-            ? "En menos de 10 minutos, crea un currículum limpio, profesional y optimizado para el puesto que quieres. Sin plantillas complicadas ni formatos raros."
-            : "In under 10 minutes, create a clean, professional resume tailored to the job you want. No messy templates or formatting headaches.",
+            ? "Compara los requisitos del puesto con evidencia de tu trayectoria, completa lo que falta y crea un currículum adaptado sin inventar experiencia."
+            : "Map job requirements to evidence from your career, fill truthful gaps, and create a tailored resume without invented experience.",
         heroPrimary: isSpanish
             ? "Empieza ahora — 90 días por $24.99"
             : "Get started — 90 days for $24.99",
@@ -21,14 +21,14 @@ export default function Landing({ lang, onLanguageChange, onGetStarted }) {
         navSignIn: isSpanish ? "Iniciar sesión" : "Sign in",
 
         bullet1: isSpanish
-            ? "Reescrituras con IA adaptadas a cada oferta de trabajo."
-            : "AI rewrites tailored to each job description.",
+            ? "Mapa de requisitos con evidencia demostrada, parcial o faltante."
+            : "Requirement map showing supported, partial, and missing evidence.",
         bullet2: isSpanish
-            ? "Plantilla limpia y profesional lista para descargar en PDF."
-            : "Clean, professional template ready to download as PDF.",
+            ? "Preguntas específicas para descubrir logros reales antes de escribir."
+            : "Targeted questions that uncover real accomplishments before writing.",
         bullet3: isSpanish
-            ? "Tus currículums guardados de forma segura mientras buscas trabajo."
-            : "Your resumes saved securely while you job hunt.",
+            ? "Adaptación basada sólo en hechos que puedas explicar en una entrevista."
+            : "Tailoring based only on facts you can explain in an interview.",
 
         howTitle: isSpanish ? "Cómo funciona" : "How it works",
         howStep1Title: isSpanish ? "1. Cuéntanos de ti" : "1. Tell us about you",

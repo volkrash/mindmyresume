@@ -1,4 +1,7 @@
 import { a, defineData } from "@aws-amplify/backend";
+import { billing } from "../functions/billing/resource";
+import { stripeWebhook } from "../functions/stripeWebhook/resource";
+import { rewriteResume } from "../functions/rewriteResume/resource";
 
 const schema = a.schema({
     Resume: a
@@ -11,8 +14,7 @@ const schema = a.schema({
             expiresAt: a.datetime(),
         })
         .authorization((allow) => [
-            // any signed-in user can interact with Resume
-            allow.authenticated(),
+            allow.owner(),
         ]),
 
     AccessCode: a
@@ -26,8 +28,8 @@ const schema = a.schema({
             expiresAt: a.datetime(),
         })
         .authorization((allow) => [
-            // only authenticated users can see/redeem codes
-            allow.authenticated(),
+            allow.resource(billing),
+            allow.group("ADMINS"),
         ]),
     // NEW: Suggestion / feedback
     Suggestion: a.model ({
@@ -37,20 +39,57 @@ const schema = a.schema({
         createdAt: a.datetime(),
     })
         .authorization((allow) => [
-            allow.authenticated(),
+            allow.owner(),
+            allow.group("ADMINS").to(["read", "delete"]),
         ]),
 
-    accessByCode: a
-        .query()
+    Entitlement: a.model({
+        ownerSub: a.string().required(),
+        credits: a.integer().default(0),
+        unlimitedExpiresAt: a.datetime(),
+    }).identifier(["ownerSub"]).authorization((allow) => [
+        allow.resource(billing),
+        allow.resource(stripeWebhook),
+        allow.resource(rewriteResume),
+    ]),
+
+    PaymentEvent: a.model({
+        stripeEventId: a.string().required(),
+        stripeSessionId: a.string().required(),
+        ownerSub: a.string().required(),
+        plan: a.string().required(),
+        processedAt: a.datetime().required(),
+    }).identifier(["stripeEventId"]).authorization((allow) => [allow.resource(stripeWebhook)]),
+
+    BillingResult: a.customType({
+        checkoutUrl: a.url(),
+        credits: a.integer().required(),
+        unlimitedExpiresAt: a.datetime(),
+    }),
+
+    billing: a.query()
         .arguments({
-            code: a.string().required(),
+            action: a.enum(["status", "checkout", "redeem"]),
+            plan: a.enum(["unlimited", "credits"]),
+            code: a.string(),
         })
-        .returns(a.ref("AccessCode"))
-        // ✅ THIS is what was missing:
-        .authorization((allow) => [
-            allow.authenticated(), // only logged-in users can call this
-        ])
-        .handler(a.handler.function("accessByCode")),
+        .returns(a.ref("BillingResult"))
+        .authorization((allow) => [allow.authenticated()])
+        .handler(a.handler.function(billing)),
+
+    applicationAssistant: a.mutation()
+        .arguments({
+            action: a.enum(["analyze", "rewrite"]),
+            resumeText: a.string().required(),
+            jobDescription: a.string(),
+            evidenceNotes: a.string(),
+            language: a.enum(["en", "es"]),
+            mode: a.enum(["standard", "federal"]),
+        })
+        .returns(a.json())
+        .authorization((allow) => [allow.authenticated()])
+        .handler(a.handler.function(rewriteResume)),
+
 });
 
 export const data = defineData({
